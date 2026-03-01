@@ -1,4 +1,4 @@
-// User configuration for the startpage. Update the palette, location, and your preferred tabs, categories, and links.
+// User configuration for the startpage - update the palette, location, and your preferred tabs, categories, and links
 
 // Define preferred palette for light and dark mode
 // Available themes: latte, frappe, mocha, macchiato
@@ -10,29 +10,40 @@ let palette = initThemeSystem(preferredLightTheme, preferredDarkTheme);
 const default_configuration = {
   overrideStorage: true,
   temperature: {
-    location: "Owensound, Canada",
+    location: "London",
     scale: "C",
   },
   clock: {
-    format: "h:i p",
+    format: "k:i p",
     icon_color: palette.maroon,
   },
+  additionalClocks: [
+    {
+      label: "UA",
+      timezone: "Europe/Kyiv",
+      format: "h:i",
+      icon_color: palette.peach,
+    },
+  ],
   search: {
     engines: {
+      p: ["https://www.perplexity.ai/search/?q=", "PerplexityAI"],
       d: ["https://duckduckgo.com/?q=", "DuckDuckGo"],
       g: ["https://google.com/search?q=", "Google"],
     },
+    default: "d",
   },
   keybindings: {
     "s": "search-bar",
   },
   disabled: [],
-  localIcons: false,
-  fastlink: "https://chat.openai.com",
+  localIcons: true,
+  localFonts: true,
+  fastlink: "https://www.perplexity.ai",
   openLastVisitedTab: true,
   tabs: [
     {
-      name: "XBC",
+      name: "myself",
       background_url: "src/img/banners/banner_09.gif",
       categories: [
         {
@@ -132,16 +143,22 @@ const default_configuration = {
               icon_color: palette.green,
             },
             {
-              name: "neptune",
-              url: "https://ui.neptune.ai",
-              icon: "circle-triangle",
-              icon_color: palette.peach,
-            },
-            {
               name: "stackoverflow",
               url: "https://stackoverflow.com",
               icon: "brand-stackoverflow",
+              icon_color: palette.peach,
+            },
+            {
+              name: "duckdb",
+              url: "https://app.motherduck.com",
+              icon: "file-type-sql",
               icon_color: palette.red,
+            },
+            {
+              name: "collab",
+              url: "https://colab.research.google.com",
+              icon: "notebook",
+              icon_color: palette.mauve,
             },
           ],
         },
@@ -236,8 +253,8 @@ const default_configuration = {
           name: "gaming",
           links: [
             {
-              name: "IGN",
-              url: "https://www.ign.com/account/playlist/library",
+              name: "infiniteBacklog",
+              url: "https://infinitebacklog.net",
               icon: "device-gamepad",
               icon_color: palette.green,
             },
@@ -299,4 +316,4 @@ const CONFIG = new Config(default_configuration, palette);
 
 const root = document.querySelector(":root");
 root.style.setProperty("--bg", palette.mantle);
-root.style.setProperty("--accent", palette.green);
+root.style.setProperty("--accent", palette.blue);
