@@ -2,7 +2,7 @@ class Config {
   // Default configuration values for the startpage - these can be overridden by user configuration or local storage
   defaults = {
     // Whether to override localStorage with config values
-    overrideStorage: false,
+    overrideStorage: true,
     temperature: {
       // Default city for weather display
       location: "London",
