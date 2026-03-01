@@ -45,13 +45,13 @@ const default_configuration = {
               icon_color: palette.green,
             },
             {
-              name: "per730xd-idrac;",
+              name: "per730xd-idrac",
               url: "https://10.10.0.241",
               icon: "binary-tree",
               icon_color: palette.peach,
             },
                         {
-              name: "per630-idrac;",
+              name: "per630-idrac",
               url: "https://10.10.0.25",
               icon: "binary-tree",
               icon_color: palette.peach,
