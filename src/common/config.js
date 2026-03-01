@@ -1,3 +1,48 @@
+// User configuration for the startpage - update the palette, location, and your preferred tabs, categories, and links
+
+// Define preferred palette for light and dark mode
+// Available themes: latte, frappe, mocha, macchiato
+const preferredLightTheme = latte;
+const preferredDarkTheme = mocha;
+
+let palette = initThemeSystem(preferredLightTheme, preferredDarkTheme);
+
+const default_configuration = {
+  overrideStorage: true,
+  temperature: {
+    location: "Owensound, Canada",
+    scale: "C",
+  },
+  clock: {
+    format: "k:i p",
+    icon_color: palette.maroon,
+  },
+  additionalClocks: [
+    {
+      label: "ON",
+      timezone: "Canada/Toronto",
+      format: "h:i",
+      icon_color: palette.peach,
+    },
+  ],
+  search: {
+    engines: {
+      p: ["https://www.perplexity.ai/search/?q=", "PerplexityAI"],
+      d: ["https://duckduckgo.com/?q=", "DuckDuckGo"],
+      g: ["https://google.com/search?q=", "Google"],
+    },
+    default: "d",
+  },
+  keybindings: {
+    "s": "search-bar",
+  },
+  disabled: [],
+  localIcons: true,
+  localFonts: true,
+  fastlink: "https://www.perplexity.ai",
+  openLastVisitedTab: true,
+
+
 class Config {
   // Default configuration values for the startpage - these can be overridden by user configuration or local storage
   defaults = {
@@ -5,7 +50,7 @@ class Config {
     overrideStorage: true,
     temperature: {
       // Default city for weather display
-      location: "London",
+      location: "Owensound, Canada",
       // Temperature scale: C for Celsius, F for Fahrenheit
       scale: "C",
     },
@@ -17,17 +62,17 @@ class Config {
     additionalClocks: [
       {
         // Label displayed next to the clock
-        label: "UA",
+        label: "ON",
         // IANA timezone name (handles DST automatically)
-        timezone: "Europe/Kyiv",
+        timezone: "Canada/Toronto",
         // 24-hour format
         format: "h:i",
       },
       {
         // Clock label
-        label: "Tokyo",
+        label: "Toronto",
         // IANA timezone name
-        timezone: "Asia/Tokyo",
+        timezone: "Canada/Toronto",
         // 24-hour format without leading zero
         format: "H:i",
         // Locale for localised formatting
