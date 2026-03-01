@@ -39,14 +39,20 @@ const default_configuration = {
           name: "bookmarks",
           links: [
             {
-              name: "raindrop",
-              url: "https://app.raindrop.io",
+              name: "grafana",
+              url: "https://10.10.0.18:3000",
               icon: "droplet-bolt",
               icon_color: palette.green,
             },
             {
-              name: "musicForProgramming();",
-              url: "https://musicforprogramming.net",
+              name: "per730xd-idrac;",
+              url: "https://10.10.0.241",
+              icon: "binary-tree",
+              icon_color: palette.peach,
+            },
+                        {
+              name: "per630-idrac;",
+              url: "https://10.10.0.25",
               icon: "binary-tree",
               icon_color: palette.peach,
             },
