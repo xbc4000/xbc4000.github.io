@@ -51,7 +51,7 @@ const default_configuration = {
           links: [
             {
               name: "grafana",
-              url: "https://10.10.0.18:3000",
+              url: "http://10.10.0.18:3000",
               icon: "droplet-bolt",
               icon_color: palette.green,
             },
@@ -61,7 +61,7 @@ const default_configuration = {
               icon: "binary-tree",
               icon_color: palette.peach,
             },
-                        {
+            {
               name: "per630-idrac",
               url: "https://10.10.0.254",
               icon: "binary-tree",
