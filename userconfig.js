@@ -52,7 +52,7 @@ const default_configuration = {
             {
               name: "grafana",
               url: "http://10.10.0.18:3000",
-              icon: "droplet-bolt",
+              icon: "binary-tree",
               icon_color: palette.green,
             },
             {
