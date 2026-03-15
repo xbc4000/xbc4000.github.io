@@ -50,10 +50,16 @@ const default_configuration = {
           name: "bookmarks",
           links: [
             {
+              name: "amp-panel",
+              url: "https://10.10.0.94:8080",
+              icon: "binary-tree",
+              icon_color: palette.green,
+            },
+            {
               name: "grafana",
               url: "http://10.10.0.18:3000",
               icon: "brand-gravatar",
-              icon_color: palette.green,
+              icon_color: palette.orange,
             },
             {
               name: "pihole",
