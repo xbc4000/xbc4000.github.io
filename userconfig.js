@@ -56,6 +56,12 @@ const default_configuration = {
               icon_color: palette.green,
             },
             {
+              name: "pihole",
+              url: "https://10.10.0.1:888",
+              icon: "binary-tree",
+              icon_color: palette.blue,
+            },
+            {
               name: "per730xd-idrac",
               url: "https://10.10.0.92",
               icon: "binary-tree",
