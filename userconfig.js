@@ -51,7 +51,7 @@ const default_configuration = {
           links: [
             {
               name: "amp-panel",
-              url: "https://10.10.0.94:8080",
+              url: "http://10.10.0.94:8080",
               icon: "binary-tree",
               icon_color: palette.green,
             },
@@ -63,7 +63,7 @@ const default_configuration = {
             },
             {
               name: "pihole",
-              url: "https://10.10.0.1:888",
+              url: "http://10.10.0.1:888",
               icon: "binary-tree",
               icon_color: palette.red,
             },
