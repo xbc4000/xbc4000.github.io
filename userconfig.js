@@ -69,13 +69,13 @@ const default_configuration = {
             },
             {
               name: "per730xd-idrac",
-              url: "https://10.10.0.92",
+              url: "https://10.10.0.30",
               icon: "binary-tree",
               icon_color: palette.purple,
             },
             {
               name: "per630-idrac",
-              url: "https://10.10.0.93",
+              url: "https://10.10.0.29",
               icon: "binary-tree",
               icon_color: palette.purple,
             },
