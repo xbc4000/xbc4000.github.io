@@ -51,7 +51,7 @@ const default_configuration = {
           links: [
             {
               name: "amp-panel",
-              url: "http://10.10.0.94:8080",
+              url: "http://10.20.20.3:8080",
               icon: "binary-tree",
               icon_color: palette.green,
             },
