@@ -57,7 +57,7 @@ const default_configuration = {
             },
             {
               name: "grafana",
-              url: "http://10.10.0.18:3000",
+              url: "http://10.40.40.2:3000",
               icon: "brand-gravatar",
               icon_color: palette.peach,
             },
