@@ -1,6 +1,13 @@
 /**
- * WeatherForecastClient provides weather data for the startpage using OpenWeatherMap API
- * Handles fetching and parsing weather information for a given location
+ * WeatherForecastClient provides weather data for the startpage.
+ *
+ * Uses Open-Meteo (https://open-meteo.com) instead of OpenWeatherMap.
+ * Open-Meteo is free, requires no API key, and suits static sites where
+ * any hardcoded key is publicly visible in the served JS bundle.
+ *
+ * Two requests per weather refresh:
+ *   1. Geocoding API to turn the configured location name into lat/lon
+ *   2. Forecast API to get the current temperature and weather code
  */
 class WeatherForecastClient {
   /**
@@ -8,11 +15,27 @@ class WeatherForecastClient {
    * @param {string} location - The location to fetch weather data for
    */
   constructor(location) {
-    // OpenWeatherMap API key for authentication
-    this.appId = "50a34e070dd5c09a99554b57ab7ea7e2";
-    // Construct API URL with location and metric units
-    this.url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURI(location)}&units=metric&appid=${this.appId
-      }`;
+    this.location = location;
+    this.geocodeUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`;
+  }
+
+  /**
+   * Map WMO weather code → condition string matching weather.component.js forecasts
+   * Condition strings must be one of: clear, clouds, mist, drizzle, rain, snow, thunderstorm
+   * @param {number} code - WMO weather interpretation code
+   * @returns {string} Normalised condition string
+   */
+  mapWeatherCode(code) {
+    if (code === 0) return "clear";
+    if (code >= 1 && code <= 3) return "clouds";
+    if (code === 45 || code === 48) return "mist";
+    if (code >= 51 && code <= 57) return "drizzle";
+    if (code >= 61 && code <= 67) return "rain";
+    if (code >= 71 && code <= 77) return "snow";
+    if (code >= 80 && code <= 82) return "rain";
+    if (code >= 85 && code <= 86) return "snow";
+    if (code >= 95 && code <= 99) return "thunderstorm";
+    return "clouds";
   }
 
   /**
@@ -20,22 +43,28 @@ class WeatherForecastClient {
    * @returns {Promise<{temperature: number, condition: string}>} Weather data with temperature and condition
    */
   async getWeather() {
-    return await fetch(this.url)
-      .then((res) => res.json())
-      // Convert to string and back to ensure proper JSON parsing
-      .then((json) => JSON.stringify(json))
-      .then((json) => JSON.parse(json))
-      .then((data) => {
-        // Round temperature to nearest whole number
-        const temperature = Math.round(data.main.temp);
-        // Extract and normalise weather condition
-        const condition = data.weather[0].main.toLowerCase();
+    try {
+      const geoRes = await fetch(this.geocodeUrl);
+      const geoJson = await geoRes.json();
 
-        return {
-          temperature,
-          condition,
-        };
-      })
-      .catch((err) => console.warn("Weather API returned an error:", err));
+      if (!geoJson.results || geoJson.results.length === 0) {
+        console.warn("Weather API: geocoding returned no results for", this.location);
+        return;
+      }
+
+      const { latitude, longitude } = geoJson.results[0];
+      const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&temperature_unit=celsius`;
+
+      const weatherRes = await fetch(forecastUrl);
+      const weatherJson = await weatherRes.json();
+      const current = weatherJson.current_weather;
+
+      return {
+        temperature: Math.round(current.temperature),
+        condition: this.mapWeatherCode(current.weathercode),
+      };
+    } catch (err) {
+      console.warn("Weather API returned an error:", err);
+    }
   }
 }

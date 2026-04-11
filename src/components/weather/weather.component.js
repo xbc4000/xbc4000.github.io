@@ -131,8 +131,8 @@ class Weather extends Component {
    */
   async template() {
     return `
-        <p class="+ weather-temperature">
-            <span class="weather-icon" class="+"><i class="material-icons weather-condition-icon sunny">wb_sunny</i></span>
+        <p class="weather-temperature">
+            <span class="weather-icon"><i class="material-icons weather-condition-icon sunny">wb_sunny</i></span>
             <span class="weather-temperature-location">${this.location}</span>
             <span class="weather-temperature-value">1</span>
             º<span class="weather-temperature-scale">${this.temperatureScale}</span>
