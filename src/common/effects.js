@@ -31,6 +31,31 @@
     var HCC_CYAN        = '#00B7FF';
     var HCC_CYAN_BRIGHT = '#00D4FF';
 
+    // Per-particle hue palette. Each entry is the rgb triplet used for the
+    // halo/ring/core/center layers, plus a "hot" highlight for the center.
+    // Halo and ring are dimmed by alpha; core uses the brighter triplet.
+    var HUE_CYAN = {
+        halo: '0, 183, 255',
+        ring: '0, 183, 255',
+        core: '0, 220, 255',
+        hot:  '200, 245, 255',
+        line: '0, 200, 255'
+    };
+    var HUE_MAGENTA = {
+        halo: '255, 102, 128',
+        ring: '255, 102, 128',
+        core: '255, 130, 170',
+        hot:  '255, 220, 235',
+        line: '255, 102, 128'
+    };
+    var HUE_AMBER = {
+        halo: '255, 179, 71',
+        ring: '255, 179, 71',
+        core: '255, 200, 110',
+        hot:  '255, 240, 210',
+        line: '255, 179, 71'
+    };
+
     // ── Particle field ──────────────────────────────────────────────────
     // Density target: ~1 particle per 22000 px², capped 40-180 to keep
     // both 13" laptops and ultrawides reasonable.
@@ -62,15 +87,27 @@
             ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
             var target = Math.max(40, Math.min(180, Math.floor((W * H) / 22000)));
-            // Add or trim to target
+            // Add or trim to target. Each particle gets a fixed color picked
+            // once: mostly cyan with rare magenta + amber accents so the
+            // overall field still reads as cyan but has occasional pops.
             while (particles.length < target) {
+                var roll = Math.random();
+                var hue;
+                if (roll < 0.82) {
+                    hue = HUE_CYAN;     // 82% — base
+                } else if (roll < 0.94) {
+                    hue = HUE_MAGENTA;  // 12% — sparks
+                } else {
+                    hue = HUE_AMBER;    //  6% — rare warm accent
+                }
                 particles.push({
                     x:     Math.random() * W,
                     y:     Math.random() * H,
                     vx:    (Math.random() - 0.5) * 0.3,
                     vy:    (Math.random() - 0.5) * 0.2,
                     r:     Math.random() * 2 + 1.2,
-                    pulse: Math.random() * Math.PI * 2
+                    pulse: Math.random() * Math.PI * 2,
+                    hue:   hue
                 });
             }
             if (particles.length > target) particles.length = target;
@@ -89,43 +126,51 @@
                 if (p.y < 0 || p.y > H) p.vy *= -1;
 
                 var glow = 0.7 + Math.sin(p.pulse) * 0.3;
+                var h = p.hue;
 
                 // Wide glow halo
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r * 5, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0, 183, 255, ' + (glow * 0.08) + ')';
+                ctx.fillStyle = 'rgba(' + h.halo + ', ' + (glow * 0.08) + ')';
                 ctx.fill();
 
                 // Outer glow ring
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r * 2.5, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0, 183, 255, ' + (glow * 0.25) + ')';
+                ctx.fillStyle = 'rgba(' + h.ring + ', ' + (glow * 0.25) + ')';
                 ctx.fill();
 
                 // Core dot — solid bright
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0, 220, 255, ' + glow + ')';
+                ctx.fillStyle = 'rgba(' + h.core + ', ' + glow + ')';
                 ctx.fill();
 
-                // Hot white center
+                // Hot center highlight
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r * 0.4, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(200, 245, 255, ' + glow + ')';
+                ctx.fillStyle = 'rgba(' + h.hot + ', ' + glow + ')';
                 ctx.fill();
 
-                // Connection lines to nearby particles
+                // Connection lines to nearby particles. Line color blends
+                // toward the warmer particle so cyan↔magenta links read as
+                // a soft transition, not a hard cyan stamp.
                 for (var j = i + 1; j < particles.length; j++) {
                     var p2 = particles[j];
                     var dx = p.x - p2.x;
                     var dy = p.y - p2.y;
                     var dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist < CONNECTION_DIST) {
-                        var alpha = 0.6 * (1 - dist / CONNECTION_DIST);
+                        var alpha = 0.55 * (1 - dist / CONNECTION_DIST);
+                        // Pick the line color from whichever endpoint isn't
+                        // pure cyan, so accents pop on their own connections
+                        var lineHue = (p.hue !== HUE_CYAN) ? p.hue.line
+                                    : (p2.hue !== HUE_CYAN) ? p2.hue.line
+                                    : HUE_CYAN.line;
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = 'rgba(0, 200, 255, ' + alpha + ')';
+                        ctx.strokeStyle = 'rgba(' + lineHue + ', ' + alpha + ')';
                         ctx.lineWidth = 1.2;
                         ctx.stroke();
                     }
@@ -149,24 +194,10 @@
     }
 
     // ── Hex data rain ───────────────────────────────────────────────────
-    // Mirrors pihole-theme.js sidebar rain but spread across the full
-    // viewport instead of one narrow strip. CSS keyframe handles the fall.
+    // Two narrow edge strips (left + right) — frames the viewport like
+    // the Pi-hole sidebar pattern. Center is left clear so foreground
+    // content is unobstructed.
     function buildDataRain() {
-        var container = document.createElement('div');
-        container.id = 'hcc-data-rain';
-        container.style.cssText = [
-            'position:fixed',
-            'top:0',
-            'left:0',
-            'width:100%',
-            'height:100%',
-            'pointer-events:none',
-            'z-index:' + Z,
-            'overflow:hidden',
-            'opacity:0.5'
-        ].join(';');
-        document.body.insertBefore(container, document.body.firstChild);
-
         // Inject keyframe once
         if (!document.getElementById('hcc-rain-keyframe')) {
             var s = document.createElement('style');
@@ -176,47 +207,75 @@
         }
 
         var HEX = '0123456789ABCDEF>|.:[]{}◆◇●○';
-        var COL_SPACING = 60;   // ~px between columns
+        var STRIP_WIDTH  = 110; // px each side
+        var COL_SPACING  = 14;  // px between columns inside a strip
 
-        function rebuild() {
-            container.innerHTML = '';
-            var W = window.innerWidth;
-            var cols = Math.max(8, Math.floor(W / COL_SPACING));
+        // Build one edge strip — `side` is "left" or "right"
+        function buildStrip(side) {
+            var strip = document.createElement('div');
+            strip.id = 'hcc-data-rain-' + side;
+            var sideCss = (side === 'left' ? 'left:0' : 'right:0');
+            strip.style.cssText = [
+                'position:fixed',
+                'top:0',
+                sideCss,
+                'width:' + STRIP_WIDTH + 'px',
+                'height:100%',
+                'pointer-events:none',
+                'z-index:' + Z,
+                'overflow:hidden',
+                'opacity:0.55'
+            ].join(';');
+            document.body.insertBefore(strip, document.body.firstChild);
+            return strip;
+        }
+
+        var leftStrip  = buildStrip('left');
+        var rightStrip = buildStrip('right');
+
+        function fillStrip(strip) {
+            strip.innerHTML = '';
+            var cols = Math.max(4, Math.floor(STRIP_WIDTH / COL_SPACING));
 
             for (var i = 0; i < cols; i++) {
                 var col = document.createElement('div');
-                // Slight horizontal jitter so columns don't look like a strict grid
-                var xPos = (i + 0.5) * (W / cols) + (Math.random() - 0.5) * 12;
+                var xPos = 4 + i * COL_SPACING;
 
                 col.style.cssText = [
                     'position:absolute',
                     'top:-100%',
                     'left:' + xPos + 'px',
                     'font-family:"JetBrains Mono","Fira Code",monospace',
-                    'font-size:12px',
+                    'font-size:11px',
                     'color:' + HCC_CYAN,
-                    'line-height:14px',
+                    'line-height:13px',
                     'white-space:pre',
                     'writing-mode:vertical-lr',
                     'text-orientation:mixed',
                     'letter-spacing:3px',
-                    'text-shadow:0 0 6px rgba(0,183,255,0.55)'
+                    'text-shadow:0 0 5px rgba(0,183,255,0.6)'
                 ].join(';');
 
-                // Random hex string per column (60-100 chars)
-                var len = 60 + Math.floor(Math.random() * 40);
+                // Random hex string per column (80-130 chars so it spans
+                // taller viewports without wrap)
+                var len = 80 + Math.floor(Math.random() * 50);
                 var str = '';
                 for (var j = 0; j < len; j++) {
                     str += HEX[Math.floor(Math.random() * HEX.length)];
                 }
                 col.textContent = str;
 
-                var duration = 18 + Math.random() * 22;
-                var delay    = -Math.random() * duration; // negative delay = mid-flight start
+                var duration = 20 + Math.random() * 22;
+                var delay    = -Math.random() * duration; // negative = mid-flight start
                 col.style.animation = 'hccRainFall ' + duration + 's linear ' + delay + 's infinite';
 
-                container.appendChild(col);
+                strip.appendChild(col);
             }
+        }
+
+        function rebuild() {
+            fillStrip(leftStrip);
+            fillStrip(rightStrip);
         }
 
         rebuild();
