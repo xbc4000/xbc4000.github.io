@@ -7,6 +7,18 @@ const preferredDarkTheme = mocha;
 
 let palette = initThemeSystem(preferredLightTheme, preferredDarkTheme);
 
+// HCC cyberpunk cyan palette — overrides Catppuccin for the startpage
+const hcc = {
+  cyan: "#00b7ff",
+  cyanBright: "#00d4ff",
+  cyanDark: "#0088bb",
+  cyanGlow: "#0ffff4",
+  magenta: "#ff6680",
+  amber: "#ffb347",
+  green: "#00ff88",
+  purple: "#b666ff",
+};
+
 const default_configuration = {
   overrideStorage: true,
   temperature: {
@@ -15,14 +27,14 @@ const default_configuration = {
   },
   clock: {
     format: "k:i p",
-    icon_color: palette.maroon,
+    icon_color: hcc.cyanBright,
   },
   additionalClocks: [
     {
       label: "ON",
       timezone: "Canada/Toronto",
       format: "h:i",
-      icon_color: palette.peach,
+      icon_color: hcc.cyanBright,
     },
   ],
   search: {
@@ -43,105 +55,169 @@ const default_configuration = {
   openLastVisitedTab: true,
   tabs: [
     {
-      name: "XBC",
-      background_url: "src/img/banners/banner_09.gif",
+      name: "HOMELAB",
+      background_url: "src/img/banners/banner_07.gif",
       categories: [
         {
-          name: "bookmarks",
+          name: "infrastructure",
           links: [
             {
-              name: "amp-panel",
-              url: "http://10.20.20.3:8080",
-              icon: "binary-tree",
-              icon_color: palette.green,
+              name: "router",
+              url: "http://router.home",
+              icon: "router",
+              icon_color: hcc.cyan,
             },
+            {
+              name: "pi-hole",
+              url: "http://pi.hole/admin",
+              icon: "shield-check",
+              icon_color: hcc.cyanBright,
+            },
+            {
+              name: "portainer",
+              url: "https://portainer.home",
+              icon: "box-multiple",
+              icon_color: hcc.cyan,
+            },
+            {
+              name: "caddy",
+              url: "http://10.40.40.2:9442",
+              icon: "lock",
+              icon_color: hcc.cyanDark,
+            },
+          ],
+        },
+        {
+          name: "servers",
+          links: [
+            {
+              name: "per730xd",
+              url: "https://idrac1.home",
+              icon: "server-2",
+              icon_color: hcc.cyan,
+            },
+            {
+              name: "per630",
+              url: "https://idrac2.home",
+              icon: "server-2",
+              icon_color: hcc.cyan,
+            },
+            {
+              name: "per730xd idrac",
+              url: "https://idrac1.home",
+              icon: "cpu",
+              icon_color: hcc.amber,
+            },
+            {
+              name: "per630 idrac",
+              url: "https://idrac2.home",
+              icon: "cpu",
+              icon_color: hcc.amber,
+            },
+            {
+              name: "amp panel",
+              url: "http://amp.home:8080",
+              icon: "device-gamepad-2",
+              icon_color: hcc.green,
+            },
+          ],
+        },
+        {
+          name: "hcc",
+          links: [
+            {
+              name: "dashboard",
+              url: "https://hcc.home",
+              icon: "layout-dashboard",
+              icon_color: hcc.cyanBright,
+            },
+            {
+              name: "spotify bridge",
+              url: "https://bridge.home",
+              icon: "brand-spotify",
+              icon_color: hcc.green,
+            },
+          ],
+        },
+        {
+          name: "monitoring",
+          links: [
             {
               name: "grafana",
-              url: "http://10.40.40.2:3000",
-              icon: "brand-gravatar",
-              icon_color: palette.peach,
+              url: "https://grafana.home",
+              icon: "chart-area",
+              icon_color: hcc.amber,
             },
             {
-              name: "pihole",
-              url: "http://10.10.0.1:888",
-              icon: "binary-tree",
-              icon_color: palette.red,
+              name: "prometheus",
+              url: "http://10.40.40.2:9090",
+              icon: "activity",
+              icon_color: hcc.magenta,
             },
             {
-              name: "per730xd-idrac",
-              url: "https://10.30.30.10",
-              icon: "binary-tree",
-              icon_color: palette.purple,
+              name: "loki",
+              url: "http://10.40.40.2:3100",
+              icon: "file-text",
+              icon_color: hcc.cyan,
             },
             {
-              name: "per630-idrac",
-              url: "https://10.30.30.11",
-              icon: "binary-tree",
-              icon_color: palette.purple,
+              name: "influxdb",
+              url: "http://10.40.40.2:8086",
+              icon: "database",
+              icon_color: hcc.purple,
+            },
+            {
+              name: "node exporter",
+              url: "http://10.40.40.2:9100/metrics",
+              icon: "chart-line",
+              icon_color: hcc.cyanDark,
+            },
+            {
+              name: "snmp exporter",
+              url: "http://10.40.40.2:9116/metrics",
+              icon: "wifi",
+              icon_color: hcc.cyanDark,
+            },
+            {
+              name: "mktxp",
+              url: "http://10.40.40.2:49090/metrics",
+              icon: "router",
+              icon_color: hcc.cyanDark,
+            },
+            {
+              name: "idrac exporter",
+              url: "http://10.40.40.2:9348/metrics",
+              icon: "cpu",
+              icon_color: hcc.cyanDark,
+            },
+            {
+              name: "pihole exporter",
+              url: "http://10.40.40.2:9617/metrics",
+              icon: "shield-check",
+              icon_color: hcc.cyanDark,
             },
           ],
         },
         {
-          name: "workspace",
+          name: "network",
           links: [
             {
-              name: "gmail",
-              url: "https://mail.google.com",
-              icon: "brand-gmail",
-              icon_color: palette.green,
+              name: "ap1 map2nd",
+              url: "http://ap1.home",
+              icon: "access-point",
+              icon_color: hcc.cyan,
             },
             {
-              name: "calendar",
-              url: "https://calendar.google.com",
-              icon: "calendar-filled",
-              icon_color: palette.peach,
+              name: "ap2 wap2nd",
+              url: "http://ap2.home",
+              icon: "access-point",
+              icon_color: hcc.cyan,
             },
             {
-              name: "sheets",
-              url: "https://docs.google.com/spreadsheets",
-              icon: "table",
-              icon_color: palette.red,
-            },
-            {
-              name: "drive",
-              url: "https://drive.google.com/drive/home",
-              icon: "brand-google-drive",
-              icon_color: palette.blue,
-            },
-          ],
-        },
-        {
-          name: "media",
-          links: [
-            {
-              name: "уп",
-              url: "https://www.pravda.com.ua",
-              icon: "news",
-              icon_color: palette.green,
-            },
-            {
-              name: "mil.in.ua",
-              url: "https://mil.in.ua",
-              icon: "badge-filled",
-              icon_color: palette.peach,
-            },
-            {
-              name: "куток",
-              url: "https://kutok.io",
-              icon: "border-radius",
-              icon_color: palette.red,
-            },
-            {
-              name: "ґрунт",
-              url: "https://grnt.media",
-              icon: "eye-bolt",
-              icon_color: palette.blue,
-            },
-            {
-              name: "village",
-              url: "https://www.village.com.ua",
-              icon: "home-2",
-              icon_color: palette.mauve,
+              name: "winbox",
+              url: "https://mt.lv/winbox",
+              icon: "terminal-2",
+              icon_color: hcc.magenta,
             },
           ],
         },
@@ -158,19 +234,19 @@ const default_configuration = {
               name: "github",
               url: "https://github.com",
               icon: "brand-github",
-              icon_color: palette.green,
+              icon_color: hcc.cyanBright,
             },
             {
               name: "neptune",
               url: "https://ui.neptune.ai",
               icon: "circle-triangle",
-              icon_color: palette.peach,
+              icon_color: hcc.amber,
             },
             {
               name: "stackoverflow",
               url: "https://stackoverflow.com",
               icon: "brand-stackoverflow",
-              icon_color: palette.red,
+              icon_color: hcc.magenta,
             },
           ],
         },
@@ -181,25 +257,25 @@ const default_configuration = {
               name: "kaggle",
               url: "https://www.kaggle.com",
               icon: "brain",
-              icon_color: palette.green,
+              icon_color: hcc.cyan,
             },
             {
               name: "leetcode",
               url: "https://leetcode.com",
               icon: "code-plus",
-              icon_color: palette.peach,
+              icon_color: hcc.amber,
             },
             {
               name: "exercism",
               url: "https://exercism.org",
               icon: "code-minus",
-              icon_color: palette.red,
+              icon_color: hcc.magenta,
             },
             {
               name: "aoc",
               url: "https://adventofcode.com",
               icon: "brand-linktree",
-              icon_color: palette.blue,
+              icon_color: hcc.cyanBright,
             },
           ],
         },
@@ -210,25 +286,25 @@ const default_configuration = {
               name: "dou",
               url: "https://dou.ua",
               icon: "brand-prisma",
-              icon_color: palette.green,
+              icon_color: hcc.cyan,
             },
             {
               name: "hackernews",
               url: "https://news.ycombinator.com",
               icon: "brand-redhat",
-              icon_color: palette.peach,
+              icon_color: hcc.amber,
             },
             {
               name: "uber engineering",
               url: "https://www.uber.com/en-GB/blog/london/engineering",
               icon: "brand-uber",
-              icon_color: palette.red,
+              icon_color: hcc.magenta,
             },
             {
               name: "netflix tech blog",
               url: "https://netflixtechblog.com",
               icon: "brand-netflix",
-              icon_color: palette.blue,
+              icon_color: hcc.cyanBright,
             },
           ],
         },
@@ -245,19 +321,19 @@ const default_configuration = {
               name: "telegram",
               url: "https://web.telegram.org",
               icon: "brand-telegram",
-              icon_color: palette.green,
+              icon_color: hcc.cyan,
             },
             {
               name: "facebook",
               url: "https://www.facebook.com",
               icon: "brand-facebook",
-              icon_color: palette.peach,
+              icon_color: hcc.cyanBright,
             },
             {
               name: "reddit",
               url: "https://www.reddit.com/r/unixporn",
               icon: "brand-reddit",
-              icon_color: palette.red,
+              icon_color: hcc.magenta,
             },
           ],
         },
@@ -268,25 +344,25 @@ const default_configuration = {
               name: "IGN",
               url: "https://www.ign.com/account/playlist/library",
               icon: "device-gamepad",
-              icon_color: palette.green,
+              icon_color: hcc.cyan,
             },
             {
               name: "steam",
               url: "https://store.steampowered.com",
               icon: "brand-steam",
-              icon_color: palette.peach,
+              icon_color: hcc.cyanBright,
             },
             {
               name: "epicgames",
               url: "https://store.epicgames.com",
               icon: "brand-fortnite",
-              icon_color: palette.red,
+              icon_color: hcc.magenta,
             },
             {
               name: "nintendo",
               url: "https://store.nintendo.co.uk",
               icon: "device-nintendo",
-              icon_color: palette.blue,
+              icon_color: hcc.amber,
             },
           ],
         },
@@ -297,25 +373,25 @@ const default_configuration = {
               name: "anilist",
               url: "https://anilist.co/home",
               icon: "brand-funimation",
-              icon_color: palette.green,
+              icon_color: hcc.cyan,
             },
             {
               name: "youtube",
               url: "https://www.youtube.com",
               icon: "brand-youtube",
-              icon_color: palette.peach,
+              icon_color: hcc.magenta,
             },
             {
               name: "patreon",
               url: "https://www.patreon.com",
               icon: "brand-patreon",
-              icon_color: palette.red,
+              icon_color: hcc.amber,
             },
             {
               name: "kyivstar",
               url: "https://tv.kyivstar.ua",
               icon: "star-filled",
-              icon_color: palette.blue,
+              icon_color: hcc.cyanBright,
             },
           ],
         },
@@ -326,6 +402,9 @@ const default_configuration = {
 
 const CONFIG = new Config(default_configuration, palette);
 
+// Expose HCC palette so tabs.component.js can pull the cyberpunk colors
+CONFIG.hcc = hcc;
+
 const root = document.querySelector(":root");
-root.style.setProperty("--bg", palette.mantle);
-root.style.setProperty("--accent", palette.green);
+root.style.setProperty("--bg", "#020408");
+root.style.setProperty("--accent", hcc.cyan);
