@@ -210,6 +210,21 @@
         var STRIP_WIDTH  = 110; // px each side
         var COL_SPACING  = 14;  // px between columns inside a strip
 
+        // Match particle color distribution. Each entry: text fill rgb +
+        // text-shadow glow rgb (slightly brighter / lighter for the bloom).
+        var RAIN_HUES = [
+            { fill: '0, 183, 255',   glow: '0, 183, 255'   }, // cyan
+            { fill: '0, 183, 255',   glow: '0, 183, 255'   }, // cyan (8x)
+            { fill: '0, 183, 255',   glow: '0, 183, 255'   },
+            { fill: '0, 183, 255',   glow: '0, 183, 255'   },
+            { fill: '0, 183, 255',   glow: '0, 183, 255'   },
+            { fill: '0, 183, 255',   glow: '0, 183, 255'   },
+            { fill: '0, 183, 255',   glow: '0, 183, 255'   },
+            { fill: '0, 183, 255',   glow: '0, 183, 255'   },
+            { fill: '255, 102, 128', glow: '255, 102, 128' }, // magenta (1x)
+            { fill: '255, 179, 71',  glow: '255, 179, 71'  }  // amber (1x)
+        ];
+
         // Build one edge strip — `side` is "left" or "right"
         function buildStrip(side) {
             var strip = document.createElement('div');
@@ -241,19 +256,22 @@
                 var col = document.createElement('div');
                 var xPos = 4 + i * COL_SPACING;
 
+                // Pick a color from the weighted palette
+                var hue = RAIN_HUES[Math.floor(Math.random() * RAIN_HUES.length)];
+
                 col.style.cssText = [
                     'position:absolute',
                     'top:-100%',
                     'left:' + xPos + 'px',
                     'font-family:"JetBrains Mono","Fira Code",monospace',
                     'font-size:11px',
-                    'color:' + HCC_CYAN,
+                    'color:rgb(' + hue.fill + ')',
                     'line-height:13px',
                     'white-space:pre',
                     'writing-mode:vertical-lr',
                     'text-orientation:mixed',
                     'letter-spacing:3px',
-                    'text-shadow:0 0 5px rgba(0,183,255,0.6)'
+                    'text-shadow:0 0 5px rgba(' + hue.glow + ',0.6)'
                 ].join(';');
 
                 // Random hex string per column (80-130 chars so it spans
@@ -286,9 +304,155 @@
         });
     }
 
+    // ── HUD corner brackets ─────────────────────────────────────────────
+    // Four L-shaped marks pinned to the viewport corners. Pure CSS borders
+    // on absolutely-positioned divs — no canvas, no JS animation.
+    function buildHudBrackets() {
+        if (document.getElementById('hcc-hud-brackets')) return;
+
+        var wrap = document.createElement('div');
+        wrap.id = 'hcc-hud-brackets';
+        wrap.style.cssText = [
+            'position:fixed',
+            'top:0',
+            'left:0',
+            'width:100%',
+            'height:100%',
+            'pointer-events:none',
+            'z-index:' + (Z + 1)
+        ].join(';');
+
+        // bracket size + offset from edge
+        var SIZE   = 28;
+        var INSET  = 14;
+        var BORDER = '2px solid ' + HCC_CYAN_BRIGHT;
+        var GLOW   = '0 0 8px rgba(0,212,255,0.6), 0 0 16px rgba(0,212,255,0.3)';
+
+        var corners = [
+            // top-left
+            { top: INSET, left: INSET, borderTop: BORDER, borderLeft: BORDER },
+            // top-right
+            { top: INSET, right: INSET, borderTop: BORDER, borderRight: BORDER },
+            // bottom-left
+            { bottom: INSET, left: INSET, borderBottom: BORDER, borderLeft: BORDER },
+            // bottom-right
+            { bottom: INSET, right: INSET, borderBottom: BORDER, borderRight: BORDER }
+        ];
+
+        corners.forEach(function (c) {
+            var b = document.createElement('div');
+            var css = [
+                'position:absolute',
+                'width:' + SIZE + 'px',
+                'height:' + SIZE + 'px',
+                'box-shadow:' + GLOW
+            ];
+            for (var k in c) {
+                if (c.hasOwnProperty(k)) {
+                    var prop = k.replace(/[A-Z]/g, function (m) { return '-' + m.toLowerCase(); });
+                    css.push(prop + ':' + (typeof c[k] === 'number' ? c[k] + 'px' : c[k]));
+                }
+            }
+            b.style.cssText = css.join(';');
+            wrap.appendChild(b);
+        });
+
+        document.body.insertBefore(wrap, document.body.firstChild);
+    }
+
+    // ── HUD top-center system readout ───────────────────────────────────
+    // Small monospace strip across the top: blinking pulse dot + tagline
+    // + live timestamp. Updates every second.
+    function buildHudReadout() {
+        if (document.getElementById('hcc-hud-readout')) return;
+
+        // Inject pulse keyframe once
+        if (!document.getElementById('hcc-hud-pulse-style')) {
+            var s = document.createElement('style');
+            s.id = 'hcc-hud-pulse-style';
+            s.textContent = [
+                '@keyframes hccPulse{',
+                '0%,100%{opacity:1;box-shadow:0 0 6px rgba(0,212,255,0.8),0 0 12px rgba(0,212,255,0.5)}',
+                '50%{opacity:0.4;box-shadow:0 0 3px rgba(0,212,255,0.4)}',
+                '}'
+            ].join('');
+            document.head.appendChild(s);
+        }
+
+        var bar = document.createElement('div');
+        bar.id = 'hcc-hud-readout';
+        bar.style.cssText = [
+            'position:fixed',
+            'top:18px',
+            'left:50%',
+            'transform:translateX(-50%)',
+            'pointer-events:none',
+            'z-index:' + (Z + 1),
+            'display:flex',
+            'align-items:center',
+            'gap:10px',
+            'padding:6px 18px',
+            'font-family:"JetBrains Mono","Fira Code",monospace',
+            'font-size:11px',
+            'letter-spacing:2px',
+            'color:' + HCC_CYAN_BRIGHT,
+            'background:rgba(2,4,8,0.55)',
+            'border:1px solid rgba(0,183,255,0.35)',
+            'box-shadow:0 0 14px rgba(0,183,255,0.18), inset 0 0 18px rgba(0,183,255,0.05)',
+            'text-shadow:0 0 4px rgba(0,212,255,0.6)',
+            'backdrop-filter:blur(2px)'
+        ].join(';');
+
+        var pulse = document.createElement('span');
+        pulse.style.cssText = [
+            'display:inline-block',
+            'width:8px',
+            'height:8px',
+            'border-radius:50%',
+            'background:' + HCC_CYAN_BRIGHT,
+            'animation:hccPulse 1.6s ease-in-out infinite'
+        ].join(';');
+
+        var label = document.createElement('span');
+        label.textContent = 'HCC :: ONLINE';
+
+        var sep1 = document.createElement('span');
+        sep1.textContent = '│';
+        sep1.style.opacity = '0.4';
+
+        var clock = document.createElement('span');
+        clock.id = 'hcc-hud-clock';
+
+        var sep2 = document.createElement('span');
+        sep2.textContent = '│';
+        sep2.style.opacity = '0.4';
+
+        var status = document.createElement('span');
+        status.textContent = 'ALL SYSTEMS NOMINAL';
+
+        bar.appendChild(pulse);
+        bar.appendChild(label);
+        bar.appendChild(sep1);
+        bar.appendChild(clock);
+        bar.appendChild(sep2);
+        bar.appendChild(status);
+
+        document.body.insertBefore(bar, document.body.firstChild);
+
+        function pad(n) { return n < 10 ? '0' + n : '' + n; }
+        function tick() {
+            var d = new Date();
+            clock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + ' UTC' + (d.getTimezoneOffset() <= 0 ? '+' : '-') + Math.abs(d.getTimezoneOffset() / 60);
+        }
+        tick();
+        setInterval(tick, 1000);
+    }
+
     function init() {
         buildParticles();
         buildDataRain();
+        buildHudBrackets();
+        buildHudReadout();
     }
 
     if (document.readyState === 'loading') {
