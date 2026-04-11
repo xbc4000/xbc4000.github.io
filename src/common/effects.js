@@ -361,8 +361,10 @@
     }
 
     // ── HUD top-center system readout ───────────────────────────────────
-    // Small monospace strip across the top: blinking pulse dot + tagline
-    // + live timestamp. Updates every second.
+    // Live, real browser + LAN signals. No fake "system nominal" theatre.
+    // Segments: pulse dot · live clock · LAN reachability (probes
+    // bridge.home/health every 10s) · navigator.connection effective type ·
+    // viewport WxH · page uptime since load.
     function buildHudReadout() {
         if (document.getElementById('hcc-hud-readout')) return;
 
@@ -403,6 +405,18 @@
             'backdrop-filter:blur(2px)'
         ].join(';');
 
+        function makeSep() {
+            var sep = document.createElement('span');
+            sep.textContent = '│';
+            sep.style.opacity = '0.4';
+            return sep;
+        }
+        function makeSeg(id) {
+            var s = document.createElement('span');
+            if (id) s.id = id;
+            return s;
+        }
+
         var pulse = document.createElement('span');
         pulse.style.cssText = [
             'display:inline-block',
@@ -413,39 +427,97 @@
             'animation:hccPulse 1.6s ease-in-out infinite'
         ].join(';');
 
-        var label = document.createElement('span');
-        label.textContent = 'HCC :: ONLINE';
-
-        var sep1 = document.createElement('span');
-        sep1.textContent = '│';
-        sep1.style.opacity = '0.4';
-
-        var clock = document.createElement('span');
-        clock.id = 'hcc-hud-clock';
-
-        var sep2 = document.createElement('span');
-        sep2.textContent = '│';
-        sep2.style.opacity = '0.4';
-
-        var status = document.createElement('span');
-        status.textContent = 'ALL SYSTEMS NOMINAL';
+        var clockSeg = makeSeg('hcc-hud-clock');
+        var lanSeg   = makeSeg('hcc-hud-lan');
+        var netSeg   = makeSeg('hcc-hud-net');
+        var viewSeg  = makeSeg('hcc-hud-view');
+        var upSeg    = makeSeg('hcc-hud-up');
 
         bar.appendChild(pulse);
-        bar.appendChild(label);
-        bar.appendChild(sep1);
-        bar.appendChild(clock);
-        bar.appendChild(sep2);
-        bar.appendChild(status);
+        bar.appendChild(clockSeg);
+        bar.appendChild(makeSep());
+        bar.appendChild(lanSeg);
+        bar.appendChild(makeSep());
+        bar.appendChild(netSeg);
+        bar.appendChild(makeSep());
+        bar.appendChild(viewSeg);
+        bar.appendChild(makeSep());
+        bar.appendChild(upSeg);
 
         document.body.insertBefore(bar, document.body.firstChild);
 
+        // ── Live data updaters ───────────────────────────────────────
         function pad(n) { return n < 10 ? '0' + n : '' + n; }
-        function tick() {
-            var d = new Date();
-            clock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + ' UTC' + (d.getTimezoneOffset() <= 0 ? '+' : '-') + Math.abs(d.getTimezoneOffset() / 60);
+        var loadedAt = Date.now();
+
+        function fmtUptime(ms) {
+            var s = Math.floor(ms / 1000);
+            var h = Math.floor(s / 3600);
+            var m = Math.floor((s % 3600) / 60);
+            var ss = s % 60;
+            return (h > 0 ? pad(h) + ':' : '') + pad(m) + ':' + pad(ss);
         }
-        tick();
-        setInterval(tick, 1000);
+
+        function tickFast() {
+            // Clock
+            var d = new Date();
+            var tzMin = -d.getTimezoneOffset();
+            var tzSign = tzMin >= 0 ? '+' : '-';
+            var tzH = pad(Math.floor(Math.abs(tzMin) / 60));
+            clockSeg.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + ' UTC' + tzSign + tzH;
+
+            // Uptime (since page load, real)
+            upSeg.textContent = 'UP ' + fmtUptime(Date.now() - loadedAt);
+
+            // Viewport — recompute every tick (cheap, also catches resize)
+            viewSeg.textContent = 'VIEW ' + window.innerWidth + '×' + window.innerHeight + (window.devicePixelRatio > 1 ? '@' + window.devicePixelRatio + 'x' : '');
+
+            // Network type — navigator.connection if exposed
+            var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (conn && conn.effectiveType) {
+                var down = conn.downlink ? ' ' + conn.downlink + 'Mb' : '';
+                netSeg.textContent = 'NET ' + conn.effectiveType.toUpperCase() + down;
+            } else if (navigator.onLine === false) {
+                netSeg.textContent = 'NET OFFLINE';
+            } else {
+                netSeg.textContent = 'NET ?';
+            }
+        }
+        tickFast();
+        setInterval(tickFast, 1000);
+
+        // ── LAN reachability probe ───────────────────────────────────
+        // fetch + mode:'no-cors' resolves with an opaque response when
+        // the host actually answered (TCP+TLS handshake completed) and
+        // rejects when the request couldn't reach anything. We don't
+        // read the body — only the resolve/reject distinction matters.
+        function setLan(state, color) {
+            lanSeg.textContent = 'LAN ' + state;
+            lanSeg.style.color = color;
+            lanSeg.style.textShadow = '0 0 4px ' + color;
+        }
+        setLan('PROBING', 'rgba(255,179,71,0.95)');
+
+        function probeLan() {
+            // AbortController gives us a real timeout — fetch's default
+            // timeout is "the OS's whim" which is too long for a HUD.
+            var ac = new AbortController();
+            var t = setTimeout(function () { ac.abort(); }, 2500);
+
+            fetch('https://bridge.home/health?_=' + Date.now(), {
+                mode: 'no-cors',
+                cache: 'no-store',
+                signal: ac.signal
+            }).then(function () {
+                clearTimeout(t);
+                setLan('ONLINE', 'rgba(0,220,255,0.95)');
+            }).catch(function () {
+                clearTimeout(t);
+                setLan('OFFLINE', 'rgba(255,102,128,0.95)');
+            });
+        }
+        probeLan();
+        setInterval(probeLan, 10000);
     }
 
     function init() {
