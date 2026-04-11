@@ -132,6 +132,11 @@ class Tabs extends Component {
   style() {
     const h = (CONFIG.hcc || { cyan: "#00b7ff", cyanBright: "#00d4ff", cyanDark: "#0088bb", magenta: "#ff6680", amber: "#ffb347", green: "#00ff88", purple: "#b666ff" });
     return `
+      /* Load JetBrains Mono so the cyberpunk look is consistent on
+         machines that don't have it installed locally. Must be the
+         first rule in the stylesheet for @import to apply. */
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
       /* ── HCC backdrop ──────────────────────────────────────────── */
       html, body {
           background: #020408 !important;
