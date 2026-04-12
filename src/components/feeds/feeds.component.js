@@ -108,7 +108,7 @@
             'bottom:24px',
             'left:24px',
             'right:24px',
-            'height:280px',
+            'height:440px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',

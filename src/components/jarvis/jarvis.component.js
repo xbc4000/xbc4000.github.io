@@ -39,9 +39,9 @@
         card.id = 'hcc-jarvis';
         card.style.cssText = [
             'position:fixed',
-            'left:24px',
-            'bottom:184px',
-            'width:280px',
+            'right:24px',
+            'top:484px',
+            'width:300px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',

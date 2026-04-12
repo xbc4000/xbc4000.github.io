@@ -50,7 +50,11 @@
     }
 
     function init() {
-        if (!isLanOrigin()) return;
+        // Always mount the card — even off-LAN it's useful to show
+        // "BRIDGE UNREACHABLE" so the user knows the widget exists.
+        // The fetch loop will hit BRIDGE_URL (same-origin proxy on
+        // .home, direct https://bridge.home on github.io) and
+        // gracefully degrade if neither path works.
 
         // ── Card container ────────────────────────────────────────
         var card = document.createElement('div');

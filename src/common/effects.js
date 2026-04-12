@@ -519,15 +519,15 @@
             // Viewport — recompute every tick (cheap, also catches resize)
             viewSeg.textContent = window.innerWidth + '×' + window.innerHeight + (window.devicePixelRatio > 1 ? '@' + window.devicePixelRatio + 'x' : '');
 
-            // Network type — navigator.connection if exposed
+            // Network type — navigator.connection if exposed (Chrome only),
+            // otherwise fall back to navigator.onLine which IS exposed
+            // everywhere and IS a real signal.
             var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
             if (conn && conn.effectiveType) {
                 var down = conn.downlink ? ' ' + conn.downlink + 'Mb' : '';
                 netSeg.textContent = conn.effectiveType.toUpperCase() + down;
-            } else if (navigator.onLine === false) {
-                netSeg.textContent = 'OFFLINE';
             } else {
-                netSeg.textContent = '—';
+                netSeg.textContent = navigator.onLine ? 'ONLINE' : 'OFFLINE';
             }
         }
         tickFast();

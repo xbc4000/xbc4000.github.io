@@ -233,11 +233,11 @@ class Tabs extends Component {
       }
 
       #panels {
-          width: 92%;
-          max-width: 1680px;
-          height: 72vh;
-          min-height: 620px;
-          max-height: 880px;
+          width: 88%;
+          max-width: 1500px;
+          height: 60vh;
+          min-height: 540px;
+          max-height: 760px;
           right: 0;
           left: 0;
           top: 0;
