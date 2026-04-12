@@ -33,9 +33,11 @@ class Links extends Component {
 
     return `
       ${categories
-        .map(({ name, links }) => {
+        .map(({ name, links }, idx) => {
+          // Each <li> gets a slug ID so the nav rail can scrollIntoView() to it
+          const slug = name.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
           return `
-          <li>
+          <li id="cat-${slug}">
             <h1>${name}</h1>
               <div class="links-wrapper">
               ${links
@@ -53,6 +55,34 @@ class Links extends Component {
           </li>`;
         })
         .join("")}
+    `;
+  }
+
+  /**
+   * Generates the left-side category nav rail — clickable icons that
+   * smooth-scroll to the matching category in the .links area. Uses the
+   * first link's icon as the category glyph (so it always has something
+   * sensible without needing extra config).
+   */
+  static getCategoryNav(tabName, tabs) {
+    const { categories } = tabs.find((f) => f.name === tabName);
+    return `
+      <nav class="category-nav">
+        ${categories
+          .map(({ name, links }) => {
+            const slug = name.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+            const firstLink = (links && links[0]) || {};
+            const iconName = firstLink.icon || 'square';
+            const iconColor = firstLink.icon_color || CONFIG.palette.text;
+            const label = name.toUpperCase();
+            return `
+              <button class="cat-nav-btn" data-target="cat-${slug}" title="${label}">
+                <i class="ti ti-${iconName} cat-nav-icon" style="color:${iconColor}"></i>
+                <span class="cat-nav-label">${label}</span>
+              </button>`;
+          })
+          .join("")}
+      </nav>
     `;
   }
 }
@@ -87,7 +117,7 @@ class Category extends Component {
       ${tabs
         .map(({ name, background_url }, index) => {
           return `<ul class="${name}" ${Category.getBackgroundStyle(background_url)} ${index == 0 ? "active" : ""}>
-            <div class="banner"></div>
+            <div class="banner">${Links.getCategoryNav(name, tabs)}</div>
             <div class="links">${Links.getAll(name, tabs)}</div>
           </ul>`;
         })
@@ -260,6 +290,74 @@ class Tabs extends Component {
             linear-gradient(135deg, rgba(0,183,255,0.03) 0%, transparent 50%, rgba(0,183,255,0.05) 100%),
             #020408;
           transition: all .6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* ── Category nav rail ─────────────────────────────────────── */
+      /* Lives inside .banner (the left 30% of the panel). Sticky column
+         of clickable category icons that smooth-scroll to each <li> in
+         the right pane. */
+      .banner {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 30%;
+          height: 100%;
+          z-index: 2;
+      }
+      .category-nav {
+          position: absolute;
+          top: 50%;
+          right: 18px;
+          transform: translateY(-50%);
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          padding: 14px 8px;
+          background: linear-gradient(180deg, rgba(2,8,16,0.85) 0%, rgba(2,4,8,0.7) 100%);
+          border: 1px solid rgba(0,183,255,0.45);
+          box-shadow:
+            0 0 18px rgba(0,183,255,0.25),
+            inset 0 0 18px rgba(0,183,255,0.05);
+          clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+          backdrop-filter: blur(2px);
+      }
+      .cat-nav-btn {
+          all: unset;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 7px 12px;
+          background: rgba(0,183,255,0.05);
+          border: 1px solid rgba(0,183,255,0.25);
+          color: ${h.cyanBright};
+          font-family: 'JetBrains Mono', 'Fira Code', monospace;
+          font-size: 10px;
+          letter-spacing: 2px;
+          font-weight: 600;
+          text-transform: uppercase;
+          transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+          white-space: nowrap;
+          overflow: hidden;
+      }
+      .cat-nav-btn:hover {
+          background: rgba(0,183,255,0.18);
+          border-color: ${h.cyanBright};
+          box-shadow: 0 0 14px rgba(0,212,255,0.45), inset 0 0 12px rgba(0,212,255,0.1);
+          transform: translateX(-3px);
+      }
+      .cat-nav-btn.active {
+          background: rgba(0,183,255,0.22);
+          border-color: ${h.cyanBright};
+          box-shadow: 0 0 14px rgba(0,212,255,0.5), inset 0 0 12px rgba(0,212,255,0.15);
+      }
+      .cat-nav-icon {
+          font-size: 18px;
+          flex-shrink: 0;
+          filter: drop-shadow(0 0 4px currentColor);
+      }
+      .cat-nav-label {
+          font-size: 10px;
       }
 
       .categories ul:nth-child(1) { --flavour: ${h.cyanBright}; }
@@ -498,5 +596,37 @@ class Tabs extends Component {
    */
   connectedCallback() {
     this.render();
+    // Wire up the category nav rail clicks once the DOM is in place.
+    // requestAnimationFrame ensures the rendered HTML is in the tree.
+    requestAnimationFrame(() => this.bindCategoryNav());
+  }
+
+  /**
+   * Hooks up click handlers on .cat-nav-btn elements to smooth-scroll
+   * the matching <li> in the active tab's .links scroll area into view.
+   */
+  bindCategoryNav() {
+    const buttons = this.querySelectorAll('.cat-nav-btn');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = btn.getAttribute('data-target');
+        if (!targetId) return;
+        // Find the matching <li> within the same active tab
+        const ul = btn.closest('ul');
+        if (!ul) return;
+        const target = ul.querySelector('#' + targetId);
+        if (!target) return;
+        // Find the scrollable .links parent and scroll the <li> into view
+        const scroller = target.closest('.links');
+        if (scroller) {
+          const top = target.offsetTop - 24;
+          scroller.scrollTo({ top: top, behavior: 'smooth' });
+        }
+        // Mark active state for visual feedback
+        ul.querySelectorAll('.cat-nav-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
   }
 }
