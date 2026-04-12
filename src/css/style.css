@@ -27,9 +27,13 @@
   user-select: none;
 }
 
-*:not(:defined) {
-  display: none;
-}
+/* Removed: *:not(:defined) { display: none; }
+   This rule hid every custom element until module.js (which is the last
+   script) registered it. The window between HTML parse and module.js
+   running was producing the "had to refresh twice" effect: on the first
+   render the tab panel and other custom elements were invisible, on the
+   second they were already defined and showed. With the rule gone, the
+   element renders immediately as soon as its template() runs. */
 
 body {
   background-color: var(--bg);

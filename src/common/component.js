@@ -130,10 +130,14 @@ class Component extends HTMLElement {
   }
 
   /**
-   * Return inline style tag
+   * Return inline style tag.
+   * Was async before but had no actual awaits — every async hop pushed
+   * the shadow DOM update to the next microtask, causing custom elements
+   * to render empty for one frame on first load and producing the
+   * "refresh twice" flash. Made fully synchronous.
    * @returns {string}
    */
-  async loadStyles() {
+  loadStyles() {
     let html = this.getResources.join("\n");
 
     if (this.style()) html += `<style>${this.style()}</style>`;
@@ -145,8 +149,8 @@ class Component extends HTMLElement {
    * Build the component's HTML body
    * @returns {string} html
    */
-  async buildHTML() {
-    return (await this.loadStyles()) + (await this.template());
+  buildHTML() {
+    return this.loadStyles() + this.template();
   }
 
   /**
@@ -175,11 +179,12 @@ class Component extends HTMLElement {
   }
 
   /**
-   * Render the component's HTML and update references
-   * @returns {Promise<void>}
+   * Render the component's HTML and update references.
+   * Synchronous so the shadow DOM is populated before connectedCallback
+   * returns — no microtask delay, no first-frame empty flash.
    */
-  async render() {
-    this.shadow.innerHTML = await this.buildHTML();
+  render() {
+    this.shadow.innerHTML = this.buildHTML();
     this.refs = this.createRef();
     RenderedComponents[this.localName] = this;
   }
