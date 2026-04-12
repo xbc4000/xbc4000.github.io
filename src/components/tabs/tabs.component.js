@@ -324,9 +324,9 @@ class Tabs extends Component {
           top: 46%;
           left: 18%;
           transform: translate(-50%, -50%);
-          width: 24%;
+          width: 26%;
           aspect-ratio: 3 / 4;
-          max-height: calc(100% - 64px - 40px);
+          max-height: calc(100% - 64px - 20px);
           z-index: 0;
           pointer-events: none;
           border: 1px solid rgba(0,183,255,0.35);
