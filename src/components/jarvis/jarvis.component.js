@@ -307,8 +307,9 @@
             var t0 = performance.now();
             var ac = new AbortController();
             var timer = setTimeout(function () { ac.abort(); }, 2500);
+            // No cache: 'no-store' — query-string cache buster keeps
+            // requests CORS-simple and avoids preflight.
             fetch('/bridge/health?_=' + Date.now(), {
-                cache: 'no-store',
                 signal: ac.signal
             }).then(function (r) {
                 clearTimeout(timer);

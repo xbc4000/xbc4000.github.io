@@ -74,7 +74,7 @@
             'text-shadow:0 0 4px rgba(0,212,255,0.45)',
             'backdrop-filter:blur(3px)',
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)',
-            'opacity:0',
+            'opacity:1',
             'transition:opacity 0.4s ease'
         ].join(';');
 
@@ -274,8 +274,10 @@
         function poll() {
             var ac = new AbortController();
             var t = setTimeout(function () { ac.abort(); }, 2500);
+            // Note: no `cache: 'no-store'` — that adds a Cache-Control
+            // header which triggers a CORS preflight on cross-origin
+            // fetches. Cache-busting via query string instead.
             fetch(BRIDGE_URL + (BRIDGE_URL.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), {
-                cache: 'no-store',
                 signal: ac.signal
             }).then(function (r) {
                 clearTimeout(t);
