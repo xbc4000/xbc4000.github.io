@@ -504,13 +504,18 @@ class Tabs extends Component {
           content: attr(class);
           position: absolute;
           display: flex;
+          align-items: center;
+          justify-content: center;
           text-transform: uppercase;
-          overflow-wrap: break-word;
-          width: 40px;
+          /* writing-mode stacks chars vertically, text-orientation keeps
+             each letter upright instead of sideways */
+          writing-mode: vertical-rl;
+          text-orientation: upright;
+          width: 48px;
           height: 320px;
-          padding: 1em .5em;
+          padding: 1em 0;
           margin: auto;
-          left: calc(15% - 50px);
+          left: calc(15% - 54px);
           bottom: 0;
           top: 0;
           background: linear-gradient(to top, #0a1520 0%, rgba(10,21,32,0.3) 100%);
@@ -520,13 +525,9 @@ class Tabs extends Component {
             0 0 20px rgba(0,183,255,0.4),
             inset 0 0 30px rgba(0,183,255,0.08);
           color: var(--flavour);
-          letter-spacing: 4px;
-          font: 700 22px 'JetBrains Mono', 'Fira Code', 'Roboto Mono', 'Consolas', monospace;
+          letter-spacing: 8px;
+          font: 700 20px 'JetBrains Mono', 'Fira Code', 'Roboto Mono', 'Consolas', monospace;
           text-align: center;
-          flex-wrap: wrap;
-          word-break: break-all;
-          align-items: center;
-          justify-content: center;
           text-shadow: 0 0 10px var(--flavour), 0 0 20px rgba(0,183,255,0.4);
           clip-path: polygon(0 12px, 12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
       }
