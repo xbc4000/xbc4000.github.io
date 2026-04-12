@@ -318,19 +318,19 @@ class Tabs extends Component {
          (HOMELAB / DEV / CHILL etc). Click toggles which <ul> has the
          [active] attribute, swapping the entire visible category set. */
       .banner {
-          /* Decorative left area — keeps the lo-fi background visible.
-             Inset from panel edges so the image sits inside the box,
-             not flush against the border. z-index MUST be below .links
-             (0 < 2) so the image doesn't cover link buttons. */
+          /* Decorative image — small, right-aligned within the left
+             gutter so it sits fully inside the panel border lines. */
           position: absolute;
-          top: 16px;
-          left: 16px;
-          width: calc(30% - 32px);
-          height: calc(100% - 64px - 32px);
+          top: 50%;
+          transform: translateY(-50%);
+          right: 72%;
+          width: 18%;
+          aspect-ratio: 3 / 4;
+          max-height: calc(100% - 64px - 48px);
           z-index: 0;
           pointer-events: none;
-          border: 1px solid rgba(0,183,255,0.3);
-          box-shadow: 0 0 12px rgba(0,183,255,0.15), inset 0 0 20px rgba(0,0,0,0.4);
+          border: 1px solid rgba(0,183,255,0.35);
+          box-shadow: 0 0 14px rgba(0,183,255,0.2), inset 0 0 20px rgba(0,0,0,0.4);
           clip-path: polygon(0 8px, 8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px));
       }
       .tab-switcher {
