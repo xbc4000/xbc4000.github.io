@@ -34,10 +34,13 @@ class Links extends Component {
     return `
       ${categories
         .map(({ name, links }, idx) => {
-          // Each <li> gets a slug ID so the nav rail can scrollIntoView() to it
+          // Each <li> gets a slug ID so the nav buttons can switch pages.
+          // Only the first category is `active` (visible) on first render;
+          // the rest are hidden via CSS until a button is clicked.
           const slug = name.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+          const activeAttr = idx === 0 ? ' data-active="1"' : '';
           return `
-          <li id="cat-${slug}">
+          <li id="cat-${slug}"${activeAttr}>
             <h1>${name}</h1>
               <div class="links-wrapper">
               ${links
@@ -69,14 +72,15 @@ class Links extends Component {
     return `
       <nav class="category-nav">
         ${categories
-          .map(({ name, links }) => {
+          .map(({ name, links }, idx) => {
             const slug = name.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
             const firstLink = (links && links[0]) || {};
             const iconName = firstLink.icon || 'square';
             const iconColor = firstLink.icon_color || CONFIG.palette.text;
             const label = name.toUpperCase();
+            const activeClass = idx === 0 ? ' active' : '';
             return `
-              <button class="cat-nav-btn" data-target="cat-${slug}" title="${label}">
+              <button class="cat-nav-btn${activeClass}" data-target="cat-${slug}" title="${label}">
                 <i class="ti ti-${iconName} cat-nav-icon" style="color:${iconColor}"></i>
                 <span class="cat-nav-label">${label}</span>
               </button>`;
@@ -117,8 +121,9 @@ class Category extends Component {
       ${tabs
         .map(({ name, background_url }, index) => {
           return `<ul class="${name}" ${Category.getBackgroundStyle(background_url)} ${index == 0 ? "active" : ""}>
-            <div class="banner">${Links.getCategoryNav(name, tabs)}</div>
+            <div class="banner"></div>
             <div class="links">${Links.getAll(name, tabs)}</div>
+            ${Links.getCategoryNav(name, tabs)}
           </ul>`;
         })
         .join("")}
@@ -295,64 +300,75 @@ class Tabs extends Component {
           transition: all .6s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      /* ── Category nav rail ─────────────────────────────────────── */
-      /* Lives inside .banner (the left 30% of the panel). Sticky column
-         of clickable category icons that smooth-scroll to each <li> in
-         the right pane. */
+      /* ── Category nav strip (bottom of panel) ──────────────────── */
+      /* Lives inside the panel along the bottom edge — full width
+         horizontal row of clickable category buttons. Click switches
+         which <li> in .links is shown (paginated view, no scroll). */
       .banner {
+          /* Decorative left area only — keeps the lo-fi background visible.
+             No nav rail anymore (moved to the bottom). */
           position: absolute;
           top: 0;
           left: 0;
           width: 30%;
-          height: 100%;
-          z-index: 2;
+          height: calc(100% - 64px);
+          z-index: 1;
+          pointer-events: none;
       }
       .category-nav {
           position: absolute;
-          top: 50%;
-          right: 18px;
-          transform: translateY(-50%);
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 64px;
           display: flex;
-          flex-direction: column;
-          gap: 8px;
-          padding: 14px 8px;
-          background: linear-gradient(180deg, rgba(2,8,16,0.85) 0%, rgba(2,4,8,0.7) 100%);
-          border: 1px solid rgba(0,183,255,0.45);
-          box-shadow:
-            0 0 18px rgba(0,183,255,0.25),
-            inset 0 0 18px rgba(0,183,255,0.05);
-          clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
-          backdrop-filter: blur(2px);
+          flex-direction: row;
+          align-items: stretch;
+          gap: 0;
+          padding: 0;
+          background: linear-gradient(180deg, rgba(0,183,255,0.05) 0%, rgba(0,183,255,0.12) 100%);
+          border-top: 1px solid rgba(0,183,255,0.45);
+          box-shadow: 0 -8px 24px rgba(0,183,255,0.12), inset 0 0 30px rgba(0,183,255,0.04);
+          z-index: 5;
+          overflow-x: auto;
+          overflow-y: hidden;
+          overscroll-behavior: contain;
+          scrollbar-width: none;
       }
+      .category-nav::-webkit-scrollbar { display: none; }
       .cat-nav-btn {
           all: unset;
           cursor: pointer;
+          flex: 1 1 auto;
+          min-width: max-content;
           display: flex;
           align-items: center;
+          justify-content: center;
           gap: 10px;
-          padding: 7px 12px;
-          background: rgba(0,183,255,0.05);
-          border: 1px solid rgba(0,183,255,0.25);
+          padding: 0 24px;
+          background: transparent;
+          border: none;
+          border-right: 1px solid rgba(0,183,255,0.18);
           color: ${h.cyanBright};
           font-family: 'JetBrains Mono', 'Fira Code', monospace;
-          font-size: 10px;
+          font-size: 11px;
           letter-spacing: 2px;
           font-weight: 600;
           text-transform: uppercase;
-          transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+          transition: background 0.2s, color 0.2s, box-shadow 0.2s;
           white-space: nowrap;
-          overflow: hidden;
       }
+      .cat-nav-btn:last-child { border-right: none; }
       .cat-nav-btn:hover {
-          background: rgba(0,183,255,0.18);
-          border-color: ${h.cyanBright};
-          box-shadow: 0 0 14px rgba(0,212,255,0.45), inset 0 0 12px rgba(0,212,255,0.1);
-          transform: translateX(-3px);
+          background: rgba(0,183,255,0.12);
+          color: ${h.cyanBright};
+          box-shadow: inset 0 -2px 0 ${h.cyanBright}, inset 0 0 18px rgba(0,212,255,0.08);
       }
       .cat-nav-btn.active {
           background: rgba(0,183,255,0.22);
-          border-color: ${h.cyanBright};
-          box-shadow: 0 0 14px rgba(0,212,255,0.5), inset 0 0 12px rgba(0,212,255,0.15);
+          color: ${h.cyanBright};
+          box-shadow: inset 0 -3px 0 ${h.cyanBright}, inset 0 0 20px rgba(0,212,255,0.15);
+          text-shadow: 0 0 8px rgba(0,212,255,0.7);
       }
       .cat-nav-icon {
           font-size: 18px;
@@ -360,7 +376,7 @@ class Tabs extends Component {
           filter: drop-shadow(0 0 4px currentColor);
       }
       .cat-nav-label {
-          font-size: 10px;
+          font-size: 11px;
       }
 
       .categories ul:nth-child(1) { --flavour: ${h.cyanBright}; }
@@ -381,14 +397,19 @@ class Tabs extends Component {
       .categories .links {
           right: 0;
           width: 70%;
-          height: 100%;
+          height: calc(100% - 64px);  /* leave room for the bottom nav strip */
           background: rgba(10, 21, 32, 0.85);
-          padding: 3em 4%;
+          padding: 2.4em 4% 1.4em;
           flex-wrap: wrap;
-          overflow-y: auto;
-          overscroll-behavior: contain;
-          scrollbar-width: thin;
-          scrollbar-color: ${h.cyan} #0a1520;
+          overflow: hidden;
+          /* Pagination: only the active <li> is visible */
+      }
+      .categories .links > li {
+          display: none;
+          width: 100%;
+      }
+      .categories .links > li[data-active="1"] {
+          display: block;
       }
 
       .categories .links::-webkit-scrollbar {
@@ -605,28 +626,28 @@ class Tabs extends Component {
   }
 
   /**
-   * Hooks up click handlers on .cat-nav-btn elements to smooth-scroll
-   * the matching <li> in the active tab's .links scroll area into view.
+   * Hooks up click handlers on .cat-nav-btn elements to switch which
+   * category <li> is shown (paginated view, no scrolling). The button
+   * gets the .active class for visual feedback and the matching <li>
+   * gets data-active="1" so the CSS reveals it while hiding the rest.
    */
   bindCategoryNav() {
-    const buttons = this.querySelectorAll('.cat-nav-btn');
+    const buttons = this.shadowRoot
+      ? this.shadowRoot.querySelectorAll('.cat-nav-btn')
+      : this.querySelectorAll('.cat-nav-btn');
     buttons.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const targetId = btn.getAttribute('data-target');
         if (!targetId) return;
-        // Find the matching <li> within the same active tab
         const ul = btn.closest('ul');
         if (!ul) return;
         const target = ul.querySelector('#' + targetId);
         if (!target) return;
-        // Find the scrollable .links parent and scroll the <li> into view
-        const scroller = target.closest('.links');
-        if (scroller) {
-          const top = target.offsetTop - 24;
-          scroller.scrollTo({ top: top, behavior: 'smooth' });
-        }
-        // Mark active state for visual feedback
+        // Toggle data-active on every <li> in this tab
+        ul.querySelectorAll('.links > li').forEach((li) => li.removeAttribute('data-active'));
+        target.setAttribute('data-active', '1');
+        // Toggle .active on every nav button in this tab
         ul.querySelectorAll('.cat-nav-btn').forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
       });

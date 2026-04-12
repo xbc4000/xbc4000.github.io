@@ -39,9 +39,9 @@
         card.id = 'hcc-jarvis';
         card.style.cssText = [
             'position:fixed',
-            'right:24px',
-            'top:484px',
-            'width:300px',
+            'left:24px',
+            'top:308px',
+            'width:380px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -76,29 +76,30 @@
         header.appendChild(headerLeft);
         header.appendChild(headerRight);
 
-        // Body
+        // Body — radar on the left, telemetry grid on the right
         var body = document.createElement('div');
-        body.style.cssText = 'padding:14px 14px 12px;';
+        body.style.cssText = 'padding:12px 14px;display:flex;align-items:center;gap:14px';
 
-        // Radar canvas
+        // Radar canvas (smaller — was 252px, now 140px)
         var canvas = document.createElement('canvas');
         canvas.id = 'hcc-jarvis-radar';
-        canvas.width = 504;   // 252 css × 2 dpr
-        canvas.height = 504;
+        canvas.width = 280;   // 140 css × 2 dpr
+        canvas.height = 280;
         canvas.style.cssText = [
             'display:block',
-            'width:252px',
-            'height:252px',
-            'margin:0 auto 14px'
+            'flex-shrink:0',
+            'width:140px',
+            'height:140px'
         ].join(';');
 
-        // Telemetry list
+        // Telemetry list — single column, fits right of radar
         var list = document.createElement('div');
         list.style.cssText = [
+            'flex:1',
             'display:grid',
-            'grid-template-columns:1fr 1fr',
-            'gap:5px 14px',
-            'font-size:10px',
+            'grid-template-columns:1fr',
+            'gap:4px',
+            'font-size:9px',
             'letter-spacing:1px',
             'color:' + HCC_CYAN
         ].join(';');
@@ -134,9 +135,9 @@
         // ── Radar drawing ────────────────────────────────────────────
         var ctx = canvas.getContext('2d');
         ctx.scale(2, 2); // dpr
-        var W = 252, H = 252;
+        var W = 140, H = 140;
         var cx = W / 2, cy = H / 2;
-        var R = 110;
+        var R = 62;
 
         // Permanent blips for probe targets, set to alpha=0 until first ack
         var blips = [
