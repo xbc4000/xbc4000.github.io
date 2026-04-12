@@ -319,15 +319,19 @@ class Tabs extends Component {
          [active] attribute, swapping the entire visible category set. */
       .banner {
           /* Decorative left area — keeps the lo-fi background visible.
-             z-index MUST be below .links (0 < 2) so the image doesn't
-             cover the first column of link buttons. */
+             Inset from panel edges so the image sits inside the box,
+             not flush against the border. z-index MUST be below .links
+             (0 < 2) so the image doesn't cover link buttons. */
           position: absolute;
-          top: 0;
-          left: 0;
-          width: 30%;
-          height: calc(100% - 64px);
+          top: 16px;
+          left: 16px;
+          width: calc(30% - 32px);
+          height: calc(100% - 64px - 32px);
           z-index: 0;
           pointer-events: none;
+          border: 1px solid rgba(0,183,255,0.3);
+          box-shadow: 0 0 12px rgba(0,183,255,0.15), inset 0 0 20px rgba(0,0,0,0.4);
+          clip-path: polygon(0 8px, 8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px));
       }
       .tab-switcher {
           position: absolute;
