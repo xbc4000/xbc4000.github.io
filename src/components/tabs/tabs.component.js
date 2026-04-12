@@ -33,14 +33,13 @@ class Links extends Component {
 
     return `
       ${categories
-        .map(({ name, links }, idx) => {
-          // Each <li> gets a slug ID so the nav buttons can switch pages.
-          // Only the first category is `active` (visible) on first render;
-          // the rest are hidden via CSS until a button is clicked.
+        .map(({ name, links }) => {
+          // Each <li> gets a slug ID so the bottom nav buttons can scroll
+          // it into view. All categories are visible at once (multi-column
+          // wrapped grid) — no pagination, no waste of space.
           const slug = name.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
-          const activeAttr = idx === 0 ? ' data-active="1"' : '';
           return `
-          <li id="cat-${slug}"${activeAttr}>
+          <li id="cat-${slug}">
             <h1>${name}</h1>
               <div class="links-wrapper">
               ${links
@@ -62,27 +61,26 @@ class Links extends Component {
   }
 
   /**
-   * Generates the left-side category nav rail — clickable icons that
-   * smooth-scroll to the matching category in the .links area. Uses the
-   * first link's icon as the category glyph (so it always has something
-   * sensible without needing extra config).
+   * Generates the bottom tab switcher — one button per top-level tab.
+   * Click switches which <ul> is active (the existing [active] attribute
+   * mechanism in the original Catppuccin design). Each button shows the
+   * tab name in uppercase with the first link icon of the first category
+   * as a glyph hint.
    */
-  static getCategoryNav(tabName, tabs) {
-    const { categories } = tabs.find((f) => f.name === tabName);
+  static getTabSwitcher(tabs) {
     return `
-      <nav class="category-nav">
-        ${categories
-          .map(({ name, links }, idx) => {
-            const slug = name.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
-            const firstLink = (links && links[0]) || {};
-            const iconName = firstLink.icon || 'square';
+      <nav class="tab-switcher">
+        ${tabs
+          .map(({ name, categories }, idx) => {
+            const firstLink = (categories && categories[0] && categories[0].links && categories[0].links[0]) || {};
+            const iconName = firstLink.icon || 'circle';
             const iconColor = firstLink.icon_color || CONFIG.palette.text;
             const label = name.toUpperCase();
             const activeClass = idx === 0 ? ' active' : '';
             return `
-              <button class="cat-nav-btn${activeClass}" data-target="cat-${slug}" title="${label}">
-                <i class="ti ti-${iconName} cat-nav-icon" style="color:${iconColor}"></i>
-                <span class="cat-nav-label">${label}</span>
+              <button class="tab-switch-btn${activeClass}" data-tab="${name}" title="${label}">
+                <i class="ti ti-${iconName} tab-switch-icon" style="color:${iconColor}"></i>
+                <span class="tab-switch-label">${label}</span>
               </button>`;
           })
           .join("")}
@@ -120,13 +118,13 @@ class Category extends Component {
     return `
       ${tabs
         .map(({ name, background_url }, index) => {
-          return `<ul class="${name}" ${Category.getBackgroundStyle(background_url)} ${index == 0 ? "active" : ""}>
+          return `<ul class="${name.replace(/\s+/g, '-')}" ${Category.getBackgroundStyle(background_url)} ${index == 0 ? "active" : ""}>
             <div class="banner"></div>
             <div class="links">${Links.getAll(name, tabs)}</div>
-            ${Links.getCategoryNav(name, tabs)}
           </ul>`;
         })
         .join("")}
+      ${Links.getTabSwitcher(tabs)}
     `;
   }
 }
@@ -300,13 +298,13 @@ class Tabs extends Component {
           transition: all .6s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      /* ── Category nav strip (bottom of panel) ──────────────────── */
+      /* ── Top-level tab switcher (bottom of panel) ──────────────── */
       /* Lives inside the panel along the bottom edge — full width
-         horizontal row of clickable category buttons. Click switches
-         which <li> in .links is shown (paginated view, no scroll). */
+         horizontal row of clickable buttons, one per top-level tab
+         (HOMELAB / DEV / CHILL etc). Click toggles which <ul> has the
+         [active] attribute, swapping the entire visible category set. */
       .banner {
-          /* Decorative left area only — keeps the lo-fi background visible.
-             No nav rail anymore (moved to the bottom). */
+          /* Decorative left area — keeps the lo-fi background visible. */
           position: absolute;
           top: 0;
           left: 0;
@@ -315,7 +313,7 @@ class Tabs extends Component {
           z-index: 1;
           pointer-events: none;
       }
-      .category-nav {
+      .tab-switcher {
           position: absolute;
           left: 0;
           right: 0;
@@ -324,59 +322,53 @@ class Tabs extends Component {
           display: flex;
           flex-direction: row;
           align-items: stretch;
-          gap: 0;
           padding: 0;
           background: linear-gradient(180deg, rgba(0,183,255,0.05) 0%, rgba(0,183,255,0.12) 100%);
           border-top: 1px solid rgba(0,183,255,0.45);
           box-shadow: 0 -8px 24px rgba(0,183,255,0.12), inset 0 0 30px rgba(0,183,255,0.04);
-          z-index: 5;
-          overflow-x: auto;
-          overflow-y: hidden;
-          overscroll-behavior: contain;
-          scrollbar-width: none;
+          z-index: 10;
       }
-      .category-nav::-webkit-scrollbar { display: none; }
-      .cat-nav-btn {
+      .tab-switch-btn {
           all: unset;
           cursor: pointer;
-          flex: 1 1 auto;
-          min-width: max-content;
+          flex: 1 1 0;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
+          gap: 12px;
           padding: 0 24px;
           background: transparent;
           border: none;
           border-right: 1px solid rgba(0,183,255,0.18);
-          color: ${h.cyanBright};
+          color: ${h.cyan};
           font-family: 'JetBrains Mono', 'Fira Code', monospace;
-          font-size: 11px;
-          letter-spacing: 2px;
-          font-weight: 600;
+          font-size: 14px;
+          letter-spacing: 4px;
+          font-weight: 700;
           text-transform: uppercase;
-          transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+          transition: background 0.2s, color 0.2s, box-shadow 0.2s, text-shadow 0.2s;
           white-space: nowrap;
       }
-      .cat-nav-btn:last-child { border-right: none; }
-      .cat-nav-btn:hover {
+      .tab-switch-btn:last-child { border-right: none; }
+      .tab-switch-btn:hover {
           background: rgba(0,183,255,0.12);
           color: ${h.cyanBright};
-          box-shadow: inset 0 -2px 0 ${h.cyanBright}, inset 0 0 18px rgba(0,212,255,0.08);
+          box-shadow: inset 0 -2px 0 ${h.cyanBright}, inset 0 0 24px rgba(0,212,255,0.1);
+          text-shadow: 0 0 6px rgba(0,212,255,0.5);
       }
-      .cat-nav-btn.active {
+      .tab-switch-btn.active {
           background: rgba(0,183,255,0.22);
           color: ${h.cyanBright};
-          box-shadow: inset 0 -3px 0 ${h.cyanBright}, inset 0 0 20px rgba(0,212,255,0.15);
-          text-shadow: 0 0 8px rgba(0,212,255,0.7);
+          box-shadow: inset 0 -4px 0 ${h.cyanBright}, inset 0 0 28px rgba(0,212,255,0.18);
+          text-shadow: 0 0 10px rgba(0,212,255,0.8);
       }
-      .cat-nav-icon {
-          font-size: 18px;
+      .tab-switch-icon {
+          font-size: 22px;
           flex-shrink: 0;
-          filter: drop-shadow(0 0 4px currentColor);
+          filter: drop-shadow(0 0 6px currentColor);
       }
-      .cat-nav-label {
-          font-size: 11px;
+      .tab-switch-label {
+          font-size: 14px;
       }
 
       .categories ul:nth-child(1) { --flavour: ${h.cyanBright}; }
@@ -397,19 +389,26 @@ class Tabs extends Component {
       .categories .links {
           right: 0;
           width: 70%;
-          height: calc(100% - 64px);  /* leave room for the bottom nav strip */
+          height: calc(100% - 64px);  /* leave room for the bottom tab switcher */
           background: rgba(10, 21, 32, 0.85);
-          padding: 2.4em 4% 1.4em;
-          flex-wrap: wrap;
-          overflow: hidden;
-          /* Pagination: only the active <li> is visible */
+          padding: 2.2em 4% 1.6em;
+          /* Multi-column wrapped layout — categories flow vertically in
+             columns, columns wrap horizontally. Each <li> stays whole. */
+          column-count: 3;
+          column-gap: 2.6em;
+          column-rule: 1px dashed rgba(0,183,255,0.15);
+          overflow-y: auto;
+          overflow-x: hidden;
+          overscroll-behavior: contain;
+          scrollbar-width: thin;
+          scrollbar-color: ${h.cyan} #0a1520;
+          display: block;
       }
       .categories .links > li {
-          display: none;
-          width: 100%;
-      }
-      .categories .links > li[data-active="1"] {
+          break-inside: avoid;
           display: block;
+          width: 100%;
+          margin-bottom: 1.5em;
       }
 
       .categories .links::-webkit-scrollbar {
@@ -620,35 +619,32 @@ class Tabs extends Component {
    */
   connectedCallback() {
     this.render();
-    // Wire up the category nav rail clicks once the DOM is in place.
-    // requestAnimationFrame ensures the rendered HTML is in the tree.
-    requestAnimationFrame(() => this.bindCategoryNav());
+    // Wire up tab switcher clicks once the DOM is in place.
+    requestAnimationFrame(() => this.bindTabSwitcher());
   }
 
   /**
-   * Hooks up click handlers on .cat-nav-btn elements to switch which
-   * category <li> is shown (paginated view, no scrolling). The button
-   * gets the .active class for visual feedback and the matching <li>
-   * gets data-active="1" so the CSS reveals it while hiding the rest.
+   * Hooks up click handlers on .tab-switch-btn elements to switch which
+   * top-level tab is active. Each click toggles the [active] attribute
+   * on the matching <ul class="<tabname>"> — the existing Catppuccin
+   * tab switching mechanism. The button itself gets .active for visual
+   * feedback.
    */
-  bindCategoryNav() {
-    const buttons = this.shadowRoot
-      ? this.shadowRoot.querySelectorAll('.cat-nav-btn')
-      : this.querySelectorAll('.cat-nav-btn');
+  bindTabSwitcher() {
+    const root = this.shadowRoot || this;
+    const buttons = root.querySelectorAll('.tab-switch-btn');
     buttons.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const targetId = btn.getAttribute('data-target');
-        if (!targetId) return;
-        const ul = btn.closest('ul');
-        if (!ul) return;
-        const target = ul.querySelector('#' + targetId);
-        if (!target) return;
-        // Toggle data-active on every <li> in this tab
-        ul.querySelectorAll('.links > li').forEach((li) => li.removeAttribute('data-active'));
-        target.setAttribute('data-active', '1');
-        // Toggle .active on every nav button in this tab
-        ul.querySelectorAll('.cat-nav-btn').forEach((b) => b.classList.remove('active'));
+        const tabName = btn.getAttribute('data-tab');
+        if (!tabName) return;
+        // Toggle [active] on every top-level <ul> in the categories container
+        const allTabs = root.querySelectorAll('.categories > ul');
+        allTabs.forEach((ul) => ul.removeAttribute('active'));
+        const targetUl = root.querySelector('.categories > ul.' + tabName.replace(/\s+/g, '-'));
+        if (targetUl) targetUl.setAttribute('active', '');
+        // Toggle .active on every nav button
+        buttons.forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
       });
     });
