@@ -40,7 +40,7 @@
         card.style.cssText = [
             'position:fixed',
             'left:24px',
-            'top:308px',
+            'top:216px',
             'width:380px',
             'pointer-events:auto',
             'z-index:' + Z,
