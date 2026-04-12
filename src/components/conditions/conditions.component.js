@@ -3,11 +3,13 @@
 // =============================================================================
 // Top-right card with all real data, no fake placeholders:
 //
-//   - Location: ipwho.is → city, region, country, ISP, public IP
-//                          + lat/lon + timezone (CORS-open, no key)
-//                          NOTE: ipapi.co was the obvious choice but
-//                          Pi-hole blocks it as a fingerprinter, so we
-//                          use ipwho.is instead.
+//   - Location: bigdatacloud.net free endpoints
+//       /data/reverse-geocode-client → city, region, country, lat/lon
+//       /data/client-ip               → public IP
+//     CORS-open + key-less + actually accepts cross-origin requests
+//     (ipapi.co is Pi-hole-blocked; ipwho.is returns 403 to any
+//      request that has an Origin header — useless from a browser).
+//
 //   - Weather:  api.open-meteo.com → current temp, apparent temp,
 //                                     humidity, wind, condition,
 //                                     today's high/low, sunrise, sunset
@@ -251,32 +253,46 @@
         }
 
         // ── Location fetch (once) ────────────────────────────────────
-        // ipwho.is shape: { ip, city, region, country_code, latitude,
-        // longitude, connection: { isp, org }, success: true|false, ... }
-        // NOTE: do NOT pass `cache: 'no-store'` here — it adds a
-        // Cache-Control request header which is not CORS-safelisted, so
-        // the browser upgrades the request to preflighted, ipwho.is
-        // returns 405 to OPTIONS, and the whole thing dies. Use a
-        // query-string cache buster instead.
+        // bigdatacloud.net reverse-geocode-client shape:
+        //   { latitude, longitude, countryName, countryCode,
+        //     principalSubdivision, city, locality, ... }
+        // and client-ip shape: { ipString, ipType }
+        // No `cache:` option here — even on a same-origin endpoint,
+        // setting cache: 'no-store' adds a Cache-Control request header
+        // that triggers CORS preflight, which some servers reject. Use
+        // a query-string cache buster instead.
         var locationData = null;
         function fetchLocation() {
-            return fetch('https://ipwho.is/?_=' + Date.now())
+            var geoP = fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?_=' + Date.now())
                 .then(function (r) {
-                    if (!r.ok) throw new Error('ipwho ' + r.status);
+                    if (!r.ok) throw new Error('bdc-geo ' + r.status);
+                    return r.json();
+                });
+            var ipP = fetch('https://api.bigdatacloud.net/data/client-ip?_=' + Date.now())
+                .then(function (r) {
+                    if (!r.ok) throw new Error('bdc-ip ' + r.status);
                     return r.json();
                 })
-                .then(function (j) {
-                    if (j && j.success === false) throw new Error('ipwho: ' + (j.message || 'unknown'));
-                    locationData = j;
-                    var city = j.city || '?';
-                    var region = j.region || '';
-                    var country = j.country_code || j.country || '';
-                    locEl.textContent = city + (region ? ', ' + region : '') + (country ? '  ·  ' + country : '');
-                    var conn = j.connection || {};
-                    var isp = conn.isp || conn.org || '';
-                    ipEl.textContent = (j.ip || 'IP ?') + (isp ? '  ·  ' + isp : '');
-                    return j;
-                });
+                .catch(function () { return { ipString: '' }; });
+
+            return Promise.all([geoP, ipP]).then(function (arr) {
+                var g = arr[0] || {};
+                var ip = arr[1] || {};
+                locationData = {
+                    latitude:  g.latitude,
+                    longitude: g.longitude,
+                    city:      g.city || g.locality || '?',
+                    region:    g.principalSubdivision || '',
+                    country:   g.countryCode || g.countryName || '',
+                    ip:        ip.ipString || ''
+                };
+                var loc = locationData;
+                locEl.textContent = loc.city
+                    + (loc.region ? ', ' + loc.region : '')
+                    + (loc.country ? '  ·  ' + loc.country : '');
+                ipEl.textContent = loc.ip ? 'IP ' + loc.ip : '';
+                return locationData;
+            });
         }
 
         // ── Weather fetch ────────────────────────────────────────────
