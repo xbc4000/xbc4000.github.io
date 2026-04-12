@@ -105,10 +105,10 @@
         card.id = 'hcc-feeds';
         card.style.cssText = [
             'position:fixed',
-            'bottom:18px',
+            'bottom:60px',
             'left:24px',
             'right:24px',
-            'height:148px',
+            'height:62px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -123,45 +123,36 @@
             'flex-direction:row'
         ].join(';');
 
-        // Vertical header rail on the left edge
+        // Compact header rail on the left edge — single-line label + status
         var header = document.createElement('div');
         header.style.cssText = [
             'flex-shrink:0',
-            'width:46px',
             'background:rgba(0,183,255,0.08)',
             'border-right:1px solid rgba(0,183,255,0.35)',
             'display:flex',
             'flex-direction:column',
-            'align-items:center',
-            'justify-content:space-between',
-            'padding:14px 0',
+            'align-items:flex-start',
+            'justify-content:center',
+            'gap:3px',
+            'padding:0 18px',
             'font-size:11px',
-            'letter-spacing:3px'
+            'letter-spacing:2px'
         ].join(';');
         var headerLeft = document.createElement('span');
-        headerLeft.textContent = 'FEEDS';
-        headerLeft.style.cssText = [
-            'color:' + HCC_CYAN_BRIGHT,
-            'font-weight:700',
-            'writing-mode:vertical-lr',
-            'text-orientation:mixed',
-            'transform:rotate(180deg)'
-        ].join(';');
+        headerLeft.innerHTML = '◆ FEEDS';
+        headerLeft.style.cssText = 'color:' + HCC_CYAN + ';font-weight:700';
         var headerRight = document.createElement('span');
         headerRight.id = 'hcc-feeds-status';
         headerRight.textContent = '...';
         headerRight.style.cssText = [
             'color:' + HCC_CYAN_BRIGHT,
-            'font-size:8px',
-            'writing-mode:vertical-lr',
-            'text-orientation:mixed',
-            'transform:rotate(180deg)',
+            'font-size:9px',
             'opacity:0.75'
         ].join(';');
         header.appendChild(headerLeft);
         header.appendChild(headerRight);
 
-        // Body — horizontal-scrolling row of cards
+        // Body — horizontal-scrolling row of single-line list items
         var list = document.createElement('div');
         list.id = 'hcc-feeds-list';
         list.style.cssText = [
@@ -171,23 +162,25 @@
             'flex:1',
             'display:flex',
             'flex-direction:row',
+            'align-items:center',
             'gap:0',
             'padding:0',
             'scrollbar-width:thin',
             'scrollbar-color:' + HCC_CYAN + ' transparent'
         ].join(';');
 
-        // webkit scrollbar + per-item card styling
+        // Single-line list item style — like the original list view but
+        // arranged horizontally. Each item is one row: tag · age · title.
         var sbStyle = document.createElement('style');
         sbStyle.textContent = [
-            '#hcc-feeds-list::-webkit-scrollbar{height:8px}',
+            '#hcc-feeds-list::-webkit-scrollbar{height:6px}',
             '#hcc-feeds-list::-webkit-scrollbar-track{background:transparent}',
             '#hcc-feeds-list::-webkit-scrollbar-thumb{background:' + HCC_CYAN + ';box-shadow:0 0 6px rgba(0,183,255,0.5)}',
-            '.hcc-feed-item{display:flex;flex-direction:column;justify-content:center;flex-shrink:0;width:280px;padding:14px 18px;text-decoration:none;color:' + HCC_CYAN_BRIGHT + ';border-right:1px solid rgba(0,183,255,0.18);transition:background 0.2s,border-color 0.2s;gap:6px}',
-            '.hcc-feed-item:hover{background:rgba(0,183,255,0.1);border-right-color:' + HCC_CYAN_BRIGHT + '}',
-            '.hcc-feed-item-meta{display:flex;gap:10px;align-items:center;font-size:10px;letter-spacing:1px;opacity:0.85}',
-            '.hcc-feed-item-tag{padding:2px 8px;border:1px solid currentColor;font-weight:700}',
-            '.hcc-feed-item-title{font-size:13px;line-height:1.35;color:' + HCC_CYAN_BRIGHT + ';display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-weight:500}'
+            '.hcc-feed-item{display:inline-flex;flex-shrink:0;align-items:center;gap:10px;height:62px;padding:0 18px;text-decoration:none;color:' + HCC_CYAN_BRIGHT + ';border-right:1px solid rgba(0,183,255,0.15);transition:background 0.2s}',
+            '.hcc-feed-item:hover{background:rgba(0,183,255,0.1)}',
+            '.hcc-feed-item-tag{padding:2px 8px;border:1px solid currentColor;font-weight:700;font-size:9px;letter-spacing:1px;flex-shrink:0}',
+            '.hcc-feed-item-age{font-size:9px;letter-spacing:1px;opacity:0.6;flex-shrink:0;color:' + HCC_CYAN + '}',
+            '.hcc-feed-item-title{font-size:12px;color:' + HCC_CYAN_BRIGHT + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px;font-weight:500}'
         ].join('\n');
         document.head.appendChild(sbStyle);
 
@@ -218,22 +211,21 @@
                 a.rel = 'noopener';
                 a.className = 'hcc-feed-item';
 
-                var meta = document.createElement('div');
-                meta.className = 'hcc-feed-item-meta';
                 var tag = document.createElement('span');
                 tag.className = 'hcc-feed-item-tag';
                 tag.textContent = item.source;
                 tag.style.color = color;
-                var age = document.createElement('span');
-                age.textContent = fmtAge(item.ts);
-                meta.appendChild(tag);
-                meta.appendChild(age);
 
-                var title = document.createElement('div');
+                var age = document.createElement('span');
+                age.className = 'hcc-feed-item-age';
+                age.textContent = fmtAge(item.ts);
+
+                var title = document.createElement('span');
                 title.className = 'hcc-feed-item-title';
                 title.textContent = item.title;
 
-                a.appendChild(meta);
+                a.appendChild(tag);
+                a.appendChild(age);
                 a.appendChild(title);
                 list.appendChild(a);
             });

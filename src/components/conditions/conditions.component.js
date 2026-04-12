@@ -78,7 +78,7 @@
             'position:fixed',
             'top:78px',
             'right:24px',
-            'width:460px',
+            'width:600px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -253,9 +253,14 @@
         // ── Location fetch (once) ────────────────────────────────────
         // ipwho.is shape: { ip, city, region, country_code, latitude,
         // longitude, connection: { isp, org }, success: true|false, ... }
+        // NOTE: do NOT pass `cache: 'no-store'` here — it adds a
+        // Cache-Control request header which is not CORS-safelisted, so
+        // the browser upgrades the request to preflighted, ipwho.is
+        // returns 405 to OPTIONS, and the whole thing dies. Use a
+        // query-string cache buster instead.
         var locationData = null;
         function fetchLocation() {
-            return fetch('https://ipwho.is/', { cache: 'no-store' })
+            return fetch('https://ipwho.is/?_=' + Date.now())
                 .then(function (r) {
                     if (!r.ok) throw new Error('ipwho ' + r.status);
                     return r.json();
@@ -289,7 +294,9 @@
                 '&wind_speed_unit=mph' +
                 '&forecast_days=1';
 
-            return fetch(url, { cache: 'no-store' })
+            // Same gotcha as ipwho.is — don't set cache: 'no-store'
+            // because it triggers a CORS preflight. Cache buster in URL.
+            return fetch(url + '&_=' + Date.now())
                 .then(function (r) {
                     if (!r.ok) throw new Error('open-meteo ' + r.status);
                     return r.json();
