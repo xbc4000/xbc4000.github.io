@@ -321,7 +321,7 @@ class Tabs extends Component {
           /* Decorative image — centered in the left gutter, sized to
              fit inside the panel lines with breathing room. */
           position: absolute;
-          top: 46%;
+          top: 43%;
           left: 18%;
           transform: translate(-50%, -50%);
           width: 26%;
@@ -539,7 +539,7 @@ class Tabs extends Component {
           padding: 1em 0;
           margin: auto;
           left: calc(18% - 24px);
-          top: 46%;
+          top: 43%;
           transform: translateY(-50%);
           background: linear-gradient(to top, #0a1520 0%, rgba(10,21,32,0.3) 100%);
           border: 1px solid var(--flavour);
