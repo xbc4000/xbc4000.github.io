@@ -486,38 +486,56 @@
         tickFast();
         setInterval(tickFast, 1000);
 
-        // ── LAN reachability probe ───────────────────────────────────
-        // fetch + mode:'no-cors' resolves with an opaque response when
-        // the host actually answered (TCP+TLS handshake completed) and
-        // rejects when the request couldn't reach anything. We don't
-        // read the body — only the resolve/reject distinction matters.
+        // ── LAN reachability ─────────────────────────────────────────
+        // Two paths:
+        //
+        //   1) Page served from a .home origin (Caddy on the homelab) →
+        //      ONLINE is true by definition. No probing needed. This is
+        //      the canonical bookmark for using the startpage at home.
+        //
+        //   2) Page served from anywhere else (xbc4000.github.io public
+        //      copy, file://, etc.) → fetch + mode:'no-cors' against the
+        //      bridge with an AbortController timeout. This will succeed
+        //      only if the browser already trusts Caddy's local CA, so
+        //      from the public github.io URL it will commonly stay
+        //      OFFLINE — that's correct: you're not on the LAN as far as
+        //      a public-origin page can verify.
         function setLan(state, color) {
             lanSeg.textContent = 'LAN ' + state;
             lanSeg.style.color = color;
             lanSeg.style.textShadow = '0 0 4px ' + color;
         }
-        setLan('PROBING', 'rgba(255,179,71,0.95)');
 
-        function probeLan() {
-            // AbortController gives us a real timeout — fetch's default
-            // timeout is "the OS's whim" which is too long for a HUD.
-            var ac = new AbortController();
-            var t = setTimeout(function () { ac.abort(); }, 2500);
+        var host = window.location.hostname || '';
+        if (/\.home$/i.test(host) || host === 'localhost' || /^10\./.test(host) || /^192\.168\./.test(host) || /^172\.(1[6-9]|2[0-9]|3[01])\./.test(host)) {
+            // Served from inside the LAN. Mark ONLINE permanently.
+            setLan('ONLINE', 'rgba(0,220,255,0.95)');
+        } else {
+            // Public origin — try to probe Caddy. Likely to fail unless
+            // the user has the Caddy local CA trusted in this browser,
+            // which is fine because in that case they'd just use the
+            // .home bookmark instead.
+            setLan('PROBING', 'rgba(255,179,71,0.95)');
 
-            fetch('https://bridge.home/health?_=' + Date.now(), {
-                mode: 'no-cors',
-                cache: 'no-store',
-                signal: ac.signal
-            }).then(function () {
-                clearTimeout(t);
-                setLan('ONLINE', 'rgba(0,220,255,0.95)');
-            }).catch(function () {
-                clearTimeout(t);
-                setLan('OFFLINE', 'rgba(255,102,128,0.95)');
-            });
+            function probeLan() {
+                var ac = new AbortController();
+                var t = setTimeout(function () { ac.abort(); }, 2500);
+
+                fetch('https://bridge.home/health?_=' + Date.now(), {
+                    mode: 'no-cors',
+                    cache: 'no-store',
+                    signal: ac.signal
+                }).then(function () {
+                    clearTimeout(t);
+                    setLan('ONLINE', 'rgba(0,220,255,0.95)');
+                }).catch(function () {
+                    clearTimeout(t);
+                    setLan('REMOTE', 'rgba(255,179,71,0.95)');
+                });
+            }
+            probeLan();
+            setInterval(probeLan, 10000);
         }
-        probeLan();
-        setInterval(probeLan, 10000);
     }
 
     function init() {
