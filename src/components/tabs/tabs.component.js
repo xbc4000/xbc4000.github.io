@@ -106,7 +106,10 @@ class Category extends Component {
    * @returns {string} CSS style attribute string
    */
   static getBackgroundStyle(url) {
-    return `style="background-image: url(${url}); background-repeat: no-repeat; background-size: contain;"`;
+    // Background is applied to the <ul> but only visible through the
+    // .banner div (left 30%). We no longer set it here — the .banner
+    // element gets it via a data attribute + CSS instead.
+    return `data-bg="${url}"`;
   }
 
   /**
@@ -118,8 +121,8 @@ class Category extends Component {
     return `
       ${tabs
         .map(({ name, background_url }, index) => {
-          return `<ul class="${name.replace(/\s+/g, '-')}" ${Category.getBackgroundStyle(background_url)} ${index == 0 ? "active" : ""}>
-            <div class="banner"></div>
+          return `<ul class="${name.replace(/\s+/g, '-')}" ${index == 0 ? "active" : ""}>
+            <div class="banner" style="background-image:url(${background_url});background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
             <div class="links">${Links.getAll(name, tabs)}</div>
           </ul>`;
         })
@@ -260,28 +263,34 @@ class Tabs extends Component {
           clip-path: polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px));
       }
 
-      /* Corner bracket accents on panel */
+      /* Spinning reactor ring accents at top-left and bottom-right.
+         Two concentric rings: outer spins CW, inner pulse-glows. */
       #panels::before,
       #panels::after {
           content: "";
           position: absolute;
-          width: 24px;
-          height: 24px;
+          width: 36px;
+          height: 36px;
           border: 2px solid ${h.cyanBright};
+          border-radius: 50%;
+          border-top-color: transparent;
+          border-bottom-color: transparent;
           pointer-events: none;
           filter: drop-shadow(0 0 8px rgba(0,212,255,0.6));
+          animation: hccReactorSpin 4s linear infinite;
       }
       #panels::before {
-          top: 4px;
-          left: 4px;
-          border-right: none;
-          border-bottom: none;
+          top: -18px;
+          left: -18px;
       }
       #panels::after {
-          bottom: 4px;
-          right: 4px;
-          border-left: none;
-          border-top: none;
+          bottom: -18px;
+          right: -18px;
+          animation-direction: reverse;
+      }
+      @keyframes hccReactorSpin {
+          0%   { transform: rotate(0deg);   }
+          100% { transform: rotate(360deg); }
       }
 
       .categories {
@@ -662,8 +671,78 @@ class Tabs extends Component {
    */
   connectedCallback() {
     this.render();
-    // Wire up tab switcher clicks once the DOM is in place.
-    requestAnimationFrame(() => this.bindTabSwitcher());
+    requestAnimationFrame(() => {
+      this.bindTabSwitcher();
+      this.addPanelRainBorders();
+    });
+  }
+
+  /**
+   * Adds thin hex-text rain strips along the left and right inner
+   * edges of the #panels container. Each strip has 2-3 columns of
+   * falling hex chars. Pure DOM + CSS animation, no canvas.
+   */
+  addPanelRainBorders() {
+    const root = this.shadowRoot || this;
+    const panels = root.querySelector('#panels');
+    if (!panels || panels.querySelector('.panel-rain')) return;
+
+    const HEX = '0123456789ABCDEF>|.:[]{}◆◇●○';
+    const COLS = 2;
+
+    ['left', 'right'].forEach((side) => {
+      const strip = document.createElement('div');
+      strip.className = 'panel-rain panel-rain-' + side;
+      strip.style.cssText = [
+        'position:absolute',
+        'top:0',
+        side + ':0',
+        'width:24px',
+        'height:100%',
+        'pointer-events:none',
+        'z-index:3',
+        'overflow:hidden',
+        'opacity:0.45'
+      ].join(';');
+
+      for (let i = 0; i < COLS; i++) {
+        const col = document.createElement('div');
+        col.style.cssText = [
+          'position:absolute',
+          'top:-100%',
+          'left:' + (4 + i * 10) + 'px',
+          'font-family:"JetBrains Mono","Fira Code",monospace',
+          'font-size:9px',
+          'color:#00B7FF',
+          'line-height:11px',
+          'white-space:pre',
+          'writing-mode:vertical-lr',
+          'text-orientation:mixed',
+          'letter-spacing:3px',
+          'text-shadow:0 0 4px rgba(0,183,255,0.5)'
+        ].join(';');
+
+        let str = '';
+        for (let j = 0; j < 80; j++) {
+          str += HEX[Math.floor(Math.random() * HEX.length)];
+        }
+        col.textContent = str;
+
+        const dur = 18 + Math.random() * 16;
+        const delay = -Math.random() * dur;
+        col.style.animation = 'hccPanelRain ' + dur + 's linear ' + delay + 's infinite';
+        strip.appendChild(col);
+      }
+      panels.appendChild(strip);
+    });
+
+    // Inject keyframe if not present
+    if (!root.querySelector('#panel-rain-style')) {
+      const s = document.createElement('style');
+      s.id = 'panel-rain-style';
+      s.textContent = '@keyframes hccPanelRain{0%{top:-20%}100%{top:120%}}';
+      (this.shadowRoot || document.head).appendChild(s);
+    }
   }
 
   /**
