@@ -108,7 +108,8 @@
             'bottom:24px',
             'left:24px',
             'right:24px',
-            'height:440px',
+            'height:260px',
+            'transition:height 0.4s cubic-bezier(0.4,0,0.2,1)',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -143,8 +144,36 @@
         headerRight.id = 'hcc-feeds-status';
         headerRight.textContent = '...';
         headerRight.style.color = HCC_CYAN_BRIGHT;
+        // Expand/collapse toggle button
+        var expandBtn = document.createElement('button');
+        expandBtn.id = 'hcc-feeds-expand';
+        expandBtn.textContent = '⤢';
+        expandBtn.title = 'Expand feeds';
+        expandBtn.style.cssText = [
+            'background:none',
+            'border:1px solid rgba(0,183,255,0.35)',
+            'color:' + HCC_CYAN,
+            'font-size:14px',
+            'cursor:pointer',
+            'padding:2px 8px',
+            'font-family:inherit',
+            'transition:all 0.2s',
+            'clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px))'
+        ].join(';');
+        var expanded = false;
+        expandBtn.addEventListener('click', function () {
+            expanded = !expanded;
+            card.style.height = expanded ? '50vh' : '260px';
+            expandBtn.textContent = expanded ? '⤡' : '⤢';
+            expandBtn.title = expanded ? 'Collapse feeds' : 'Expand feeds';
+        });
+
         header.appendChild(headerLeft);
-        header.appendChild(headerRight);
+        var headerControls = document.createElement('div');
+        headerControls.style.cssText = 'display:flex;align-items:center;gap:12px;';
+        headerControls.appendChild(headerRight);
+        headerControls.appendChild(expandBtn);
+        header.appendChild(headerControls);
 
         // Body — multi-column grid of card items, vertically scrollable
         // when there are more than fit. auto-fill with min 320px columns
