@@ -339,7 +339,7 @@ class Tabs extends Component {
           flex-direction: row;
           align-items: stretch;
           padding: 0;
-          background: linear-gradient(180deg, rgba(0,183,255,0.05) 0%, rgba(0,183,255,0.12) 100%);
+          background: linear-gradient(180deg, #0b1722 0%, #0d1926 100%);
           border-top: 1px solid rgba(0,183,255,0.45);
           box-shadow: 0 -8px 24px rgba(0,183,255,0.12), inset 0 0 30px rgba(0,183,255,0.04);
           z-index: 10;
@@ -404,8 +404,10 @@ class Tabs extends Component {
 
       .categories .links {
           right: 0;
+          top: 0;
           width: 70%;
           height: calc(100% - 64px);  /* leave room for the bottom tab switcher */
+          box-sizing: border-box;     /* padding included in height, not added to it */
           background: rgba(10, 21, 32, 0.85);
           padding: 2em 3% 1.4em;
           z-index: 2;  /* above .banner (0) so links aren't hidden by the image */
@@ -415,9 +417,10 @@ class Tabs extends Component {
              behavior:contain stops wheel events from bleeding to the
              page or the rss feeds widget. */
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+          grid-template-columns: repeat(4, 1fr);
           grid-auto-rows: min-content;
-          gap: 1.6em 1.8em;
+          align-items: start;
+          gap: 1.4em 1.6em;
           overflow-y: auto;
           overflow-x: hidden;
           overscroll-behavior: contain;
