@@ -149,12 +149,17 @@ class Tabs extends Component {
    * @returns {string[]} Array of CSS file paths
    */
   imports() {
+    // Only tabler icons needed — every other import was upstream Catppuccin
+    // CSS (roboto, raleway, awoo, material icons) that loads asynchronously
+    // into the shadow DOM. On a cold cache those <link> tags race against
+    // the inline <style>, and when awoo.min.css finally loads it overrides
+    // the HCC cyberpunk styles, causing the panel to flash then go black.
+    // On second refresh the CSS is cached so the race is invisible.
+    //
+    // Our inline style() is the complete and only stylesheet for the tabs
+    // component — stripping the external imports eliminates the race.
     return [
-      this.getIconResource('material'),
       this.resources.icons.tabler,
-      this.getFontResource('roboto'),
-      this.getFontResource('raleway'),
-      this.getLibraryResource('awoo'),
     ];
   }
 
