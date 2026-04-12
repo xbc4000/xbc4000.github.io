@@ -20,8 +20,6 @@ class Statusbar extends Component {
    */
   constructor() {
     super();
-
-    this.setDependencies();
   }
 
   /**
@@ -47,8 +45,6 @@ class Statusbar extends Component {
    */
   style() {
     return `
-      *:not(:defined) { display: none; }
-
       #tabs,
       #tabs .widgets,
       #tabs ul li:last-child {
@@ -357,10 +353,10 @@ class Statusbar extends Component {
    * Component lifecycle callback when element is connected to DOM
    */
   connectedCallback() {
-    this.render().then(() => {
-      this.createTabs();
-      this.setEvents();
-      this.openLastVisitedTab();
-    });
+    this.setDependencies();
+    this.render();
+    this.createTabs();
+    this.setEvents();
+    this.openLastVisitedTab();
   }
 }

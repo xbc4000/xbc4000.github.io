@@ -152,18 +152,11 @@ class Tabs extends Component {
    * @returns {string[]} Array of CSS file paths
    */
   imports() {
-    // Only tabler icons needed — every other import was upstream Catppuccin
-    // CSS (roboto, raleway, awoo, material icons) that loads asynchronously
-    // into the shadow DOM. On a cold cache those <link> tags race against
-    // the inline <style>, and when awoo.min.css finally loads it overrides
-    // the HCC cyberpunk styles, causing the panel to flash then go black.
-    // On second refresh the CSS is cached so the race is invisible.
-    //
-    // Our inline style() is the complete and only stylesheet for the tabs
-    // component — stripping the external imports eliminates the race.
-    return [
-      this.resources.icons.tabler,
-    ];
+    // No <link> imports — the 232 KB tabler-icons.min.css was blocking
+    // shadow DOM rendering on cold cache (Firefox/spec suppresses shadow
+    // content until every <link> stylesheet loads). The stylesheet is
+    // shared via adoptedStyleSheets in connectedCallback instead.
+    return [];
   }
 
   /**
@@ -309,7 +302,7 @@ class Tabs extends Component {
           background:
             linear-gradient(135deg, rgba(0,183,255,0.03) 0%, transparent 50%, rgba(0,183,255,0.05) 100%),
             #0a1520;
-          transition: all .6s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: right .6s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       /* ── Top-level tab switcher (bottom of panel) ──────────────── */
@@ -681,10 +674,33 @@ class Tabs extends Component {
    */
   connectedCallback() {
     this.render();
+    this._copyTablerIcons();
     requestAnimationFrame(() => {
       this.bindTabSwitcher();
       this.addPanelRainBorders();
     });
+  }
+
+  /**
+   * Copy the tabler-icons stylesheet rules from the already-loaded
+   * <head> <link> into this shadow DOM as an inline <style>.
+   * Synchronous — no fetch, no adoptedStyleSheets update, no async
+   * style recalculation that could flash the panel. The <head> <link>
+   * is render-blocking so it's guaranteed loaded before any script.
+   */
+  _copyTablerIcons() {
+    for (const sheet of document.styleSheets) {
+      if (sheet.href && sheet.href.includes('tabler-icons')) {
+        try {
+          const style = document.createElement('style');
+          let css = '';
+          for (const rule of sheet.cssRules) css += rule.cssText + '\n';
+          style.textContent = css;
+          this.shadow.prepend(style);
+        } catch (e) { /* cross-origin — fall back silently */ }
+        return;
+      }
+    }
   }
 
   /**
