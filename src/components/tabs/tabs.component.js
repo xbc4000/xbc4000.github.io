@@ -417,10 +417,9 @@ class Tabs extends Component {
              behavior:contain stops wheel events from bleeding to the
              page or the rss feeds widget. */
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
           grid-auto-rows: min-content;
-          align-items: start;
-          gap: 1.4em 1.6em;
+          gap: 1.6em 1.8em;
           overflow-y: auto;
           overflow-x: hidden;
           overscroll-behavior: contain;
