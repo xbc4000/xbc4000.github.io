@@ -468,19 +468,35 @@ class Tabs extends Component {
 
       .categories ul .links a:hover {
           color: ${h.cyanBright};
-          border-color: ${h.cyanBright};
-          background: linear-gradient(135deg, #0a1a28 0%, #102030 100%);
+          border-color: var(--flavour);
+          background: linear-gradient(135deg, #0a1a28 0%, #142838 100%);
           box-shadow:
-            0 0 20px rgba(0,183,255,0.5),
-            0 0 40px rgba(0,183,255,0.2),
-            inset 0 0 20px rgba(0,183,255,0.1);
-          text-shadow: 0 0 8px rgba(0,212,255,0.8);
-          transform: translateX(3px);
+            0 0 24px var(--flavour),
+            0 0 48px rgba(0,183,255,0.25),
+            inset 0 0 24px rgba(0,212,255,0.12);
+          text-shadow: 0 0 10px var(--flavour), 0 0 18px rgba(0,212,255,0.5);
+          transform: translateX(4px) translateY(-1px);
       }
 
       .categories ul .links a:hover::before {
-          width: 4px;
-          box-shadow: 0 0 16px var(--flavour), 0 0 30px var(--flavour);
+          width: 5px;
+          box-shadow: 0 0 18px var(--flavour), 0 0 36px var(--flavour);
+      }
+
+      /* Sweep highlight on hover — diagonal gradient that slides across */
+      .categories ul .links a::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -80%;
+          width: 60%;
+          height: 100%;
+          background: linear-gradient(105deg, transparent 30%, rgba(0,212,255,0.18) 50%, transparent 70%);
+          pointer-events: none;
+          transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .categories ul .links a:hover::after {
+          left: 130%;
       }
 
       /* Tab label on the left (vertical rail) */
@@ -523,23 +539,43 @@ class Tabs extends Component {
 
       .categories .links li h1 {
           color: ${h.cyanBright};
-          opacity: 0.9;
-          font-size: 11px;
-          margin-bottom: .9em;
-          font-weight: 600;
-          letter-spacing: 3px;
+          opacity: 0.95;
+          font-size: 12px;
+          margin-bottom: 1em;
+          font-weight: 700;
+          letter-spacing: 4px;
           text-transform: uppercase;
           font-family: 'JetBrains Mono', 'Fira Code', 'Roboto Mono', 'Consolas', monospace;
-          text-shadow: 0 0 8px rgba(0,212,255,0.6);
-          border-bottom: 1px solid rgba(0,212,255,0.3);
-          padding-bottom: .3em;
+          text-shadow: 0 0 10px var(--flavour), 0 0 20px rgba(0,212,255,0.4);
+          border-bottom: 1px solid var(--flavour);
+          padding: .2em 0 .4em .4em;
           position: relative;
+          background: linear-gradient(90deg, rgba(0,183,255,0.08) 0%, transparent 100%);
+          clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
       }
 
       .categories .links li h1::before {
           content: "◆ ";
-          color: ${h.cyanBright};
-          opacity: 0.8;
+          color: var(--flavour);
+          opacity: 1;
+          text-shadow: 0 0 8px var(--flavour);
+      }
+      .categories .links li h1::after {
+          content: "";
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 6px;
+          height: 6px;
+          background: var(--flavour);
+          box-shadow: 0 0 8px var(--flavour);
+          border-radius: 50%;
+          animation: hccBlink 2s ease-in-out infinite;
+      }
+      @keyframes hccBlink {
+          0%, 100% { opacity: 1; }
+          50%      { opacity: 0.3; }
       }
 
       .categories .link-icon {
