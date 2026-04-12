@@ -381,59 +381,98 @@
             document.head.appendChild(s);
         }
 
+        // Outer wrapper with bracket-cut chrome around the inner content
         var bar = document.createElement('div');
         bar.id = 'hcc-hud-readout';
         bar.style.cssText = [
             'position:fixed',
-            'top:18px',
+            'top:14px',
             'left:50%',
             'transform:translateX(-50%)',
             'pointer-events:none',
             'z-index:' + (Z + 1),
             'display:flex',
-            'align-items:center',
-            'gap:10px',
-            'padding:6px 18px',
+            'align-items:stretch',
+            'gap:0',
+            'padding:0',
             'font-family:"JetBrains Mono","Fira Code",monospace',
-            'font-size:11px',
+            'font-size:13px',
             'letter-spacing:2px',
             'color:' + HCC_CYAN_BRIGHT,
-            'background:rgba(2,4,8,0.55)',
-            'border:1px solid rgba(0,183,255,0.35)',
-            'box-shadow:0 0 14px rgba(0,183,255,0.18), inset 0 0 18px rgba(0,183,255,0.05)',
-            'text-shadow:0 0 4px rgba(0,212,255,0.6)',
-            'backdrop-filter:blur(2px)'
+            'background:linear-gradient(180deg, rgba(2,8,16,0.85) 0%, rgba(2,4,8,0.7) 100%)',
+            'border:1px solid rgba(0,183,255,0.55)',
+            'box-shadow:0 0 22px rgba(0,183,255,0.25), 0 0 60px rgba(0,183,255,0.1), inset 0 0 24px rgba(0,183,255,0.06)',
+            'text-shadow:0 0 5px rgba(0,212,255,0.7)',
+            'backdrop-filter:blur(3px)',
+            // chamfer all 4 corners
+            'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)'
         ].join(';');
 
+        // Each segment gets its own padded box. Separators are full-height
+        // vertical bars between segments — they read as panel divisions.
         function makeSep() {
             var sep = document.createElement('span');
-            sep.textContent = '│';
-            sep.style.opacity = '0.4';
+            sep.style.cssText = [
+                'display:inline-block',
+                'width:1px',
+                'background:linear-gradient(180deg, transparent 0%, rgba(0,183,255,0.55) 30%, rgba(0,183,255,0.55) 70%, transparent 100%)',
+                'box-shadow:0 0 6px rgba(0,183,255,0.4)'
+            ].join(';');
             return sep;
         }
-        function makeSeg(id) {
-            var s = document.createElement('span');
-            if (id) s.id = id;
-            return s;
+        function makeSeg(id, label) {
+            var wrap = document.createElement('span');
+            wrap.style.cssText = [
+                'display:flex',
+                'align-items:center',
+                'gap:8px',
+                'padding:9px 18px'
+            ].join(';');
+            if (label) {
+                var l = document.createElement('span');
+                l.textContent = label;
+                l.style.cssText = [
+                    'opacity:0.55',
+                    'font-size:10px',
+                    'letter-spacing:2px',
+                    'color:' + HCC_CYAN
+                ].join(';');
+                wrap.appendChild(l);
+            }
+            var v = document.createElement('span');
+            if (id) v.id = id;
+            wrap.appendChild(v);
+            return wrap;
         }
 
-        var pulse = document.createElement('span');
-        pulse.style.cssText = [
+        // Pulse box at the very left
+        var pulseSeg = document.createElement('span');
+        pulseSeg.style.cssText = [
+            'display:flex',
+            'align-items:center',
+            'justify-content:center',
+            'padding:9px 14px',
+            'background:rgba(0,183,255,0.08)'
+        ].join(';');
+        var pulseDot = document.createElement('span');
+        pulseDot.style.cssText = [
             'display:inline-block',
-            'width:8px',
-            'height:8px',
+            'width:10px',
+            'height:10px',
             'border-radius:50%',
             'background:' + HCC_CYAN_BRIGHT,
             'animation:hccPulse 1.6s ease-in-out infinite'
         ].join(';');
+        pulseSeg.appendChild(pulseDot);
 
-        var clockSeg = makeSeg('hcc-hud-clock');
-        var lanSeg   = makeSeg('hcc-hud-lan');
-        var netSeg   = makeSeg('hcc-hud-net');
-        var viewSeg  = makeSeg('hcc-hud-view');
-        var upSeg    = makeSeg('hcc-hud-up');
+        var clockSeg = makeSeg('hcc-hud-clock', 'TIME');
+        var lanSeg   = makeSeg('hcc-hud-lan', null);   // colored, no label
+        var netSeg   = makeSeg('hcc-hud-net', 'NET');
+        var viewSeg  = makeSeg('hcc-hud-view', 'VIEW');
+        var upSeg    = makeSeg('hcc-hud-up', 'UP');
 
-        bar.appendChild(pulse);
+        bar.appendChild(pulseSeg);
+        bar.appendChild(makeSep());
         bar.appendChild(clockSeg);
         bar.appendChild(makeSep());
         bar.appendChild(lanSeg);
@@ -445,6 +484,14 @@
         bar.appendChild(upSeg);
 
         document.body.insertBefore(bar, document.body.firstChild);
+
+        // makeSeg wraps a label + value span. Re-resolve to the inner
+        // value spans by id so updates only touch the value, not the label.
+        clockSeg = document.getElementById('hcc-hud-clock');
+        lanSeg   = document.getElementById('hcc-hud-lan');
+        netSeg   = document.getElementById('hcc-hud-net');
+        viewSeg  = document.getElementById('hcc-hud-view');
+        upSeg    = document.getElementById('hcc-hud-up');
 
         // ── Live data updaters ───────────────────────────────────────
         function pad(n) { return n < 10 ? '0' + n : '' + n; }
@@ -467,20 +514,20 @@
             clockSeg.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + ' UTC' + tzSign + tzH;
 
             // Uptime (since page load, real)
-            upSeg.textContent = 'UP ' + fmtUptime(Date.now() - loadedAt);
+            upSeg.textContent = fmtUptime(Date.now() - loadedAt);
 
             // Viewport — recompute every tick (cheap, also catches resize)
-            viewSeg.textContent = 'VIEW ' + window.innerWidth + '×' + window.innerHeight + (window.devicePixelRatio > 1 ? '@' + window.devicePixelRatio + 'x' : '');
+            viewSeg.textContent = window.innerWidth + '×' + window.innerHeight + (window.devicePixelRatio > 1 ? '@' + window.devicePixelRatio + 'x' : '');
 
             // Network type — navigator.connection if exposed
             var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
             if (conn && conn.effectiveType) {
                 var down = conn.downlink ? ' ' + conn.downlink + 'Mb' : '';
-                netSeg.textContent = 'NET ' + conn.effectiveType.toUpperCase() + down;
+                netSeg.textContent = conn.effectiveType.toUpperCase() + down;
             } else if (navigator.onLine === false) {
-                netSeg.textContent = 'NET OFFLINE';
+                netSeg.textContent = 'OFFLINE';
             } else {
-                netSeg.textContent = 'NET ?';
+                netSeg.textContent = '—';
             }
         }
         tickFast();
@@ -501,9 +548,10 @@
         //      OFFLINE — that's correct: you're not on the LAN as far as
         //      a public-origin page can verify.
         function setLan(state, color) {
-            lanSeg.textContent = 'LAN ' + state;
+            lanSeg.textContent = state;
             lanSeg.style.color = color;
-            lanSeg.style.textShadow = '0 0 4px ' + color;
+            lanSeg.style.textShadow = '0 0 6px ' + color;
+            lanSeg.style.fontWeight = '700';
         }
 
         var host = window.location.hostname || '';

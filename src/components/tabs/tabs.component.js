@@ -201,8 +201,10 @@ class Tabs extends Component {
 
       #panels {
           width: 92%;
-          max-width: 1280px;
-          height: 520px;
+          max-width: 1680px;
+          height: 72vh;
+          min-height: 620px;
+          max-height: 880px;
           right: 0;
           left: 0;
           top: 0;
@@ -305,7 +307,7 @@ class Tabs extends Component {
       .categories ul .links a {
           color: ${h.cyan};
           text-decoration: none;
-          font: 500 14px 'JetBrains Mono', 'Fira Code', 'Roboto Mono', 'Consolas', monospace;
+          font: 500 16px 'JetBrains Mono', 'Fira Code', 'Roboto Mono', 'Consolas', monospace;
           letter-spacing: 1px;
           text-transform: uppercase;
           transition: all .18s cubic-bezier(0.4, 0, 0.2, 1);
