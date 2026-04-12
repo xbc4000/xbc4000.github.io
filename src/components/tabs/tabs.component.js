@@ -391,24 +391,25 @@ class Tabs extends Component {
           width: 70%;
           height: calc(100% - 64px);  /* leave room for the bottom tab switcher */
           background: rgba(10, 21, 32, 0.85);
-          padding: 2.2em 4% 1.6em;
-          /* Multi-column wrapped layout — categories flow vertically in
-             columns, columns wrap horizontally. Each <li> stays whole. */
-          column-count: 3;
-          column-gap: 2.6em;
-          column-rule: 1px dashed rgba(0,183,255,0.15);
+          padding: 2em 3% 1.4em;
+          /* CSS grid auto-fit — categories flow into as many columns as
+             fit (~220px each), with rows wrapping for overflow. The whole
+             container scrolls vertically if it overflows; overscroll-
+             behavior:contain stops wheel events from bleeding to the
+             page or the rss feeds widget. */
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+          grid-auto-rows: min-content;
+          gap: 1.6em 1.8em;
           overflow-y: auto;
           overflow-x: hidden;
           overscroll-behavior: contain;
           scrollbar-width: thin;
           scrollbar-color: ${h.cyan} #0a1520;
-          display: block;
       }
       .categories .links > li {
-          break-inside: avoid;
           display: block;
           width: 100%;
-          margin-bottom: 1.5em;
       }
 
       .categories .links::-webkit-scrollbar {
