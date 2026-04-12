@@ -18,7 +18,17 @@
     var HCC_MAGENTA     = '#FF6680';
     var HCC_AMBER       = '#FFB347';
 
-    var BRIDGE_URL = 'https://bridge.home/status';
+    // Same-origin proxy on Caddy: startpage.home/bridge/* → bridge container.
+    // Falls back to direct https://bridge.home for non-startpage origins
+    // (rare — really only the public github.io copy, which can't reach the
+    // LAN anyway).
+    var BRIDGE_URL = (function () {
+        var h = window.location.hostname || '';
+        if (/(^|\.)home$/i.test(h) || /^10\./.test(h) || /^192\.168\./.test(h) || /^172\.(1[6-9]|2[0-9]|3[01])\./.test(h) || h === 'localhost') {
+            return '/bridge/status';
+        }
+        return 'https://bridge.home/status';
+    })();
     var POLL_MS    = 3000;
     var Z          = 9996;
 
@@ -260,7 +270,7 @@
         function poll() {
             var ac = new AbortController();
             var t = setTimeout(function () { ac.abort(); }, 2500);
-            fetch(BRIDGE_URL + '?_=' + Date.now(), {
+            fetch(BRIDGE_URL + (BRIDGE_URL.indexOf('?') > -1 ? '&' : '?') + '_=' + Date.now(), {
                 cache: 'no-store',
                 signal: ac.signal
             }).then(function (r) {

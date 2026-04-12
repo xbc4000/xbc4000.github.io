@@ -285,6 +285,7 @@ class Tabs extends Component {
           padding: 3em 4%;
           flex-wrap: wrap;
           overflow-y: auto;
+          overscroll-behavior: contain;
           scrollbar-width: thin;
           scrollbar-color: ${h.cyan} #0a1520;
       }

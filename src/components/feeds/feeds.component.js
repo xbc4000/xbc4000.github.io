@@ -28,15 +28,23 @@
 
     // Sources — each returns Promise<Array<{title, url, source, ts}>>
     var SOURCES = [
-        { name: 'r/selfhosted', tag: 'selfhost', color: HCC_CYAN_BRIGHT,
+        { name: 'r/selfhosted',    tag: 'selfhost', color: HCC_CYAN_BRIGHT,
           fetch: function () { return reddit('selfhosted'); } },
-        { name: 'r/homelab',    tag: 'homelab',  color: HCC_CYAN,
+        { name: 'r/homelab',       tag: 'homelab',  color: HCC_CYAN,
           fetch: function () { return reddit('homelab'); } },
-        { name: 'r/linux',      tag: 'linux',    color: HCC_AMBER,
+        { name: 'r/linux',         tag: 'linux',    color: HCC_AMBER,
           fetch: function () { return reddit('linux'); } },
-        { name: 'r/mikrotik',   tag: 'mikrotik', color: HCC_AMBER,
+        { name: 'r/mikrotik',      tag: 'mikrotik', color: HCC_AMBER,
           fetch: function () { return reddit('mikrotik'); } },
-        { name: 'HN',           tag: 'hn',       color: HCC_MAGENTA,
+        { name: 'r/docker',        tag: 'docker',   color: HCC_CYAN,
+          fetch: function () { return reddit('docker'); } },
+        { name: 'r/grafana',       tag: 'grafana',  color: HCC_AMBER,
+          fetch: function () { return reddit('grafana'); } },
+        { name: 'r/pihole',        tag: 'pihole',   color: HCC_CYAN_BRIGHT,
+          fetch: function () { return reddit('pihole'); } },
+        { name: 'r/raspberry_pi',  tag: 'rpi',      color: HCC_MAGENTA,
+          fetch: function () { return reddit('raspberry_pi'); } },
+        { name: 'HN',              tag: 'hn',       color: HCC_MAGENTA,
           fetch: function () { return hackerNews(); } }
     ];
 
@@ -99,8 +107,8 @@
             'position:fixed',
             'bottom:24px',
             'right:24px',
-            'width:420px',
-            'max-height:340px',
+            'width:560px',
+            'max-height:620px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -121,10 +129,10 @@
             'display:flex',
             'align-items:center',
             'justify-content:space-between',
-            'padding:8px 14px',
+            'padding:11px 18px',
             'background:rgba(0,183,255,0.08)',
             'border-bottom:1px solid rgba(0,183,255,0.35)',
-            'font-size:10px',
+            'font-size:11px',
             'letter-spacing:2px',
             'flex-shrink:0'
         ].join(';');
@@ -138,12 +146,16 @@
         header.appendChild(headerLeft);
         header.appendChild(headerRight);
 
-        // Body — scrollable list
+        // Body — scrollable list. overscroll-behavior:contain stops the
+        // wheel event from propagating to the page when you reach the
+        // top/bottom of the list, so scrolling here doesn't scroll the
+        // tab panel behind.
         var list = document.createElement('div');
         list.id = 'hcc-feeds-list';
         list.style.cssText = [
             'overflow-y:auto',
             'overflow-x:hidden',
+            'overscroll-behavior:contain',
             'padding:8px 0',
             'flex:1',
             'scrollbar-width:thin',
@@ -153,14 +165,14 @@
         // webkit scrollbar styling
         var sbStyle = document.createElement('style');
         sbStyle.textContent = [
-            '#hcc-feeds-list::-webkit-scrollbar{width:6px}',
+            '#hcc-feeds-list::-webkit-scrollbar{width:8px}',
             '#hcc-feeds-list::-webkit-scrollbar-track{background:transparent}',
             '#hcc-feeds-list::-webkit-scrollbar-thumb{background:' + HCC_CYAN + ';box-shadow:0 0 6px rgba(0,183,255,0.5)}',
-            '.hcc-feed-item{display:block;padding:6px 14px;text-decoration:none;color:' + HCC_CYAN_BRIGHT + ';border-left:2px solid transparent;transition:background 0.2s, border-color 0.2s}',
+            '.hcc-feed-item{display:block;padding:9px 18px;text-decoration:none;color:' + HCC_CYAN_BRIGHT + ';border-left:2px solid transparent;transition:background 0.2s, border-color 0.2s}',
             '.hcc-feed-item:hover{background:rgba(0,183,255,0.1);border-left-color:' + HCC_CYAN_BRIGHT + '}',
-            '.hcc-feed-item-meta{display:flex;gap:8px;align-items:center;font-size:9px;letter-spacing:1px;opacity:0.7;margin-bottom:2px}',
-            '.hcc-feed-item-tag{padding:1px 6px;border:1px solid currentColor;font-weight:700}',
-            '.hcc-feed-item-title{font-size:11px;line-height:1.35;color:' + HCC_CYAN_BRIGHT + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+            '.hcc-feed-item-meta{display:flex;gap:10px;align-items:center;font-size:10px;letter-spacing:1px;opacity:0.75;margin-bottom:4px}',
+            '.hcc-feed-item-tag{padding:2px 8px;border:1px solid currentColor;font-weight:700}',
+            '.hcc-feed-item-title{font-size:13px;line-height:1.4;color:' + HCC_CYAN_BRIGHT + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}'
         ].join('\n');
         document.head.appendChild(sbStyle);
 
@@ -177,8 +189,8 @@
         function render(items) {
             // Sort by ts desc
             items.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
-            // Cap at 30 to avoid runaway DOM
-            items = items.slice(0, 30);
+            // Cap at 60 — list is scrollable so this is fine
+            items = items.slice(0, 60);
 
             list.innerHTML = '';
             items.forEach(function (item) {
