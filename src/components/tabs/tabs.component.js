@@ -162,10 +162,13 @@ class Tabs extends Component {
   style() {
     const h = (CONFIG.hcc || { cyan: "#00b7ff", cyanBright: "#00d4ff", cyanDark: "#0088bb", magenta: "#ff6680", amber: "#ffb347", green: "#00ff88", purple: "#b666ff" });
     return `
-      /* Load JetBrains Mono so the cyberpunk look is consistent on
-         machines that don't have it installed locally. Must be the
-         first rule in the stylesheet for @import to apply. */
-      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+      /* JetBrains Mono is the preferred display font but we don't @import
+         it from Google Fonts anymore — that @import was render-blocking
+         for the entire injected stylesheet, causing the cyberpunk styles
+         to not apply until Google Fonts responded, which made the page
+         render half-broken on a cold load and required a second refresh.
+         The font stack falls back to Fira Code, Roboto Mono, Consolas,
+         monospace — any of those produce a serviceable cyberpunk look. */
 
       /* ── HCC backdrop ──────────────────────────────────────────── */
       html, body {
