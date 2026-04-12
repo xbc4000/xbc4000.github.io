@@ -1,99 +1,170 @@
-# HCC Startpage
+<h1 align="center">
+  HCC Startpage
+</h1>
 
-> Cyberpunk command center for the homelab. Lives at
-> [xbc4000.github.io](https://xbc4000.github.io).
+<p align="center">
+  <b>Cyberpunk command center for the homelab</b><br>
+  <a href="https://xbc4000.github.io">xbc4000.github.io</a>
+</p>
 
-A personal browser homepage / new-tab dashboard for navigating my homelab. The
-look is a custom HCC ("Homelab Command Center") cyberpunk theme — cyan/magenta/
-amber accents, scanline overlay, neural-network particle field, vertical hex
-data rain, HUD corner brackets, and a top-center status readout that shows
-**real** browser + LAN signals (no fake "system nominal" theatre).
+<p align="center">
+  <img src="https://img.shields.io/badge/vanilla-JS-F7DF1E?style=flat-square&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/no_build-static-00b7ff?style=flat-square" />
+  <img src="https://img.shields.io/badge/shadow-DOM-00d4ff?style=flat-square" />
+  <img src="https://img.shields.io/github/license/xbc4000/xbc4000.github.io?style=flat-square&color=00b7ff" />
+</p>
 
-## What's on it
+<p align="center">
+  <img src="src/img/screenshot.png" alt="HCC Startpage" width="900" />
+</p>
 
-- **HOMELAB tab** — direct links to every internal service: Pi-hole, Portainer,
-  Grafana dashboards (deep links to each board by UID), HCC Dashboard, router
-  admin, mktxp metrics, and more. All routed through the local Caddy reverse
-  proxy at `*.home`.
-- **Other tabs** — search shortcuts, common dev/tooling links, etc. (configured
-  per-user in `userconfig.js`)
-- **Search overlay** — press `s` to summon a multi-engine search bar
-  (`!g` Google, `!d` DuckDuckGo, `!p` Perplexity, etc.)
-- **Weather widget** — keyless via Open-Meteo, no API key required
-- **Clock widget** — 12/24-hour, multiple timezones via IANA names
-- **Live HUD readout** — pulse dot, real clock with TZ offset, LAN reachability
-  probe (fetches `bridge.home/health` every 10s), `navigator.connection` type +
-  downlink, viewport WxH@DPR, page uptime since DOMContentLoaded
+---
+
+A personal browser homepage / new-tab dashboard built for navigating a homelab.
+Full HCC ("Homelab Command Center") cyberpunk aesthetic — cyan/magenta/amber
+accents, scanline overlay, neural-network particle field, hex data rain, HUD
+corner brackets, spinning reactor rings, and a top-center status readout showing
+**real** browser + LAN telemetry.
+
+## Features
+
+### 5 Tabs
+
+| Tab | What's in it |
+|-----|-------------|
+| **HOMELAB** | Infrastructure, Pi-hole admin, servers, iDRAC deep links, Grafana boards, monitoring exporters, network docs, repos |
+| **DEV** | GitHub, AI tools, docs (MDN, Docker, Caddy), Linux distro resources, dev tools, tech feeds |
+| **DAILY** | Mail, calendar, notes, todos, weather, finance |
+| **NEWS** | Tech, Linux, aggregators, world news, subreddits |
+| **CHILL** | Music, video, gaming, social, anime, shopping |
+
+### 7 Widgets
+
+| Widget | Position | What it does |
+|--------|----------|-------------|
+| **HUD Status Bar** | Top center | Pulse dot, UTC clock, LAN/NET status, viewport, uptime |
+| **NOW PLAYING** | Top left | Live Spotify track via same-origin bridge proxy (`/bridge/status`) |
+| **JARVIS** | Below NOW PLAYING | Radar canvas with probe blips + browser telemetry grid |
+| **CONDITIONS** | Top right | Weather via Open-Meteo (keyless), geolocation via BigDataCloud |
+| **FEEDS** | Bottom | Live Reddit + HN posts from 9 subreddits + Algolia |
+| **Particle Field** | Background | Neural-network canvas — 40-180 nodes with connections |
+| **Hex Rain** | Panel edges | Falling hex characters along left/right borders |
+
+### Effects
+
+- Full-viewport scanline + vignette overlay
+- Animated scan line (6s sweep)
+- Spinning reactor ring accents at panel corners
+- Panel hex rain borders
+- HUD corner brackets at viewport corners
+- Cut-corner clip-paths on panels, links, and widgets
 
 ## Configure
 
-Everything user-facing is in [`userconfig.js`](userconfig.js). It controls:
+Everything user-facing lives in [`userconfig.js`](userconfig.js):
 
-- Theme palette overrides (the HCC cyan palette is at the top of the file)
-- Tab structure, categories, links
-- Search engines and default
-- Weather location
-- Clock format and additional timezones
+```js
+tabs: [
+  { name: "HOMELAB", background_url: "src/img/banners/banner_03.gif",
+    categories: [
+      { name: "infrastructure", links: [
+        { name: "router", url: "http://router.home", icon: "router", icon_color: hcc.cyan },
+        // ...
+      ]},
+    ]},
+  // ...
+]
+```
 
-The original [`userconfig.example.js`](userconfig.example.js) from the upstream
-project is preserved as a reference for the base config schema.
+- **Palette** — HCC cyan tokens at the top of the file
+- **Tabs / categories / links** — add, remove, reorder
+- **Search engines** — `p` Perplexity, `d` DuckDuckGo, `g` Google (press `s` to open)
+- **Weather location** — city name for Open-Meteo
+- **Clock** — format string, additional timezones via IANA names
+- **Icons** — [Tabler Icons](https://tabler.io/icons), class pattern `ti ti-<name>`
 
 ## Run locally
 
-It's a static site — no build step. Open `index.html` in a browser, or:
+Static site, no build step:
 
 ```bash
 python3 -m http.server 8000
-# then visit http://localhost:8000
+# http://localhost:8000
 ```
 
-Deployed via GitHub Pages straight from `main`.
+Or serve via Caddy / nginx / anything. Deployed via GitHub Pages from `main`.
+
+### LAN deployment (optional)
+
+Serve from a local box for same-origin API proxying:
+
+```bash
+# On your server (e.g., RPi)
+git clone git@github.com:xbc4000/xbc4000.github.io.git /var/www/startpage
+
+# Caddy reverse proxy example
+startpage.home {
+    handle_path /bridge/* {
+        reverse_proxy localhost:3081
+    }
+    handle {
+        root * /var/www/startpage
+        file_server
+    }
+}
+```
 
 ## Project layout
 
 ```
-index.html              — entry point, loads scripts in order
-userconfig.js           — your personal config (live)
-userconfig.example.js   — original schema reference
+index.html                  Entry point — loads scripts in order
+userconfig.js               Your config (tabs, palette, links)
+userconfig.example.js       Original schema reference
 src/
-├── common/             — palette, utils, storage, theme, components, effects
-│   ├── effects.js      — HCC particles + rain + HUD chrome
-│   ├── palette.js      — Catppuccin palette objects (kept as a base)
-│   └── ...
-├── components/         — tabs, weather, clock, statusbar, search
-├── css/                — stylesheets, font CSS
-├── fonts/              — local font files (avoid Google Fonts CDN)
-└── img/                — banners, favicon
-docs/                   — clock format reference
+ common/
+  effects.js                Particles, rain, HUD chrome, corner brackets
+  component.js              Shadow DOM web component base class
+  config.js                 Config proxy with localStorage persistence
+  palette.js                Catppuccin palette (base layer)
+  module.js                 Component registration
+ components/
+  tabs/                     Main panel — tab switcher, link grid, banner
+  conditions/               Weather widget (Open-Meteo + BigDataCloud)
+  nowplaying/               Spotify NOW PLAYING (bridge proxy)
+  jarvis/                   Radar + telemetry widget
+  feeds/                    Reddit + HN live feed
+  weather/                  Legacy weather (kept for compatibility)
+  clock/                    Clock with timezone support
+  statusbar/                HUD status bar
+  search/                   Search overlay (multi-engine)
+ css/                       Stylesheets, tabler icons
+ fonts/                     Local fonts (no Google CDN)
+ img/
+  banners/                  Tab background images (18 GIFs)
+  screenshot.png            Repo screenshot
 ```
 
-## Credits & inspiration
+## Credits
 
-This project started as a personal fork of
-[**pivoshenko/catppuccin-startpage**](https://github.com/pivoshenko/catppuccin-startpage),
-which is itself based on [b-coimbra/dawn](https://github.com/b-coimbra/dawn).
-The original codebase, file layout, and component pattern are all from there
-and the original MIT copyright is preserved in [`LICENSE`](LICENSE).
+Started as a fork of
+[**pivoshenko/catppuccin-startpage**](https://github.com/pivoshenko/catppuccin-startpage)
+(based on [b-coimbra/dawn](https://github.com/b-coimbra/dawn)). The original
+component pattern and file layout come from there.
 
-The color sensibility started from
-[**Catppuccin**](https://catppuccin.com/palette) — the palette is still loaded
-as a base in [`src/common/palette.js`](src/common/palette.js), even though the
-HCC theme overrides it with cyan/magenta/amber.
+Color roots in [**Catppuccin**](https://catppuccin.com/palette) — the palette
+still loads as a base in `src/common/palette.js`, though the HCC theme overrides
+everything with cyan/magenta/amber.
 
-What's been added on top in this fork (and is what made me want to rebrand):
+**What's new in this fork:**
 
-- HCC cyberpunk theme — full visual overhaul of the tabs, sidebar, links,
-  hover states, scanlines, and HUD
-- HOMELAB tab with deep links to every homelab service
-- `src/common/effects.js` — neural particle field, hex data rain, HUD corner
-  brackets, live status readout
-- Weather swap from OpenWeatherMap → Open-Meteo (no API key, no signup)
-- Local font bundling so the site never hits Google Fonts CDN
-
-Treat it as inspired-by rather than a fork at this point — the look is its own
-thing now, but standing on the original's shoulders for the framework.
+- Full cyberpunk visual overhaul (HCC theme)
+- 7 live widgets (NOW PLAYING, JARVIS, CONDITIONS, FEEDS, HUD, particles, rain)
+- 5 homelab-focused tabs with deep links to every service
+- Neural particle field + hex data rain effects engine
+- Local font bundling (zero external CDN hits)
+- Shadow DOM components with synchronous render (no flash)
+- Same-origin Caddy proxy for widget API calls
 
 ## License
 
-[MIT](LICENSE) — both the original Catppuccin Startpage codebase and the HCC
-modifications.
+[MIT](LICENSE) — original catppuccin-startpage codebase + HCC modifications.
