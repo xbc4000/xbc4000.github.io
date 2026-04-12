@@ -105,10 +105,10 @@
         card.id = 'hcc-feeds';
         card.style.cssText = [
             'position:fixed',
-            'bottom:60px',
+            'bottom:24px',
             'left:24px',
             'right:24px',
-            'height:62px',
+            'height:280px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -120,23 +120,21 @@
             'backdrop-filter:blur(3px)',
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)',
             'display:flex',
-            'flex-direction:row'
+            'flex-direction:column'
         ].join(';');
 
-        // Compact header rail on the left edge — single-line label + status
+        // Top header bar (like the original card)
         var header = document.createElement('div');
         header.style.cssText = [
-            'flex-shrink:0',
-            'background:rgba(0,183,255,0.08)',
-            'border-right:1px solid rgba(0,183,255,0.35)',
             'display:flex',
-            'flex-direction:column',
-            'align-items:flex-start',
-            'justify-content:center',
-            'gap:3px',
-            'padding:0 18px',
+            'align-items:center',
+            'justify-content:space-between',
+            'padding:11px 22px',
+            'background:rgba(0,183,255,0.08)',
+            'border-bottom:1px solid rgba(0,183,255,0.35)',
             'font-size:11px',
-            'letter-spacing:2px'
+            'letter-spacing:2px',
+            'flex-shrink:0'
         ].join(';');
         var headerLeft = document.createElement('span');
         headerLeft.innerHTML = '◆ FEEDS';
@@ -144,43 +142,42 @@
         var headerRight = document.createElement('span');
         headerRight.id = 'hcc-feeds-status';
         headerRight.textContent = '...';
-        headerRight.style.cssText = [
-            'color:' + HCC_CYAN_BRIGHT,
-            'font-size:9px',
-            'opacity:0.75'
-        ].join(';');
+        headerRight.style.color = HCC_CYAN_BRIGHT;
         header.appendChild(headerLeft);
         header.appendChild(headerRight);
 
-        // Body — horizontal-scrolling row of single-line list items
+        // Body — multi-column grid of card items, vertically scrollable
+        // when there are more than fit. auto-fill with min 320px columns
+        // means it adapts to viewport width: ultrawide gets many cols,
+        // narrow gets few. Same item shape as the original card design.
         var list = document.createElement('div');
         list.id = 'hcc-feeds-list';
         list.style.cssText = [
-            'overflow-x:auto',
-            'overflow-y:hidden',
+            'overflow-y:auto',
+            'overflow-x:hidden',
             'overscroll-behavior:contain',
             'flex:1',
-            'display:flex',
-            'flex-direction:row',
-            'align-items:center',
+            'display:grid',
+            'grid-template-columns:repeat(auto-fill, minmax(340px, 1fr))',
             'gap:0',
             'padding:0',
             'scrollbar-width:thin',
             'scrollbar-color:' + HCC_CYAN + ' transparent'
         ].join(';');
 
-        // Single-line list item style — like the original list view but
-        // arranged horizontally. Each item is one row: tag · age · title.
+        // Card-style item: tag+age top row, multi-line title below.
+        // Bordered cells form a grid look without explicit gaps.
         var sbStyle = document.createElement('style');
         sbStyle.textContent = [
-            '#hcc-feeds-list::-webkit-scrollbar{height:6px}',
+            '#hcc-feeds-list::-webkit-scrollbar{width:8px}',
             '#hcc-feeds-list::-webkit-scrollbar-track{background:transparent}',
             '#hcc-feeds-list::-webkit-scrollbar-thumb{background:' + HCC_CYAN + ';box-shadow:0 0 6px rgba(0,183,255,0.5)}',
-            '.hcc-feed-item{display:inline-flex;flex-shrink:0;align-items:center;gap:10px;height:62px;padding:0 18px;text-decoration:none;color:' + HCC_CYAN_BRIGHT + ';border-right:1px solid rgba(0,183,255,0.15);transition:background 0.2s}',
+            '.hcc-feed-item{display:flex;flex-direction:column;justify-content:flex-start;gap:6px;padding:10px 18px;text-decoration:none;color:' + HCC_CYAN_BRIGHT + ';border-right:1px solid rgba(0,183,255,0.15);border-bottom:1px solid rgba(0,183,255,0.15);transition:background 0.2s}',
             '.hcc-feed-item:hover{background:rgba(0,183,255,0.1)}',
-            '.hcc-feed-item-tag{padding:2px 8px;border:1px solid currentColor;font-weight:700;font-size:9px;letter-spacing:1px;flex-shrink:0}',
-            '.hcc-feed-item-age{font-size:9px;letter-spacing:1px;opacity:0.6;flex-shrink:0;color:' + HCC_CYAN + '}',
-            '.hcc-feed-item-title{font-size:12px;color:' + HCC_CYAN_BRIGHT + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px;font-weight:500}'
+            '.hcc-feed-item-meta{display:flex;gap:10px;align-items:center;font-size:9px;letter-spacing:1px;opacity:0.85}',
+            '.hcc-feed-item-tag{padding:2px 8px;border:1px solid currentColor;font-weight:700}',
+            '.hcc-feed-item-age{color:' + HCC_CYAN + ';opacity:0.65}',
+            '.hcc-feed-item-title{font-size:12px;line-height:1.4;color:' + HCC_CYAN_BRIGHT + ';display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:500}'
         ].join('\n');
         document.head.appendChild(sbStyle);
 
