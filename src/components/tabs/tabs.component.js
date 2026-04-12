@@ -318,13 +318,15 @@ class Tabs extends Component {
          (HOMELAB / DEV / CHILL etc). Click toggles which <ul> has the
          [active] attribute, swapping the entire visible category set. */
       .banner {
-          /* Decorative left area — keeps the lo-fi background visible. */
+          /* Decorative left area — keeps the lo-fi background visible.
+             z-index MUST be below .links (0 < 2) so the image doesn't
+             cover the first column of link buttons. */
           position: absolute;
           top: 0;
           left: 0;
           width: 30%;
           height: calc(100% - 64px);
-          z-index: 1;
+          z-index: 0;
           pointer-events: none;
       }
       .tab-switcher {
@@ -406,6 +408,7 @@ class Tabs extends Component {
           height: calc(100% - 64px);  /* leave room for the bottom tab switcher */
           background: rgba(10, 21, 32, 0.85);
           padding: 2em 3% 1.4em;
+          z-index: 2;  /* above .banner (0) so links aren't hidden by the image */
           /* CSS grid auto-fit — categories flow into as many columns as
              fit (~220px each), with rows wrapping for overflow. The whole
              container scrolls vertically if it overflows; overscroll-
@@ -517,7 +520,7 @@ class Tabs extends Component {
       .categories ul::after {
           content: attr(class);
           position: absolute;
-          display: flex;
+          display: none;  /* hidden by default — only [active] tab shows its label */
           align-items: center;
           justify-content: center;
           text-transform: uppercase;
@@ -629,6 +632,7 @@ class Tabs extends Component {
 
       /* Subtle pulse on active tab label */
       .categories ul[active]::after {
+          display: flex;  /* override the default display:none */
           animation: hccPulse 2.5s ease-in-out infinite;
       }
       @keyframes hccPulse {
