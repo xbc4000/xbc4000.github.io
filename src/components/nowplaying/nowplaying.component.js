@@ -63,7 +63,7 @@
             'position:fixed',
             'top:78px',
             'left:24px',
-            'width:380px',
+            'width:600px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
