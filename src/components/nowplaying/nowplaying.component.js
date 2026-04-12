@@ -57,7 +57,7 @@
         card.id = 'hcc-nowplaying';
         card.style.cssText = [
             'position:fixed',
-            'bottom:24px',
+            'top:78px',
             'left:24px',
             'width:380px',
             'pointer-events:auto',

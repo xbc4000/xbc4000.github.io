@@ -105,10 +105,10 @@
         card.id = 'hcc-feeds';
         card.style.cssText = [
             'position:fixed',
-            'bottom:24px',
+            'bottom:18px',
+            'left:24px',
             'right:24px',
-            'width:560px',
-            'max-height:620px',
+            'height:148px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -120,59 +120,74 @@
             'backdrop-filter:blur(3px)',
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)',
             'display:flex',
-            'flex-direction:column'
+            'flex-direction:row'
         ].join(';');
 
-        // Header
+        // Vertical header rail on the left edge
         var header = document.createElement('div');
         header.style.cssText = [
+            'flex-shrink:0',
+            'width:46px',
+            'background:rgba(0,183,255,0.08)',
+            'border-right:1px solid rgba(0,183,255,0.35)',
             'display:flex',
+            'flex-direction:column',
             'align-items:center',
             'justify-content:space-between',
-            'padding:11px 18px',
-            'background:rgba(0,183,255,0.08)',
-            'border-bottom:1px solid rgba(0,183,255,0.35)',
+            'padding:14px 0',
             'font-size:11px',
-            'letter-spacing:2px',
-            'flex-shrink:0'
+            'letter-spacing:3px'
         ].join(';');
         var headerLeft = document.createElement('span');
-        headerLeft.innerHTML = '◆ FEEDS';
-        headerLeft.style.color = HCC_CYAN;
+        headerLeft.textContent = 'FEEDS';
+        headerLeft.style.cssText = [
+            'color:' + HCC_CYAN_BRIGHT,
+            'font-weight:700',
+            'writing-mode:vertical-lr',
+            'text-orientation:mixed',
+            'transform:rotate(180deg)'
+        ].join(';');
         var headerRight = document.createElement('span');
         headerRight.id = 'hcc-feeds-status';
         headerRight.textContent = '...';
-        headerRight.style.color = HCC_CYAN_BRIGHT;
+        headerRight.style.cssText = [
+            'color:' + HCC_CYAN_BRIGHT,
+            'font-size:8px',
+            'writing-mode:vertical-lr',
+            'text-orientation:mixed',
+            'transform:rotate(180deg)',
+            'opacity:0.75'
+        ].join(';');
         header.appendChild(headerLeft);
         header.appendChild(headerRight);
 
-        // Body — scrollable list. overscroll-behavior:contain stops the
-        // wheel event from propagating to the page when you reach the
-        // top/bottom of the list, so scrolling here doesn't scroll the
-        // tab panel behind.
+        // Body — horizontal-scrolling row of cards
         var list = document.createElement('div');
         list.id = 'hcc-feeds-list';
         list.style.cssText = [
-            'overflow-y:auto',
-            'overflow-x:hidden',
+            'overflow-x:auto',
+            'overflow-y:hidden',
             'overscroll-behavior:contain',
-            'padding:8px 0',
             'flex:1',
+            'display:flex',
+            'flex-direction:row',
+            'gap:0',
+            'padding:0',
             'scrollbar-width:thin',
             'scrollbar-color:' + HCC_CYAN + ' transparent'
         ].join(';');
 
-        // webkit scrollbar styling
+        // webkit scrollbar + per-item card styling
         var sbStyle = document.createElement('style');
         sbStyle.textContent = [
-            '#hcc-feeds-list::-webkit-scrollbar{width:8px}',
+            '#hcc-feeds-list::-webkit-scrollbar{height:8px}',
             '#hcc-feeds-list::-webkit-scrollbar-track{background:transparent}',
             '#hcc-feeds-list::-webkit-scrollbar-thumb{background:' + HCC_CYAN + ';box-shadow:0 0 6px rgba(0,183,255,0.5)}',
-            '.hcc-feed-item{display:block;padding:9px 18px;text-decoration:none;color:' + HCC_CYAN_BRIGHT + ';border-left:2px solid transparent;transition:background 0.2s, border-color 0.2s}',
-            '.hcc-feed-item:hover{background:rgba(0,183,255,0.1);border-left-color:' + HCC_CYAN_BRIGHT + '}',
-            '.hcc-feed-item-meta{display:flex;gap:10px;align-items:center;font-size:10px;letter-spacing:1px;opacity:0.75;margin-bottom:4px}',
+            '.hcc-feed-item{display:flex;flex-direction:column;justify-content:center;flex-shrink:0;width:280px;padding:14px 18px;text-decoration:none;color:' + HCC_CYAN_BRIGHT + ';border-right:1px solid rgba(0,183,255,0.18);transition:background 0.2s,border-color 0.2s;gap:6px}',
+            '.hcc-feed-item:hover{background:rgba(0,183,255,0.1);border-right-color:' + HCC_CYAN_BRIGHT + '}',
+            '.hcc-feed-item-meta{display:flex;gap:10px;align-items:center;font-size:10px;letter-spacing:1px;opacity:0.85}',
             '.hcc-feed-item-tag{padding:2px 8px;border:1px solid currentColor;font-weight:700}',
-            '.hcc-feed-item-title{font-size:13px;line-height:1.4;color:' + HCC_CYAN_BRIGHT + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}'
+            '.hcc-feed-item-title{font-size:13px;line-height:1.35;color:' + HCC_CYAN_BRIGHT + ';display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-weight:500}'
         ].join('\n');
         document.head.appendChild(sbStyle);
 

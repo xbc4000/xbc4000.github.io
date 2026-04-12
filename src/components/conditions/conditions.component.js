@@ -3,8 +3,11 @@
 // =============================================================================
 // Top-right card with all real data, no fake placeholders:
 //
-//   - Location: ipapi.co/json/ → city, region, country, ISP, public IP
-//                                 + lat/lon + timezone (CORS-open, no key)
+//   - Location: ipwho.is → city, region, country, ISP, public IP
+//                          + lat/lon + timezone (CORS-open, no key)
+//                          NOTE: ipapi.co was the obvious choice but
+//                          Pi-hole blocks it as a fingerprinter, so we
+//                          use ipwho.is instead.
 //   - Weather:  api.open-meteo.com → current temp, apparent temp,
 //                                     humidity, wind, condition,
 //                                     today's high/low, sunrise, sunset
@@ -75,7 +78,7 @@
             'position:fixed',
             'top:78px',
             'right:24px',
-            'width:340px',
+            'width:460px',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -94,10 +97,10 @@
             'display:flex',
             'align-items:center',
             'justify-content:space-between',
-            'padding:8px 14px',
+            'padding:11px 18px',
             'background:rgba(0,183,255,0.08)',
             'border-bottom:1px solid rgba(0,183,255,0.35)',
-            'font-size:10px',
+            'font-size:11px',
             'letter-spacing:2px'
         ].join(';');
         var headerLeft = document.createElement('span');
@@ -112,12 +115,12 @@
 
         // Body
         var body = document.createElement('div');
-        body.style.cssText = 'padding:14px 16px 12px;';
+        body.style.cssText = 'padding:18px 22px 16px;';
 
         // Location row (city, region · country)
         var locEl = document.createElement('div');
         locEl.style.cssText = [
-            'font-size:13px',
+            'font-size:16px',
             'font-weight:700',
             'color:' + HCC_CYAN_BRIGHT,
             'text-shadow:0 0 6px rgba(0,212,255,0.6)',
@@ -130,11 +133,11 @@
 
         var ipEl = document.createElement('div');
         ipEl.style.cssText = [
-            'font-size:10px',
+            'font-size:11px',
             'color:' + HCC_CYAN,
             'opacity:0.6',
             'letter-spacing:1px',
-            'margin-bottom:14px',
+            'margin-bottom:18px',
             'white-space:nowrap',
             'overflow:hidden',
             'text-overflow:ellipsis'
@@ -151,33 +154,34 @@
         ].join(';');
         var tempEl = document.createElement('div');
         tempEl.style.cssText = [
-            'font-size:42px',
+            'font-size:64px',
             'font-weight:700',
             'line-height:1',
             'color:' + HCC_CYAN_BRIGHT,
-            'text-shadow:0 0 12px rgba(0,212,255,0.7)'
+            'text-shadow:0 0 14px rgba(0,212,255,0.7)'
         ].join(';');
         tempEl.textContent = '—°';
         var condCol = document.createElement('div');
-        condCol.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:2px';
+        condCol.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:3px';
         var glyphEl = document.createElement('div');
         glyphEl.style.cssText = [
-            'font-size:18px',
+            'font-size:24px',
             'color:' + HCC_AMBER,
-            'text-shadow:0 0 6px rgba(255,179,71,0.5)'
+            'text-shadow:0 0 8px rgba(255,179,71,0.5)'
         ].join(';');
         glyphEl.textContent = '·';
         var condEl = document.createElement('div');
         condEl.style.cssText = [
-            'font-size:11px',
+            'font-size:13px',
             'color:' + HCC_CYAN,
             'letter-spacing:1px',
-            'opacity:0.85'
+            'opacity:0.85',
+            'font-weight:600'
         ].join(';');
         condEl.textContent = '—';
         var feelsEl = document.createElement('div');
         feelsEl.style.cssText = [
-            'font-size:10px',
+            'font-size:11px',
             'color:' + HCC_CYAN,
             'opacity:0.6',
             'letter-spacing:1px'
@@ -194,8 +198,8 @@
         grid.style.cssText = [
             'display:grid',
             'grid-template-columns:1fr 1fr',
-            'gap:6px 14px',
-            'font-size:10px',
+            'gap:8px 18px',
+            'font-size:12px',
             'letter-spacing:1px',
             'color:' + HCC_CYAN,
             'margin-bottom:12px'
@@ -247,20 +251,24 @@
         }
 
         // ── Location fetch (once) ────────────────────────────────────
+        // ipwho.is shape: { ip, city, region, country_code, latitude,
+        // longitude, connection: { isp, org }, success: true|false, ... }
         var locationData = null;
         function fetchLocation() {
-            return fetch('https://ipapi.co/json/', { cache: 'no-store' })
+            return fetch('https://ipwho.is/', { cache: 'no-store' })
                 .then(function (r) {
-                    if (!r.ok) throw new Error('ipapi ' + r.status);
+                    if (!r.ok) throw new Error('ipwho ' + r.status);
                     return r.json();
                 })
                 .then(function (j) {
+                    if (j && j.success === false) throw new Error('ipwho: ' + (j.message || 'unknown'));
                     locationData = j;
                     var city = j.city || '?';
                     var region = j.region || '';
                     var country = j.country_code || j.country || '';
-                    locEl.textContent = city + (region ? ', ' + region : '') + (country ? ' · ' + country : '');
-                    var isp = j.org || '';
+                    locEl.textContent = city + (region ? ', ' + region : '') + (country ? '  ·  ' + country : '');
+                    var conn = j.connection || {};
+                    var isp = conn.isp || conn.org || '';
                     ipEl.textContent = (j.ip || 'IP ?') + (isp ? '  ·  ' + isp : '');
                     return j;
                 });
