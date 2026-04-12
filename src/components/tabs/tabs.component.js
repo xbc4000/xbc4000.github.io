@@ -308,7 +308,7 @@ class Tabs extends Component {
           right: 100%;
           background:
             linear-gradient(135deg, rgba(0,183,255,0.03) 0%, transparent 50%, rgba(0,183,255,0.05) 100%),
-            #020408;
+            #0a1520;
           transition: all .6s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
@@ -318,15 +318,15 @@ class Tabs extends Component {
          (HOMELAB / DEV / CHILL etc). Click toggles which <ul> has the
          [active] attribute, swapping the entire visible category set. */
       .banner {
-          /* Decorative image — small, right-aligned within the left
-             gutter so it sits fully inside the panel border lines. */
+          /* Decorative image — centered in the left gutter, sized to
+             fit inside the panel lines with breathing room. */
           position: absolute;
           top: 50%;
-          transform: translateY(-50%);
-          right: 72%;
-          width: 18%;
+          left: 15%;
+          transform: translate(-50%, -50%);
+          width: 22%;
           aspect-ratio: 3 / 4;
-          max-height: calc(100% - 64px - 48px);
+          max-height: calc(100% - 64px - 40px);
           z-index: 0;
           pointer-events: none;
           border: 1px solid rgba(0,183,255,0.35);
