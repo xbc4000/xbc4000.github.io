@@ -5,6 +5,10 @@
   <meta charset="utf-8" />
   <meta name="author" content="xbc4000 (https://github.com/xbc4000)" />
   <meta name="description" content="HCC Startpage — cyberpunk command center for the homelab. Inspired by Catppuccin and based on pivoshenko/catppuccin-startpage." />
+  <!-- Belt-and-suspenders cache disable so Firefox BFCache + disk cache don't serve stale assets after a deploy -->
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <!-- CSS files will be loaded by JavaScript based on configuration -->
   <link href="https://cdn.jsdelivr.net/gh/monzanifabio/cryptofont/cryptofont.css" rel="stylesheet" />
   <link href="src/css/style.css" rel="stylesheet" type="text/css" />
