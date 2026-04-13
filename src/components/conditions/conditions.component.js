@@ -78,12 +78,7 @@
         var card = document.createElement('div');
         card.id = 'hcc-conditions';
         card.style.cssText = [
-            'position:fixed',
-            'top:clamp(160px, 12vw, 190px)',
-            'right:clamp(12px, 1.5vw, 24px)',
-            'width:clamp(220px, 19vw, 440px)',
             'pointer-events:auto',
-            'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
             'color:' + HCC_CYAN_BRIGHT,
             'background:linear-gradient(180deg, rgba(2,8,16,0.82) 0%, rgba(2,4,8,0.7) 100%)',
@@ -222,7 +217,8 @@
 
         card.appendChild(header);
         card.appendChild(body);
-        document.body.appendChild(card);
+        var sidebar = document.getElementById('hcc-sidebar-right');
+        (sidebar || document.body).appendChild(card);
 
         function setStatus(text, color) {
             headerRight.textContent = text;
