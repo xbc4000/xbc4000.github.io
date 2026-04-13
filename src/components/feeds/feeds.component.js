@@ -48,11 +48,10 @@
           fetch: function () { return hackerNews(); } }
     ];
 
-    var REDDIT_BASE = window.location.protocol === 'https:' ? '/reddit' : 'https://www.reddit.com';
-    var HN_BASE = window.location.protocol === 'https:' ? '/hn' : 'https://hn.algolia.com';
-
     function reddit(sub) {
-        return fetch(REDDIT_BASE + '/r/' + sub + '/.json?limit=8&raw_json=1').then(function (r) {
+        return fetch('https://www.reddit.com/r/' + sub + '/.json?limit=8&raw_json=1', {
+            cache: 'no-store'
+        }).then(function (r) {
             if (!r.ok) throw new Error('reddit ' + r.status);
             return r.json();
         }).then(function (j) {
@@ -70,7 +69,7 @@
     }
 
     function hackerNews() {
-        return fetch(HN_BASE + '/api/v1/search?tags=front_page&hitsPerPage=10&_=' + Date.now())
+        return fetch('https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=10&_=' + Date.now())
         .then(function (r) {
             if (!r.ok) throw new Error('hn ' + r.status);
             return r.json();
