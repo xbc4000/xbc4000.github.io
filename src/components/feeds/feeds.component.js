@@ -120,8 +120,12 @@
             'backdrop-filter:blur(3px)',
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)',
             'display:flex',
-            'flex-direction:column'
+            'flex-direction:column',
+            'overscroll-behavior:contain'
         ].join(';');
+
+        // Stop scroll from bubbling out of the feeds card
+        card.addEventListener('wheel', function (e) { e.stopPropagation(); }, { passive: true });
 
         // Top header bar (like the original card)
         var header = document.createElement('div');
