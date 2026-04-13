@@ -121,7 +121,9 @@
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)',
             'display:flex',
             'flex-direction:column',
-            'overscroll-behavior:contain'
+            'overscroll-behavior:contain',
+            'opacity:0',
+            'transition:opacity 0.4s ease'
         ].join(';');
 
         // Stop scroll from bubbling out of the feeds card
@@ -279,6 +281,7 @@
                     return;
                 }
                 render(all);
+                card.style.opacity = '1';
                 var nFailed = results.filter(function (r) { return r.length === 0; }).length;
                 if (nFailed === 0) {
                     setStatus(all.length + ' ITEMS', HCC_CYAN_BRIGHT);

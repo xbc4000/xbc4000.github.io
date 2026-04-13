@@ -78,6 +78,7 @@
         var card = document.createElement('div');
         card.id = 'hcc-conditions';
         card.style.cssText = [
+            'width:100%',
             'pointer-events:auto',
             'font-family:"JetBrains Mono","Fira Code",monospace',
             'color:' + HCC_CYAN_BRIGHT,
