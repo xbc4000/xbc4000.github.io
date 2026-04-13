@@ -80,7 +80,7 @@
             'position:fixed',
             'top:clamp(60px, 5.5vw, 78px)',
             'right:clamp(12px, 1.5vw, 24px)',
-            'width:clamp(260px, 22vw, 540px)',
+            'width:clamp(220px, 19vw, 440px)',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -91,7 +91,7 @@
             'text-shadow:0 0 4px rgba(0,212,255,0.45)',
             'backdrop-filter:blur(3px)',
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)',
-            'min-height:338px'
+            'min-height:clamp(240px, 26vh, 338px)'
         ].join(';');
 
         // Header
@@ -157,7 +157,7 @@
         ].join(';');
         var tempEl = document.createElement('div');
         tempEl.style.cssText = [
-            'font-size:clamp(36px, 3.3vw, 64px)',
+            'font-size:clamp(28px, 2.8vw, 52px)',
             'font-weight:700',
             'line-height:1',
             'color:' + HCC_CYAN_BRIGHT,

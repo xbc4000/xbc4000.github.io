@@ -41,7 +41,7 @@
             'position:fixed',
             'left:clamp(12px, 1.5vw, 24px)',
             'top:clamp(180px, 14vw, 216px)',
-            'width:clamp(260px, 22vw, 540px)',
+            'width:clamp(220px, 19vw, 440px)',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',

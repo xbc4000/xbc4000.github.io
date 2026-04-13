@@ -107,7 +107,7 @@
             'bottom:clamp(12px, 1.5vw, 24px)',
             'left:clamp(12px, 1.5vw, 24px)',
             'right:clamp(12px, 1.5vw, 24px)',
-            'height:clamp(180px, 20vh, 260px)',
+            'height:clamp(140px, 16vh, 200px)',
             'transition:height 0.4s cubic-bezier(0.4,0,0.2,1)',
             'pointer-events:auto',
             'z-index:' + Z,
