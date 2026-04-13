@@ -529,7 +529,7 @@
                 var down = conn.downlink ? ' ' + conn.downlink + 'Mb' : '';
                 netSeg.textContent = conn.effectiveType.toUpperCase() + down;
             } else {
-                netSeg.textContent = navigator.onLine ? 'ONLINE' : 'OFFLINE';
+                netSeg.textContent = navigator.onLine ? 'OK' : 'DOWN';
             }
         }
         tickFast();
