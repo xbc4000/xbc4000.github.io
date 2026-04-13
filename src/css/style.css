@@ -36,7 +36,7 @@
    element renders immediately as soon as its template() runs. */
 
 body {
-  background-color: var(--bg);
+  background-color: #020408;
   height: 100vh;
   width: 100%;
   display: flex;
@@ -53,5 +53,5 @@ tabs-list {
   height: 100%;
   background-repeat: no-repeat;
   background-size: cover;
-  background-color: var(--bg);
+  background-color: #020408;
 }
