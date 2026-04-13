@@ -246,7 +246,7 @@ class Tabs extends Component {
           right: 0;
           left: 0;
           top: 0;
-          bottom: 10vh;
+          bottom: 13vh;
           margin: auto;
           background: #0a1520;
           border: 1px solid rgba(0,183,255,0.35);

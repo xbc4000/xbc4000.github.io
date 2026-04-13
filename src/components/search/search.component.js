@@ -27,92 +27,98 @@ class Search extends Component {
    * @returns {string} CSS styles for the search component
    */
   style() {
+    const h = CONFIG.hcc || {};
+    const cyan = h.cyan || '#00b7ff';
+    const cyanBright = h.cyanBright || '#00d4ff';
+    const cyanGlow = h.cyanGlow || '#0ffff4';
     return `
       #search {
-          position: absolute;
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
           display: flex;
           align-items: center;
           justify-content: center;
-          width: calc(100% - 2px);
-          height: 100%;
-          background: ${CONFIG.palette.mantle}cc;
-          z-index: 99;
+          background: rgba(2,4,8,0.85);
+          backdrop-filter: blur(8px);
+          z-index: 10000;
           visibility: hidden;
-          top: -100%;
-          backdrop-filter: blur(5px);
-          transition: all .2s ease-in-out;
+          opacity: 0;
+          transition: opacity .25s ease, visibility .25s ease;
       }
-
       #search.active {
-          top: 0;
           visibility: visible;
+          opacity: 1;
       }
 
       #search div {
           position: relative;
-          width: 100%;
+          width: clamp(320px, 40vw, 700px);
       }
 
       #search input {
           border: 0;
           outline: 0;
           width: 100%;
-          box-shadow: inset 0 -2px ${CONFIG.palette.crust};
-          padding: .5em 0;
+          padding: 14px 40px 14px 0;
           background: none;
-          font: 500 22px 'Roboto', sans-serif;
-          letter-spacing: 1px;
-          color: ${CONFIG.palette.lavender};
+          font: 500 clamp(16px, 1.4vw, 22px) 'JetBrains Mono', 'Fira Code', monospace;
+          letter-spacing: 2px;
+          color: ${cyanBright};
+          border-bottom: 2px solid rgba(0,183,255,0.4);
+          caret-color: ${cyanGlow};
+          text-shadow: 0 0 6px rgba(0,212,255,0.4);
       }
-
+      #search input::placeholder {
+          color: rgba(0,183,255,0.35);
+          letter-spacing: 4px;
+          text-transform: uppercase;
+      }
       #search input:focus {
-          box-shadow: inset 0 -2px ${CONFIG.palette.lavender};
+          border-bottom-color: ${cyanBright};
+          box-shadow: 0 2px 20px rgba(0,183,255,0.2);
       }
-
       #search input::selection {
-          background: ${CONFIG.palette.overlay2};
-          color: ${CONFIG.palette.base};
+          background: rgba(0,183,255,0.3);
+          color: #fff;
       }
 
       #search .close {
           background: 0;
           border: 0;
           outline: 0;
-          color: ${CONFIG.palette.lavender};
+          color: ${cyan};
           position: absolute;
           right: 0;
+          top: 14px;
           cursor: pointer;
-          top: 15px;
+          font-size: 18px;
+          opacity: 0.6;
+          transition: opacity .2s, color .2s, text-shadow .2s;
       }
-
       #search .close:hover {
-          filter: opacity(.5);
+          opacity: 1;
+          color: ${cyanBright};
+          text-shadow: 0 0 8px ${cyanGlow};
       }
 
       .search-engines {
           list-style: none;
-          color: ${CONFIG.palette.overlay1};
           display: flex;
           padding: 0;
-          top: 50px;
-          left: 0;
-          margin: 1em 0 0 0;
+          margin: 12px 0 0 0;
+          gap: 16px;
       }
-
       .search-engines li p {
-          cursor: default;
-          transition: all .2s;
-          font-size: 12px;
-          font-family: 'Roboto', sans-serif;
+          cursor: pointer;
+          font: 600 11px 'JetBrains Mono', monospace;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: rgba(0,183,255,0.4);
+          transition: color .2s, text-shadow .2s;
       }
-
-      .search-engines li {
-          margin: 0 1em 0 0;
-      }
-
-      .search-engines li.active {
-          color: ${CONFIG.palette.lavender};
-          font-weight: 700;
+      .search-engines li.active p {
+          color: ${cyanBright};
+          text-shadow: 0 0 6px rgba(0,212,255,0.5);
       }
 
       .search-suggestions {
@@ -120,46 +126,39 @@ class Search extends Component {
           top: 100%;
           left: 0;
           right: 0;
-          border-radius: 0px;
           margin-top: 8px;
           max-height: 200px;
           overflow-y: auto;
           z-index: 100;
-          box-shadow: 0 4px 12px ${CONFIG.palette.crust}80;
+          background: rgba(2,8,16,0.9);
+          border: 1px solid rgba(0,183,255,0.3);
           display: none;
+          scrollbar-width: thin;
+          scrollbar-color: ${cyan} transparent;
       }
-
-      .search-suggestions.active {
-          display: block;
-      }
+      .search-suggestions.active { display: block; }
 
       .search-suggestion {
-          padding: 8px 12px;
+          padding: 10px 14px;
           cursor: pointer;
-          color: ${CONFIG.palette.text};
-          border-bottom: 1px solid ${CONFIG.palette.surface1};
-          font-size: 14px;
-          transition: background-color 0.2s ease;
+          color: ${cyan};
+          border-bottom: 1px solid rgba(0,183,255,0.15);
+          font: 13px 'JetBrains Mono', monospace;
+          transition: background .2s, color .2s;
       }
-
-      .search-suggestion:last-child {
-          border-bottom: none;
-      }
-
+      .search-suggestion:last-child { border-bottom: none; }
       .search-suggestion:hover,
       .search-suggestion.selected {
-          background: ${CONFIG.palette.surface1};
-          color: ${CONFIG.palette.lavender};
+          background: rgba(0,183,255,0.12);
+          color: ${cyanBright};
       }
-
       .search-suggestion .url {
-          color: ${CONFIG.palette.overlay1};
-          font-size: 12px;
-          margin-top: 2px;
+          color: rgba(0,183,255,0.4);
+          font-size: 11px;
+          margin-top: 3px;
       }
-
       .search-suggestion .title {
-          font-weight: 500;
+          font-weight: 600;
           margin-bottom: 2px;
       }
 
@@ -167,26 +166,18 @@ class Search extends Component {
           background: none;
           border: 0;
           outline: 0;
-          color: ${CONFIG.palette.overlay1};
+          color: rgba(0,183,255,0.4);
           position: absolute;
           right: 30px;
-          top: 15px;
+          top: 14px;
           cursor: pointer;
           font-size: 16px;
           padding: 4px;
-          border-radius: 4px;
-          transition: all 0.2s ease;
+          transition: color .2s;
           display: none;
       }
-
-      .clear-history:hover {
-          color: ${CONFIG.palette.red};
-          background: ${CONFIG.palette.surface1};
-      }
-
-      .clear-history.visible {
-          display: block;
-      }
+      .clear-history:hover { color: #ff6680; }
+      .clear-history.visible { display: block; }
     `;
   }
 
@@ -195,10 +186,7 @@ class Search extends Component {
    * @returns {Array<string>} Array of resource imports
    */
   imports() {
-    return [
-      this.getFontResource('roboto'),
-      this.getIconResource('material')
-    ];
+    return [];
   }
 
   /**
@@ -209,8 +197,8 @@ class Search extends Component {
     return `
         <div id="search">
           <div>
-            <input type="text" spellcheck="false" placeholder="search">
-            <button class="close"><i class="material-icons">&#xE5CD;</i></button>
+            <input type="text" spellcheck="false" placeholder="search perplexity...">
+            <button class="close">✕</button>
             <button class="clear-history" title="Clear search history">×</button>
             <ul class="search-engines"></ul>
             <div class="search-suggestions"></div>
@@ -634,12 +622,11 @@ class Search extends Component {
    * @returns {void}
    */
   connectedCallback() {
-    this.render().then(() => {
-      this.loadEngines();
-      this.setEvents();
-      this.initializeLocalHistory();
-      this.updateClearHistoryButton();
-    });
+    this.render();
+    this.loadEngines();
+    this.setEvents();
+    this.initializeLocalHistory();
+    this.updateClearHistoryButton();
   }
 
   /**

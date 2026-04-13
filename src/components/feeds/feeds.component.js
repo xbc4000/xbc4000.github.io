@@ -107,7 +107,7 @@
             'bottom:clamp(8px, 1vw, 16px)',
             'left:clamp(12px, 1.5vw, 24px)',
             'right:clamp(12px, 1.5vw, 24px)',
-            'height:clamp(160px, 19vh, 240px)',
+            'height:clamp(180px, 22vh, 280px)',
             'transition:height 0.4s cubic-bezier(0.4,0,0.2,1)',
             'pointer-events:auto',
             'z-index:' + Z,
@@ -162,7 +162,7 @@
         var expanded = false;
         expandBtn.addEventListener('click', function () {
             expanded = !expanded;
-            card.style.height = expanded ? '50vh' : 'clamp(160px, 19vh, 240px)';
+            card.style.height = expanded ? '50vh' : 'clamp(180px, 22vh, 280px)';
             expandBtn.textContent = expanded ? '⤡' : '⤢';
             expandBtn.title = expanded ? 'Collapse feeds' : 'Expand feeds';
         });
