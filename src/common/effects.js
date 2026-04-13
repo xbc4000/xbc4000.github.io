@@ -519,8 +519,6 @@
             // Uptime (since page load, real)
             upSeg.textContent = fmtUptime(Date.now() - loadedAt);
 
-            // IP is set once by fetchIp(), no per-tick update needed
-
             // Network type — navigator.connection if exposed (Chrome only),
             // otherwise fall back to navigator.onLine which IS exposed
             // everywhere and IS a real signal.
@@ -595,24 +593,11 @@
             .catch(function () { viewSeg.textContent = '—'; });
     }
 
-    function buildSidebars() {
-        var css = 'position:fixed;top:clamp(60px, 5.5vw, 78px);display:flex;flex-direction:column;gap:10px;width:clamp(220px, 19vw, 440px);pointer-events:none;z-index:9996;';
-        var left = document.createElement('div');
-        left.id = 'hcc-sidebar-left';
-        left.style.cssText = css + 'left:clamp(12px, 1.5vw, 24px);';
-        var right = document.createElement('div');
-        right.id = 'hcc-sidebar-right';
-        right.style.cssText = css + 'right:clamp(12px, 1.5vw, 24px);';
-        document.body.appendChild(left);
-        document.body.appendChild(right);
-    }
-
     function init() {
         buildParticles();
         buildDataRain();
         buildHudBrackets();
         buildHudReadout();
-        buildSidebars();
     }
 
     if (document.readyState === 'loading') {

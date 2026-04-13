@@ -22,7 +22,7 @@
         return 'http://10.10.10.2:9401';
     })();
     var POLL_MS      = 10000;
-    var Z            = 9996;
+    var Z            = 9995;
 
     function fmtBytes(b) {
         if (!b) return '0';
@@ -37,38 +37,35 @@
         card = document.createElement('div');
         card.id = 'hcc-ollama';
         card.style.cssText = [
-            'width:100%',
+            'position:fixed',
+            'bottom:clamp(12px, 1.5vw, 24px)',
+            'right:clamp(12px, 1.5vw, 24px)',
+            'width:clamp(200px, 16vw, 340px)',
             'pointer-events:auto',
+            'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
             'color:' + HCC_CYAN_BRIGHT,
             'background:linear-gradient(180deg, rgba(2,8,16,0.82) 0%, rgba(2,4,8,0.7) 100%)',
-            'border:1px solid rgba(0,183,255,0.55)',
-            'box-shadow:0 0 22px rgba(0,183,255,0.22), 0 0 50px rgba(0,183,255,0.08), inset 0 0 24px rgba(0,183,255,0.05)',
+            'border:1px solid rgba(255,0,178,0.55)',
+            'box-shadow:0 0 22px rgba(255,0,178,0.18), 0 0 50px rgba(255,0,178,0.06), inset 0 0 24px rgba(255,0,178,0.04)',
             'text-shadow:0 0 4px rgba(0,212,255,0.45)',
             'backdrop-filter:blur(3px)',
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)',
             'opacity:1',
-            'transition:opacity 0.4s ease'
+            'transition:opacity 0.4s ease',
+            'padding:0'
         ].join(';');
 
         // Header
         var header = document.createElement('div');
-        header.style.cssText = [
-            'display:flex',
-            'align-items:center',
-            'justify-content:space-between',
-            'padding:8px 14px',
-            'background:rgba(0,183,255,0.08)',
-            'border-bottom:1px solid rgba(0,183,255,0.35)',
-            'font-size:10px',
-            'letter-spacing:2px'
-        ].join(';');
+        header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 14px 6px 14px;border-bottom:1px solid rgba(255,0,178,0.25);';
 
         var title = document.createElement('span');
-        title.innerHTML = '&#9670; SERINA';
+        title.style.cssText = 'font-size:clamp(0.6rem,0.8vw,0.75rem);font-weight:800;letter-spacing:3px;color:' + HCC_MAGENTA + ';';
+        title.textContent = '\u25C6 SERINA';
 
         headerStatus = document.createElement('span');
-        headerStatus.style.cssText = 'font-weight:700;';
+        headerStatus.style.cssText = 'font-size:clamp(0.55rem,0.65vw,0.65rem);font-weight:700;letter-spacing:2px;';
         setStatus('INIT', HCC_AMBER);
 
         header.appendChild(title);
@@ -77,7 +74,7 @@
 
         // Body
         var body = document.createElement('div');
-        body.style.cssText = 'padding:8px 14px 10px 14px;font-size:10px;';
+        body.style.cssText = 'padding:8px 14px 10px 14px;font-size:clamp(0.6rem,0.72vw,0.72rem);';
 
         // Stats grid
         var statsGrid = document.createElement('div');
@@ -101,17 +98,16 @@
 
         // Models list
         modelsListEl = document.createElement('div');
-        modelsListEl.style.cssText = 'border-top:1px solid rgba(0,183,255,0.15);padding-top:6px;margin-bottom:6px;';
+        modelsListEl.style.cssText = 'border-top:1px solid rgba(255,0,178,0.15);padding-top:6px;margin-bottom:6px;';
         body.appendChild(modelsListEl);
 
         // Serina watchdog section
         serinaEl = document.createElement('div');
-        serinaEl.style.cssText = 'border-top:1px solid rgba(0,183,255,0.15);padding-top:6px;';
+        serinaEl.style.cssText = 'border-top:1px solid rgba(255,0,178,0.15);padding-top:6px;';
         body.appendChild(serinaEl);
 
         card.appendChild(body);
-        var sidebar = document.getElementById('hcc-sidebar-right');
-        (sidebar || document.body).appendChild(card);
+        document.body.appendChild(card);
 
         refresh();
         setInterval(refresh, POLL_MS);
@@ -245,13 +241,9 @@
     }
 
     function fetchJson(url) {
-        return fetch(url)
-            .then(function (r) {
-                console.log('[hcc-ollama]', url, 'status=' + r.status, 'ok=' + r.ok);
-                if (!r.ok) return null;
-                return r.json();
-            })
-            .catch(function (e) { console.warn('[hcc-ollama] FAIL', url, e); return null; });
+        return fetch(url, { signal: AbortSignal.timeout(5000) })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .catch(function () { return null; });
     }
 
     function esc(s) {

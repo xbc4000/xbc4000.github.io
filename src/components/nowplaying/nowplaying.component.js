@@ -60,7 +60,12 @@
         var card = document.createElement('div');
         card.id = 'hcc-nowplaying';
         card.style.cssText = [
+            'position:fixed',
+            'top:clamp(60px, 5.5vw, 78px)',
+            'left:clamp(12px, 1.5vw, 24px)',
+            'width:clamp(220px, 19vw, 440px)',
             'pointer-events:auto',
+            'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
             'color:' + HCC_CYAN_BRIGHT,
             'background:linear-gradient(180deg, rgba(2,8,16,0.82) 0%, rgba(2,4,8,0.7) 100%)',
@@ -97,12 +102,12 @@
 
         // Body
         var body = document.createElement('div');
-        body.style.cssText = 'padding:8px 14px 8px;';
+        body.style.cssText = 'padding:14px 16px 12px;';
 
         var trackEl = document.createElement('div');
         trackEl.id = 'hcc-np-track';
         trackEl.style.cssText = [
-            'font-size:11px',
+            'font-size:14px',
             'font-weight:700',
             'letter-spacing:0.5px',
             'color:' + HCC_CYAN_BRIGHT,
@@ -110,14 +115,14 @@
             'white-space:nowrap',
             'overflow:hidden',
             'text-overflow:ellipsis',
-            'margin-bottom:3px'
+            'margin-bottom:4px'
         ].join(';');
         trackEl.textContent = '—';
 
         var artistEl = document.createElement('div');
         artistEl.id = 'hcc-np-artist';
         artistEl.style.cssText = [
-            'font-size:10px',
+            'font-size:11px',
             'letter-spacing:1px',
             'color:' + HCC_CYAN,
             'opacity:0.85',
@@ -131,14 +136,14 @@
         var albumEl = document.createElement('div');
         albumEl.id = 'hcc-np-album';
         albumEl.style.cssText = [
-            'font-size:9px',
+            'font-size:10px',
             'letter-spacing:1px',
             'color:' + HCC_CYAN,
             'opacity:0.55',
             'white-space:nowrap',
             'overflow:hidden',
             'text-overflow:ellipsis',
-            'margin-bottom:6px'
+            'margin-bottom:12px'
         ].join(';');
         albumEl.textContent = '—';
 
@@ -190,8 +195,7 @@
 
         card.appendChild(header);
         card.appendChild(body);
-        var sidebar = document.getElementById('hcc-sidebar-left');
-        (sidebar || document.body).appendChild(card);
+        document.body.appendChild(card);
 
         // ── Poller ────────────────────────────────────────────────
         var lastFetchAt = 0;

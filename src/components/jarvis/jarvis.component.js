@@ -38,13 +38,17 @@
         var card = document.createElement('div');
         card.id = 'hcc-jarvis';
         card.style.cssText = [
-            'width:100%',
+            'position:fixed',
+            'left:clamp(12px, 1.5vw, 24px)',
+            'top:clamp(180px, 14vw, 216px)',
+            'width:clamp(220px, 19vw, 440px)',
             'pointer-events:auto',
+            'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
             'color:' + HCC_CYAN_BRIGHT,
             'background:linear-gradient(180deg, rgba(2,8,16,0.82) 0%, rgba(2,4,8,0.7) 100%)',
-            'border:1px solid rgba(255,0,178,0.55)',
-            'box-shadow:0 0 22px rgba(255,0,178,0.18), 0 0 50px rgba(255,0,178,0.06), inset 0 0 24px rgba(255,0,178,0.04)',
+            'border:1px solid rgba(0,183,255,0.55)',
+            'box-shadow:0 0 22px rgba(0,183,255,0.22), 0 0 50px rgba(0,183,255,0.08), inset 0 0 24px rgba(0,183,255,0.05)',
             'text-shadow:0 0 4px rgba(0,212,255,0.45)',
             'backdrop-filter:blur(3px)',
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)'
@@ -57,14 +61,14 @@
             'align-items:center',
             'justify-content:space-between',
             'padding:8px 14px',
-            'background:rgba(255,0,178,0.08)',
-            'border-bottom:1px solid rgba(255,0,178,0.35)',
+            'background:rgba(0,183,255,0.08)',
+            'border-bottom:1px solid rgba(0,183,255,0.35)',
             'font-size:10px',
             'letter-spacing:2px'
         ].join(';');
         var headerLeft = document.createElement('span');
         headerLeft.innerHTML = '◆ JARVIS';
-        headerLeft.style.color = HCC_MAGENTA;
+        headerLeft.style.color = HCC_CYAN;
         var headerRight = document.createElement('span');
         headerRight.id = 'hcc-jarvis-status';
         headerRight.textContent = 'TELEMETRY';
@@ -102,7 +106,7 @@
 
         function statCell(label, valId) {
             var w = document.createElement('div');
-            w.style.cssText = 'display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed rgba(255,0,178,0.15);padding-bottom:3px';
+            w.style.cssText = 'display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed rgba(0,183,255,0.18);padding-bottom:3px';
             var l = document.createElement('span');
             l.style.opacity = '0.55';
             l.textContent = label;
@@ -126,8 +130,7 @@
         body.appendChild(list);
         card.appendChild(header);
         card.appendChild(body);
-        var sidebar = document.getElementById('hcc-sidebar-left');
-        (sidebar || document.body).appendChild(card);
+        document.body.appendChild(card);
 
         // ── Radar drawing ────────────────────────────────────────────
         var ctx = canvas.getContext('2d');
