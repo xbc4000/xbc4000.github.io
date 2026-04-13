@@ -78,7 +78,7 @@
         card.id = 'hcc-conditions';
         card.style.cssText = [
             'position:fixed',
-            'top:clamp(180px, 14vw, 216px)',
+            'top:clamp(60px, 5.5vw, 78px)',
             'right:clamp(12px, 1.5vw, 24px)',
             'width:clamp(220px, 19vw, 440px)',
             'pointer-events:auto',
@@ -86,8 +86,8 @@
             'font-family:"JetBrains Mono","Fira Code",monospace',
             'color:' + HCC_CYAN_BRIGHT,
             'background:linear-gradient(180deg, rgba(2,8,16,0.82) 0%, rgba(2,4,8,0.7) 100%)',
-            'border:1px solid rgba(255,0,178,0.55)',
-            'box-shadow:0 0 22px rgba(255,0,178,0.18), 0 0 50px rgba(255,0,178,0.06), inset 0 0 24px rgba(255,0,178,0.04)',
+            'border:1px solid rgba(0,183,255,0.55)',
+            'box-shadow:0 0 22px rgba(0,183,255,0.22), 0 0 50px rgba(0,183,255,0.08), inset 0 0 24px rgba(0,183,255,0.05)',
             'text-shadow:0 0 4px rgba(0,212,255,0.45)',
             'backdrop-filter:blur(3px)',
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)'
@@ -99,15 +99,15 @@
             'display:flex',
             'align-items:center',
             'justify-content:space-between',
-            'padding:11px 18px',
-            'background:rgba(255,0,178,0.08)',
-            'border-bottom:1px solid rgba(255,0,178,0.35)',
-            'font-size:11px',
+            'padding:8px 14px',
+            'background:rgba(0,183,255,0.08)',
+            'border-bottom:1px solid rgba(0,183,255,0.35)',
+            'font-size:10px',
             'letter-spacing:2px'
         ].join(';');
         var headerLeft = document.createElement('span');
         headerLeft.innerHTML = '◆ CONDITIONS';
-        headerLeft.style.color = HCC_MAGENTA;
+        headerLeft.style.color = HCC_CYAN;
         var headerRight = document.createElement('span');
         headerRight.id = 'hcc-cond-status';
         headerRight.style.color = HCC_CYAN_BRIGHT;
@@ -115,128 +115,71 @@
         header.appendChild(headerLeft);
         header.appendChild(headerRight);
 
-        // Body
+        // Body — compact single-row layout
         var body = document.createElement('div');
-        body.style.cssText = 'padding:18px 22px 16px;';
+        body.style.cssText = 'padding:8px 14px 10px;font-size:10px;';
 
-        // Location row (city, region · country)
+        // Location row
         var locEl = document.createElement('div');
-        locEl.style.cssText = [
-            'font-size:16px',
-            'font-weight:700',
-            'color:' + HCC_CYAN_BRIGHT,
-            'text-shadow:0 0 6px rgba(0,212,255,0.6)',
-            'margin-bottom:2px',
-            'white-space:nowrap',
-            'overflow:hidden',
-            'text-overflow:ellipsis'
-        ].join(';');
+        locEl.style.cssText = 'font-size:11px;font-weight:700;color:' + HCC_CYAN_BRIGHT + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px;';
         locEl.textContent = '— · —';
 
-        var ipEl = document.createElement('div');
-        ipEl.style.cssText = [
-            'font-size:11px',
-            'color:' + HCC_CYAN,
-            'opacity:0.6',
-            'letter-spacing:1px',
-            'margin-bottom:18px',
-            'white-space:nowrap',
-            'overflow:hidden',
-            'text-overflow:ellipsis'
-        ].join(';');
-        ipEl.textContent = 'IP —';
-
-        // Big temp + condition row
-        var bigRow = document.createElement('div');
-        bigRow.style.cssText = [
-            'display:flex',
-            'align-items:center',
-            'gap:14px',
-            'margin-bottom:14px'
-        ].join(';');
+        // Temp + condition inline row
+        var tempRow = document.createElement('div');
+        tempRow.style.cssText = 'display:flex;align-items:baseline;gap:8px;margin-bottom:6px;';
         var tempEl = document.createElement('div');
-        tempEl.style.cssText = [
-            'font-size:clamp(28px, 2.8vw, 52px)',
-            'font-weight:700',
-            'line-height:1',
-            'color:' + HCC_CYAN_BRIGHT,
-            'text-shadow:0 0 14px rgba(0,212,255,0.7)'
-        ].join(';');
+        tempEl.style.cssText = 'font-size:22px;font-weight:700;line-height:1;color:' + HCC_CYAN_BRIGHT + ';text-shadow:0 0 10px rgba(0,212,255,0.7);';
         tempEl.textContent = '—°';
-        var condCol = document.createElement('div');
-        condCol.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:3px';
-        var glyphEl = document.createElement('div');
-        glyphEl.style.cssText = [
-            'font-size:24px',
-            'color:' + HCC_AMBER,
-            'text-shadow:0 0 8px rgba(255,179,71,0.5)'
-        ].join(';');
-        glyphEl.textContent = '·';
         var condEl = document.createElement('div');
-        condEl.style.cssText = [
-            'font-size:13px',
-            'color:' + HCC_CYAN,
-            'letter-spacing:1px',
-            'opacity:0.85',
-            'font-weight:600'
-        ].join(';');
+        condEl.style.cssText = 'font-size:10px;color:' + HCC_CYAN + ';letter-spacing:1px;font-weight:600;opacity:0.85;';
         condEl.textContent = '—';
+        var glyphEl = document.createElement('span');
+        glyphEl.style.cssText = 'font-size:14px;color:' + HCC_AMBER + ';margin-left:auto;';
+        glyphEl.textContent = '·';
+        tempRow.appendChild(tempEl);
+        tempRow.appendChild(condEl);
+        tempRow.appendChild(glyphEl);
+
+        // Feels + HI/LO compact row
         var feelsEl = document.createElement('div');
-        feelsEl.style.cssText = [
-            'font-size:11px',
-            'color:' + HCC_CYAN,
-            'opacity:0.6',
-            'letter-spacing:1px'
-        ].join(';');
+        feelsEl.style.cssText = 'font-size:9px;color:' + HCC_CYAN + ';opacity:0.6;letter-spacing:1px;margin-bottom:6px;';
         feelsEl.textContent = 'FEELS —';
-        condCol.appendChild(glyphEl);
-        condCol.appendChild(condEl);
-        condCol.appendChild(feelsEl);
-        bigRow.appendChild(tempEl);
-        bigRow.appendChild(condCol);
 
-        // Stat grid: HI / LO / WIND / HUMID
-        var grid = document.createElement('div');
-        grid.style.cssText = [
-            'display:grid',
-            'grid-template-columns:1fr 1fr',
-            'gap:8px 18px',
-            'font-size:12px',
-            'letter-spacing:1px',
-            'color:' + HCC_CYAN,
-            'margin-bottom:12px'
-        ].join(';');
+        // Stats row — all inline
+        var statsRow = document.createElement('div');
+        statsRow.style.cssText = 'display:flex;gap:10px;font-size:9px;color:' + HCC_CYAN + ';opacity:0.7;letter-spacing:1px;flex-wrap:wrap;';
 
-        function statCell(label, valId) {
-            var w = document.createElement('div');
-            w.style.cssText = 'display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed rgba(255,0,178,0.15);padding-bottom:3px';
-            var l = document.createElement('span');
-            l.style.opacity = '0.55';
-            l.textContent = label;
-            var v = document.createElement('span');
-            v.id = valId;
-            v.style.cssText = 'color:' + HCC_CYAN_BRIGHT + ';font-weight:700;text-shadow:0 0 4px rgba(0,212,255,0.5)';
-            v.textContent = '—';
-            w.appendChild(l);
-            w.appendChild(v);
-            return w;
+        function statSpan(label, valId) {
+            var s = document.createElement('span');
+            s.innerHTML = '<span style="opacity:0.6">' + label + '</span> <span id="' + valId + '" style="color:' + HCC_CYAN_BRIGHT + ';font-weight:700">—</span>';
+            return s;
         }
+        statsRow.appendChild(statSpan('HI', 'hcc-cond-hi'));
+        statsRow.appendChild(statSpan('LO', 'hcc-cond-lo'));
+        statsRow.appendChild(statSpan('WIND', 'hcc-cond-wind'));
+        statsRow.appendChild(statSpan('HUM', 'hcc-cond-humid'));
 
-        grid.appendChild(statCell('HI',     'hcc-cond-hi'));
-        grid.appendChild(statCell('LO',     'hcc-cond-lo'));
-        grid.appendChild(statCell('WIND',   'hcc-cond-wind'));
-        grid.appendChild(statCell('HUMID',  'hcc-cond-humid'));
-        grid.appendChild(statCell('SUNUP',  'hcc-cond-sunup'));
-        grid.appendChild(statCell('SUNDN',  'hcc-cond-sundn'));
+        // Hidden elements for sunrise/sunset (still populated by fetch)
+        var sunupHidden = document.createElement('span');
+        sunupHidden.id = 'hcc-cond-sunup';
+        sunupHidden.style.display = 'none';
+        var sundnHidden = document.createElement('span');
+        sundnHidden.id = 'hcc-cond-sundn';
+        sundnHidden.style.display = 'none';
 
         body.appendChild(locEl);
-        body.appendChild(ipEl);
-        body.appendChild(bigRow);
-        body.appendChild(grid);
+        body.appendChild(tempRow);
+        body.appendChild(feelsEl);
+        body.appendChild(statsRow);
+        body.appendChild(sunupHidden);
+        body.appendChild(sundnHidden);
 
         card.appendChild(header);
         card.appendChild(body);
         document.body.appendChild(card);
+
+        // IP element (hidden, still populated)
+        var ipEl = { textContent: '' };
 
         function setStatus(text, color) {
             headerRight.textContent = text;
