@@ -40,8 +40,10 @@
         card.style.cssText = [
             'position:fixed',
             'left:clamp(12px, 1.5vw, 24px)',
-            'top:clamp(180px, 14vw, 216px)',
+            'top:calc(clamp(60px, 5.5vw, 78px) + clamp(105px, 11vh, 140px) + 8px)',
             'width:clamp(220px, 19vw, 440px)',
+            'height:clamp(180px, 20vh, 240px)',
+            'overflow:hidden',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
