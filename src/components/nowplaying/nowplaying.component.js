@@ -61,9 +61,9 @@
         card.id = 'hcc-nowplaying';
         card.style.cssText = [
             'position:fixed',
-            'top:78px',
-            'left:24px',
-            'width:600px',
+            'top:clamp(60px, 5.5vw, 78px)',
+            'left:clamp(12px, 1.5vw, 24px)',
+            'width:clamp(280px, 31vw, 600px)',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',

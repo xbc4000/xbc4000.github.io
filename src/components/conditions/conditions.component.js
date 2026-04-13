@@ -78,9 +78,9 @@
         card.id = 'hcc-conditions';
         card.style.cssText = [
             'position:fixed',
-            'top:78px',
-            'right:24px',
-            'width:600px',
+            'top:clamp(60px, 5.5vw, 78px)',
+            'right:clamp(12px, 1.5vw, 24px)',
+            'width:clamp(280px, 31vw, 600px)',
             'pointer-events:auto',
             'z-index:' + Z,
             'font-family:"JetBrains Mono","Fira Code",monospace',
@@ -157,7 +157,7 @@
         ].join(';');
         var tempEl = document.createElement('div');
         tempEl.style.cssText = [
-            'font-size:64px',
+            'font-size:clamp(36px, 3.3vw, 64px)',
             'font-weight:700',
             'line-height:1',
             'color:' + HCC_CYAN_BRIGHT,

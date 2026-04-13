@@ -237,11 +237,11 @@ class Tabs extends Component {
       }
 
       #panels {
-          width: 88%;
-          max-width: 1500px;
+          width: clamp(70%, 88%, 92%);
+          max-width: 1800px;
           height: 60vh;
-          min-height: 540px;
-          max-height: 760px;
+          min-height: min(540px, 80vh);
+          max-height: 85vh;
           right: 0;
           left: 0;
           top: 0;
@@ -319,7 +319,7 @@ class Tabs extends Component {
           transform: translate(-50%, -50%);
           width: 26%;
           aspect-ratio: 3 / 4;
-          max-height: calc(100% - 64px - 20px);
+          max-height: calc(100% - clamp(48px, 5vh, 64px) - 20px);
           z-index: 0;
           pointer-events: none;
           border: 1px solid rgba(0,183,255,0.35);
@@ -331,7 +331,7 @@ class Tabs extends Component {
           left: 0;
           right: 0;
           bottom: 0;
-          height: 64px;
+          height: clamp(48px, 5vh, 64px);
           display: flex;
           flex-direction: row;
           align-items: stretch;
@@ -348,15 +348,15 @@ class Tabs extends Component {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 12px;
-          padding: 0 24px;
+          gap: clamp(6px, 0.8vw, 12px);
+          padding: 0 clamp(8px, 1.5vw, 24px);
           background: transparent;
           border: none;
           border-right: 1px solid rgba(0,183,255,0.18);
           color: ${h.cyan};
           font-family: 'JetBrains Mono', 'Fira Code', monospace;
-          font-size: 14px;
-          letter-spacing: 4px;
+          font-size: clamp(10px, 0.9vw, 14px);
+          letter-spacing: clamp(1px, 0.3vw, 4px);
           font-weight: 700;
           text-transform: uppercase;
           transition: background 0.2s, color 0.2s, box-shadow 0.2s, text-shadow 0.2s;
@@ -403,7 +403,7 @@ class Tabs extends Component {
           right: 0;
           top: 0;
           width: 70%;
-          height: calc(100% - 64px);  /* leave room for the bottom tab switcher */
+          height: calc(100% - clamp(48px, 5vh, 64px));  /* leave room for the bottom tab switcher */
           box-sizing: border-box;     /* padding included in height, not added to it */
           background: rgba(10, 21, 32, 0.85);
           padding: 2em 3% 1.4em;

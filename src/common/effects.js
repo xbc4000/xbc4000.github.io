@@ -207,7 +207,7 @@
         }
 
         var HEX = '0123456789ABCDEF>|.:[]{}◆◇●○';
-        var STRIP_WIDTH  = 110; // px each side
+        var STRIP_WIDTH  = Math.max(60, Math.min(110, window.innerWidth * 0.057)); // ~5.7vw, 60-110px
         var COL_SPACING  = 14;  // px between columns inside a strip
 
         // Match particle color distribution. Each entry: text fill rgb +
@@ -386,18 +386,21 @@
         bar.id = 'hcc-hud-readout';
         bar.style.cssText = [
             'position:fixed',
-            'top:14px',
+            'top:clamp(8px, 1vw, 14px)',
             'left:50%',
             'transform:translateX(-50%)',
+            'max-width:calc(100vw - 24px)',
             'pointer-events:none',
             'z-index:' + (Z + 1),
             'display:flex',
             'align-items:stretch',
+            'flex-wrap:wrap',
+            'justify-content:center',
             'gap:0',
             'padding:0',
             'font-family:"JetBrains Mono","Fira Code",monospace',
-            'font-size:13px',
-            'letter-spacing:2px',
+            'font-size:clamp(10px, 0.8vw, 13px)',
+            'letter-spacing:clamp(1px, 0.15vw, 2px)',
             'color:' + HCC_CYAN_BRIGHT,
             'background:linear-gradient(180deg, rgba(2,8,16,0.85) 0%, rgba(2,4,8,0.7) 100%)',
             'border:1px solid rgba(0,183,255,0.55)',
@@ -425,8 +428,8 @@
             wrap.style.cssText = [
                 'display:flex',
                 'align-items:center',
-                'gap:8px',
-                'padding:9px 18px'
+                'gap:clamp(4px, 0.5vw, 8px)',
+                'padding:clamp(6px, 0.6vw, 9px) clamp(8px, 1vw, 18px)'
             ].join(';');
             if (label) {
                 var l = document.createElement('span');
@@ -451,7 +454,7 @@
             'display:flex',
             'align-items:center',
             'justify-content:center',
-            'padding:9px 14px',
+            'padding:clamp(6px, 0.6vw, 9px) clamp(8px, 1vw, 14px)',
             'background:rgba(0,183,255,0.08)'
         ].join(';');
         var pulseDot = document.createElement('span');

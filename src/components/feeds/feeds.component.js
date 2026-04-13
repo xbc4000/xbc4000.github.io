@@ -104,10 +104,10 @@
         card.id = 'hcc-feeds';
         card.style.cssText = [
             'position:fixed',
-            'bottom:24px',
-            'left:24px',
-            'right:24px',
-            'height:260px',
+            'bottom:clamp(12px, 1.5vw, 24px)',
+            'left:clamp(12px, 1.5vw, 24px)',
+            'right:clamp(12px, 1.5vw, 24px)',
+            'height:clamp(180px, 20vh, 260px)',
             'transition:height 0.4s cubic-bezier(0.4,0,0.2,1)',
             'pointer-events:auto',
             'z-index:' + Z,
@@ -186,7 +186,7 @@
             'overscroll-behavior:contain',
             'flex:1',
             'display:grid',
-            'grid-template-columns:repeat(auto-fill, minmax(340px, 1fr))',
+            'grid-template-columns:repeat(auto-fill, minmax(min(340px, 100%), 1fr))',
             'gap:0',
             'padding:0',
             'scrollbar-width:thin',
