@@ -39,7 +39,7 @@
         card.id = 'hcc-ollama';
         card.style.cssText = [
             'position:fixed',
-            'bottom:clamp(12px, 1.5vw, 24px)',
+            'bottom:calc(clamp(190px, 24vh, 300px) + clamp(4px, 0.5vw, 8px) + 8px)',
             'right:clamp(12px, 1.5vw, 24px)',
             'width:clamp(200px, 16vw, 340px)',
             'pointer-events:auto',
@@ -136,14 +136,12 @@
 
     function refresh() {
         setStatus('FETCH', HCC_AMBER);
-        console.log('[hcc-ollama] fetching', EXPORTER_URL + '/status');
         Promise.all([
             fetchJson(EXPORTER_URL + '/status'),
             fetchJson(EXPORTER_URL + '/serina')
         ]).then(function (results) {
             var data = results[0];
             var serina = results[1];
-            console.log('[hcc-ollama] data:', data ? 'ok (up=' + data.up + ')' : 'null', 'serina:', serina ? 'ok' : 'null');
 
             if (!data || !data.up) {
                 setStatus('DOWN', HCC_RED);
@@ -256,8 +254,5 @@
     // Mount immediately — script is at bottom of <body>, DOM is ready.
     // Don't use DOMContentLoaded — strftime crash during module.js
     // registration kills pending DOMContentLoaded listeners.
-    try {
-        init();
-        console.log('[hcc-ollama] card mounted, EXPORTER_URL=' + EXPORTER_URL);
-    } catch (e) { console.warn('[hcc-ollama] init failed:', e); }
+    try { init(); } catch (e) { console.warn('[hcc-ollama] init failed:', e); }
 })();
