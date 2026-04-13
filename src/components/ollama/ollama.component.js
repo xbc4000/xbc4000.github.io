@@ -23,7 +23,7 @@
         return 'http://10.10.10.2:9401';
     })();
     var POLL_MS      = 10000;
-    var Z            = 9995;
+    var Z            = 9996;
 
     function fmtBytes(b) {
         if (!b) return '0';
@@ -136,12 +136,14 @@
 
     function refresh() {
         setStatus('FETCH', HCC_AMBER);
+        console.log('[hcc-ollama] fetching', EXPORTER_URL + '/status');
         Promise.all([
             fetchJson(EXPORTER_URL + '/status'),
             fetchJson(EXPORTER_URL + '/serina')
         ]).then(function (results) {
             var data = results[0];
             var serina = results[1];
+            console.log('[hcc-ollama] data:', data ? 'ok (up=' + data.up + ')' : 'null', 'serina:', serina ? 'ok' : 'null');
 
             if (!data || !data.up) {
                 setStatus('DOWN', HCC_RED);
@@ -254,5 +256,8 @@
     // Mount immediately — script is at bottom of <body>, DOM is ready.
     // Don't use DOMContentLoaded — strftime crash during module.js
     // registration kills pending DOMContentLoaded listeners.
-    try { init(); } catch (e) { console.warn('[hcc-ollama] init failed:', e); }
+    try {
+        init();
+        console.log('[hcc-ollama] card mounted, EXPORTER_URL=' + EXPORTER_URL);
+    } catch (e) { console.warn('[hcc-ollama] init failed:', e); }
 })();
