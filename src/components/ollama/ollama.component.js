@@ -53,20 +53,27 @@
             'backdrop-filter:blur(3px)',
             'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)',
             'opacity:1',
-            'transition:opacity 0.4s ease',
-            'padding:0'
+            'transition:opacity 0.4s ease'
         ].join(';');
 
         // Header
         var header = document.createElement('div');
-        header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:8px 14px 6px 14px;border-bottom:1px solid rgba(255,0,178,0.25);';
+        header.style.cssText = [
+            'display:flex',
+            'align-items:center',
+            'justify-content:space-between',
+            'padding:8px 14px',
+            'background:rgba(255,0,178,0.08)',
+            'border-bottom:1px solid rgba(255,0,178,0.35)',
+            'font-size:10px',
+            'letter-spacing:2px'
+        ].join(';');
 
         var title = document.createElement('span');
-        title.style.cssText = 'font-size:clamp(0.6rem,0.8vw,0.75rem);font-weight:800;letter-spacing:3px;color:' + HCC_MAGENTA + ';';
-        title.textContent = '\u25C6 SERINA';
+        title.innerHTML = '&#9670; SERINA';
 
         headerStatus = document.createElement('span');
-        headerStatus.style.cssText = 'font-size:clamp(0.55rem,0.65vw,0.65rem);font-weight:700;letter-spacing:2px;';
+        headerStatus.style.cssText = 'font-weight:700;';
         setStatus('INIT', HCC_AMBER);
 
         header.appendChild(title);
@@ -75,7 +82,7 @@
 
         // Body
         var body = document.createElement('div');
-        body.style.cssText = 'padding:8px 14px 10px 14px;font-size:clamp(0.6rem,0.72vw,0.72rem);';
+        body.style.cssText = 'padding:8px 14px 10px 14px;font-size:10px;';
 
         // Stats grid
         var statsGrid = document.createElement('div');
