@@ -162,7 +162,7 @@
         var expanded = false;
         expandBtn.addEventListener('click', function () {
             expanded = !expanded;
-            card.style.height = expanded ? '50vh' : '260px';
+            card.style.height = expanded ? '50vh' : 'clamp(160px, 19vh, 240px)';
             expandBtn.textContent = expanded ? '⤡' : '⤢';
             expandBtn.title = expanded ? 'Collapse feeds' : 'Expand feeds';
         });
