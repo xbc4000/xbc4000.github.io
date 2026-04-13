@@ -109,7 +109,8 @@
         card.appendChild(body);
         document.body.appendChild(card);
 
-        setTimeout(function () { refresh(); setInterval(refresh, POLL_MS); }, 3000);
+        refresh();
+        setInterval(refresh, POLL_MS);
     }
 
     function makeStat(label, value, color) {
