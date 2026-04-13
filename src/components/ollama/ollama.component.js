@@ -249,9 +249,12 @@
     }
 
     function fetchJson(url) {
-        return fetch(url, { signal: AbortSignal.timeout(5000) })
-            .then(function (r) { return r.ok ? r.json() : null; })
-            .catch(function () { return null; });
+        return fetch(url, { signal: AbortSignal.timeout(8000) })
+            .then(function (r) {
+                if (!r.ok) { console.warn('[hcc-ollama] fetch', url, 'status', r.status); return null; }
+                return r.json();
+            })
+            .catch(function (e) { console.warn('[hcc-ollama] fetch', url, 'error:', e.message || e); return null; });
     }
 
     function esc(s) {
