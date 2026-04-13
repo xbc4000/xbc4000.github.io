@@ -17,7 +17,11 @@
     var HCC_RED         = '#FF2244';
     var HCC_MUTED       = 'rgba(180,200,220,0.45)';
 
-    var EXPORTER_URL = 'http://10.10.10.2:9401';
+    var EXPORTER_URL = (function () {
+        var h = window.location.hostname || '';
+        if (h === 'startpage.home') return '/ollama';
+        return 'http://10.10.10.2:9401';
+    })();
     var POLL_MS      = 10000;
     var Z            = 9995;
 
