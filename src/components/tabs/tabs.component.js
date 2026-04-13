@@ -418,26 +418,11 @@ class Tabs extends Component {
           grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
           grid-auto-rows: min-content;
           gap: 1.6em 1.8em;
-          overflow-y: auto;
-          overflow-x: hidden;
-          overscroll-behavior: contain;
-          scrollbar-width: thin;
-          scrollbar-color: ${h.cyan} #0a1520;
+          overflow: hidden;
       }
       .categories .links > li {
           display: block;
           width: 100%;
-      }
-
-      .categories .links::-webkit-scrollbar {
-          width: 8px;
-      }
-      .categories .links::-webkit-scrollbar-track {
-          background: #0a1520;
-      }
-      .categories .links::-webkit-scrollbar-thumb {
-          background: linear-gradient(180deg, ${h.cyan}, ${h.cyanDark});
-          box-shadow: 0 0 8px rgba(0,183,255,0.6);
       }
 
       .categories .links li {
