@@ -251,9 +251,8 @@
         return s ? String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+    // Mount immediately — script is at bottom of <body>, DOM is ready.
+    // Don't use DOMContentLoaded — strftime crash during module.js
+    // registration kills pending DOMContentLoaded listeners.
+    try { init(); } catch (e) { console.warn('[hcc-ollama] init failed:', e); }
 })();
