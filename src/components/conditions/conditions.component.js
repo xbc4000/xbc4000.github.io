@@ -118,51 +118,51 @@
 
         // Body
         var body = document.createElement('div');
-        body.style.cssText = 'padding:14px 18px 12px;';
+        body.style.cssText = 'padding:8px 14px 8px;';
 
         // Location row (city, region · country)
         var locEl = document.createElement('div');
         locEl.style.cssText = [
-            'font-size:14px',
+            'font-size:11px',
             'font-weight:700',
             'color:' + HCC_CYAN_BRIGHT,
             'text-shadow:0 0 6px rgba(0,212,255,0.6)',
-            'margin-bottom:12px',
+            'margin-bottom:6px',
             'white-space:nowrap',
             'overflow:hidden',
             'text-overflow:ellipsis'
         ].join(';');
         locEl.textContent = '— · —';
 
-        // Big temp + condition row
+        // Temp + condition row
         var bigRow = document.createElement('div');
         bigRow.style.cssText = [
             'display:flex',
             'align-items:center',
-            'gap:14px',
-            'margin-bottom:12px'
+            'gap:10px',
+            'margin-bottom:8px'
         ].join(';');
         var tempEl = document.createElement('div');
         tempEl.style.cssText = [
-            'font-size:clamp(28px, 2.8vw, 52px)',
+            'font-size:clamp(22px, 2.2vw, 36px)',
             'font-weight:700',
             'line-height:1',
             'color:' + HCC_CYAN_BRIGHT,
-            'text-shadow:0 0 14px rgba(0,212,255,0.7)'
+            'text-shadow:0 0 10px rgba(0,212,255,0.7)'
         ].join(';');
         tempEl.textContent = '—°';
         var condCol = document.createElement('div');
-        condCol.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:3px';
+        condCol.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:2px';
         var glyphEl = document.createElement('div');
         glyphEl.style.cssText = [
-            'font-size:24px',
+            'font-size:16px',
             'color:' + HCC_AMBER,
-            'text-shadow:0 0 8px rgba(255,179,71,0.5)'
+            'text-shadow:0 0 6px rgba(255,179,71,0.5)'
         ].join(';');
         glyphEl.textContent = '·';
         var condEl = document.createElement('div');
         condEl.style.cssText = [
-            'font-size:13px',
+            'font-size:10px',
             'color:' + HCC_CYAN,
             'letter-spacing:1px',
             'opacity:0.85',
@@ -171,7 +171,7 @@
         condEl.textContent = '—';
         var feelsEl = document.createElement('div');
         feelsEl.style.cssText = [
-            'font-size:11px',
+            'font-size:9px',
             'color:' + HCC_CYAN,
             'opacity:0.6',
             'letter-spacing:1px'
@@ -188,8 +188,8 @@
         grid.style.cssText = [
             'display:grid',
             'grid-template-columns:1fr 1fr',
-            'gap:6px 14px',
-            'font-size:11px',
+            'gap:4px 12px',
+            'font-size:10px',
             'letter-spacing:1px',
             'color:' + HCC_CYAN
         ].join(';');
