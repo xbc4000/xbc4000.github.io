@@ -321,11 +321,13 @@ class Statusbar extends Component {
    * @param {number} key - The tab index to activate
    */
   activateByKey(key) {
-    if (key < 0) return;
+    key = Number(key);
+    if (isNaN(key) || key < 0 || key >= this.refs.tabs.length) return;
     this.currentTabIndex = key;
 
     this.activate(this.refs.tabs, this.refs.tabs[key]);
-    this.activate(this.externalRefs.categories, this.externalRefs.categories[key]);
+    if (this.externalRefs.categories[key])
+      this.activate(this.externalRefs.categories, this.externalRefs.categories[key]);
   }
 
   /**

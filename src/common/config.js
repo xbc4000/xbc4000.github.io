@@ -5,7 +5,7 @@ class Config {
     overrideStorage: true,
     temperature: {
       // Default city for weather display
-      location: "Owensound, Canada",
+      location: "Owen Sound, Canada",
       // Temperature scale: C for Celsius, F for Fahrenheit
       scale: "C",
     },

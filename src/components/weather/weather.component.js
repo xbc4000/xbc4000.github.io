@@ -191,6 +191,7 @@ class Weather extends Component {
    */
   async setWeather() {
     this.weather = await this.weatherForecast.getWeather();
+    if (!this.weather) return;
     this.setTemperature();
   }
 

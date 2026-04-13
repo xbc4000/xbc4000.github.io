@@ -22,7 +22,7 @@ const hcc = {
 const default_configuration = {
   overrideStorage: true,
   temperature: {
-    location: "Owensound, Canada",
+    location: "Owen Sound, Canada",
     scale: "C",
   },
   clock: {

@@ -69,9 +69,8 @@
     }
 
     function hackerNews() {
-        return fetch('https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=10', {
-            cache: 'no-store'
-        }).then(function (r) {
+        return fetch('https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=10&_=' + Date.now())
+        .then(function (r) {
             if (!r.ok) throw new Error('hn ' + r.status);
             return r.json();
         }).then(function (j) {
