@@ -104,10 +104,10 @@
         card.id = 'hcc-feeds';
         card.style.cssText = [
             'position:fixed',
-            'bottom:clamp(12px, 1.5vw, 24px)',
+            'bottom:clamp(8px, 1vw, 16px)',
             'left:clamp(12px, 1.5vw, 24px)',
             'right:clamp(12px, 1.5vw, 24px)',
-            'height:clamp(140px, 16vh, 200px)',
+            'height:clamp(160px, 19vh, 240px)',
             'transition:height 0.4s cubic-bezier(0.4,0,0.2,1)',
             'pointer-events:auto',
             'z-index:' + Z,
