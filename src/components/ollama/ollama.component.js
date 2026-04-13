@@ -1,9 +1,8 @@
 // =============================================================================
-// HCC Ollama Status — live AI inference status from PER730XD
+// HCC Ollama + Serina Status — live AI inference + watchdog from PER730XD
 // =============================================================================
-// Fetches Ollama API directly (http://10.10.10.2:11434) every 10s and
-// renders a fixed bottom-right card with service health, loaded models,
-// GPU VRAM, and temperature. Only mounts on LAN.
+// Fetches from ollama-exporter /status and /serina every 10s.
+// Renders a fixed bottom-right card. Only mounts on LAN.
 // =============================================================================
 
 (function () {
@@ -18,19 +17,9 @@
     var HCC_RED         = '#FF2244';
     var HCC_MUTED       = 'rgba(180,200,220,0.45)';
 
-    var OLLAMA_URL   = 'http://10.10.10.2:11434';
     var EXPORTER_URL = 'http://10.10.10.2:9401';
     var POLL_MS      = 10000;
     var Z            = 9995;
-
-    function isLanOrigin() {
-        var h = window.location.hostname || '';
-        return /\.home$/i.test(h)
-            || h === 'localhost'
-            || /^10\./.test(h)
-            || /^192\.168\./.test(h)
-            || /^172\.(1[6-9]|2[0-9]|3[01])\./.test(h);
-    }
 
     function fmtBytes(b) {
         if (!b) return '0';
@@ -39,7 +28,7 @@
         return (b / 1048576).toFixed(0) + 'M';
     }
 
-    var card, headerStatus, modelCountEl, loadedCountEl, gpuEl, vramEl, tempEl, modelsListEl;
+    var card, headerStatus, modelCountEl, loadedCountEl, gpuEl, vramEl, tempEl, modelsListEl, serinaEl;
 
     function init() {
         card = document.createElement('div');
@@ -70,7 +59,7 @@
 
         var title = document.createElement('span');
         title.style.cssText = 'font-size:clamp(0.6rem,0.8vw,0.75rem);font-weight:800;letter-spacing:3px;color:' + HCC_MAGENTA + ';';
-        title.textContent = '\u25C6 OLLAMA';
+        title.textContent = '\u25C6 SERINA';
 
         headerStatus = document.createElement('span');
         headerStatus.style.cssText = 'font-size:clamp(0.55rem,0.65vw,0.65rem);font-weight:700;letter-spacing:2px;';
@@ -102,13 +91,17 @@
         // Temp + power row
         tempEl = document.createElement('div');
         tempEl.style.cssText = 'font-size:clamp(0.55rem,0.6vw,0.62rem);color:' + HCC_MUTED + ';margin-bottom:6px;';
-        tempEl.textContent = '';
         body.appendChild(tempEl);
 
         // Models list
         modelsListEl = document.createElement('div');
-        modelsListEl.style.cssText = 'border-top:1px solid rgba(255,0,178,0.15);padding-top:6px;';
+        modelsListEl.style.cssText = 'border-top:1px solid rgba(255,0,178,0.15);padding-top:6px;margin-bottom:6px;';
         body.appendChild(modelsListEl);
+
+        // Serina watchdog section
+        serinaEl = document.createElement('div');
+        serinaEl.style.cssText = 'border-top:1px solid rgba(255,0,178,0.15);padding-top:6px;';
+        body.appendChild(serinaEl);
 
         card.appendChild(body);
         document.body.appendChild(card);
@@ -140,17 +133,13 @@
     function refresh() {
         setStatus('FETCH', HCC_AMBER);
         Promise.all([
-            fetchJson(OLLAMA_URL + '/api/version'),
-            fetchJson(OLLAMA_URL + '/api/tags'),
-            fetchJson(OLLAMA_URL + '/api/ps'),
-            fetchText(EXPORTER_URL + '/metrics')
+            fetchJson(EXPORTER_URL + '/status'),
+            fetchJson(EXPORTER_URL + '/serina')
         ]).then(function (results) {
-            var version = results[0];
-            var tags    = results[1];
-            var ps      = results[2];
-            var metrics = results[3];
+            var data = results[0];
+            var serina = results[1];
 
-            if (!version) {
+            if (!data || !data.up) {
                 setStatus('DOWN', HCC_RED);
                 modelCountEl.val.textContent = '---';
                 loadedCountEl.val.textContent = '---';
@@ -158,19 +147,19 @@
                 vramEl.val.textContent = '---';
                 tempEl.textContent = '';
                 modelsListEl.innerHTML = '<div style="color:' + HCC_RED + ';font-size:0.6rem;">OLLAMA UNREACHABLE</div>';
+                serinaEl.innerHTML = '';
                 return;
             }
 
             setStatus('LIVE', HCC_GREEN);
 
-            var models = tags ? (tags.models || []) : [];
-            var loaded = ps ? (ps.models || []) : [];
+            var models = data.models || [];
+            var loaded = data.loaded || [];
+            var gpu = data.gpu || {};
 
             modelCountEl.val.textContent = models.length;
             loadedCountEl.val.textContent = loaded.length;
 
-            // Parse GPU metrics from exporter
-            var gpu = parseGpu(metrics);
             gpuEl.val.textContent = gpu.gpuUtil !== undefined ? gpu.gpuUtil + '%' : '---';
             gpuEl.val.style.color = gpu.gpuUtil > 70 ? HCC_AMBER : HCC_CYAN;
             vramEl.val.textContent = gpu.vramPercent !== undefined ? gpu.vramPercent.toFixed(1) + '%' : '---';
@@ -186,7 +175,7 @@
             var html = '';
             if (loaded.length > 0) {
                 loaded.forEach(function (m) {
-                    var vram = fmtBytes(m.size_vram || 0);
+                    var vram = fmtBytes(m.vram || 0);
                     html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">';
                     html += '<span style="color:' + HCC_MAGENTA + ';font-size:0.6rem;">\u25CF</span>';
                     html += '<span style="color:' + HCC_CYAN_BRIGHT + ';font-size:0.62rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(m.name) + '</span>';
@@ -198,6 +187,50 @@
             }
             modelsListEl.innerHTML = html;
 
+            // Serina watchdog
+            var shtml = '';
+            if (serina && !serina.error) {
+                var checks = serina.checks || {};
+                var alerts = serina.alerts || {};
+                var hasAlert = alerts.gpu_temp_warn || alerts.gpu_temp_crit || alerts.vram_warn || alerts.vram_crit || alerts.disk_warn || alerts.disk_crit || alerts.ram_crit;
+                var anyDown = checks.ollama === 'down' || checks.rpi === 'down' || checks.router === 'down';
+
+                shtml += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
+                shtml += '<span style="color:' + HCC_MAGENTA + ';font-size:0.6rem;">\u25C6</span>';
+                shtml += '<span style="font-size:0.58rem;letter-spacing:2px;color:' + HCC_MAGENTA + ';font-weight:700;">WATCHDOG</span>';
+                if (hasAlert || anyDown) {
+                    shtml += '<span style="font-size:0.55rem;color:' + HCC_RED + ';font-weight:700;margin-left:auto;">ALERT</span>';
+                } else {
+                    shtml += '<span style="font-size:0.55rem;color:' + HCC_GREEN + ';font-weight:700;margin-left:auto;">ALL CLEAR</span>';
+                }
+                shtml += '</div>';
+
+                // Compact check dots
+                var dotItems = [
+                    { label: 'OLL', val: checks.ollama },
+                    { label: 'RPI', val: checks.rpi },
+                    { label: 'RTR', val: checks.router },
+                    { label: 'SVC', val: checks.rpi_services === 'all_up' ? 'up' : checks.rpi_services }
+                ];
+                shtml += '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+                dotItems.forEach(function (d) {
+                    var c = d.val === 'up' || d.val === 'all_up' ? HCC_GREEN : (d.val === 'down' ? HCC_RED : HCC_MUTED);
+                    shtml += '<span style="font-size:0.52rem;color:' + c + ';">\u25CF ' + d.label + '</span>';
+                });
+                shtml += '</div>';
+
+                // Last log line
+                var logs = serina.recent_logs || [];
+                if (logs.length > 0) {
+                    var last = logs[logs.length - 1];
+                    var logColor = last.indexOf('[critical]') > -1 ? HCC_RED : (last.indexOf('[normal]') > -1 ? HCC_AMBER : HCC_MUTED);
+                    shtml += '<div style="font-size:0.48rem;color:' + logColor + ';margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(last) + '</div>';
+                }
+            } else {
+                shtml = '<div style="font-size:0.55rem;color:' + HCC_MUTED + ';letter-spacing:1px;">\u25C6 WATCHDOG OFFLINE</div>';
+            }
+            serinaEl.innerHTML = shtml;
+
         }).catch(function (err) {
             console.warn('[hcc-ollama]', err);
             setStatus('ERR', HCC_RED);
@@ -208,33 +241,6 @@
         return fetch(url, { signal: AbortSignal.timeout(5000) })
             .then(function (r) { return r.ok ? r.json() : null; })
             .catch(function () { return null; });
-    }
-
-    function fetchText(url) {
-        return fetch(url, { signal: AbortSignal.timeout(5000) })
-            .then(function (r) { return r.ok ? r.text() : null; })
-            .catch(function () { return null; });
-    }
-
-    function parseGpu(text) {
-        var m = {};
-        if (!text) return m;
-        var lines = text.split('\n');
-        for (var i = 0; i < lines.length; i++) {
-            var line = lines[i];
-            if (line.charAt(0) === '#') continue;
-            if (line.indexOf('nvidia_gpu_temperature_celsius') === 0) m.temp = parseVal(line);
-            else if (line.indexOf('nvidia_gpu_utilization_percent') === 0) m.gpuUtil = parseVal(line);
-            else if (line.indexOf('nvidia_gpu_memory_used_percent') === 0) m.vramPercent = parseVal(line);
-            else if (line.indexOf('nvidia_gpu_power_draw_watts') === 0) m.power = parseVal(line);
-            else if (line.indexOf('nvidia_gpu_fan_speed_percent') === 0) m.fan = parseVal(line);
-        }
-        return m;
-    }
-
-    function parseVal(line) {
-        var parts = line.split(/\s+/);
-        return parseFloat(parts[parts.length - 1]);
     }
 
     function esc(s) {
