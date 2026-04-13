@@ -109,7 +109,7 @@
         var trackEl = document.createElement('div');
         trackEl.id = 'hcc-np-track';
         trackEl.style.cssText = [
-            'font-size:16px',
+            'font-size:18px',
             'font-weight:700',
             'letter-spacing:0.5px',
             'color:' + HCC_CYAN_BRIGHT,
@@ -124,7 +124,7 @@
         var artistEl = document.createElement('div');
         artistEl.id = 'hcc-np-artist';
         artistEl.style.cssText = [
-            'font-size:13px',
+            'font-size:14px',
             'letter-spacing:1px',
             'color:' + HCC_CYAN,
             'opacity:0.85',
@@ -138,7 +138,7 @@
         var albumEl = document.createElement('div');
         albumEl.id = 'hcc-np-album';
         albumEl.style.cssText = [
-            'font-size:11px',
+            'font-size:12px',
             'letter-spacing:1px',
             'color:' + HCC_CYAN,
             'opacity:0.55',
