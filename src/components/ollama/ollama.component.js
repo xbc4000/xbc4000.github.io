@@ -249,12 +249,13 @@
     }
 
     function fetchJson(url) {
-        return fetch(url, { signal: AbortSignal.timeout(8000) })
+        return fetch(url)
             .then(function (r) {
-                if (!r.ok) { console.warn('[hcc-ollama] fetch', url, 'status', r.status); return null; }
+                console.log('[hcc-ollama]', url, 'status=' + r.status, 'ok=' + r.ok);
+                if (!r.ok) return null;
                 return r.json();
             })
-            .catch(function (e) { console.warn('[hcc-ollama] fetch', url, 'error:', e.message || e); return null; });
+            .catch(function (e) { console.warn('[hcc-ollama] FAIL', url, e); return null; });
     }
 
     function esc(s) {
