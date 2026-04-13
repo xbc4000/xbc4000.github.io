@@ -471,7 +471,7 @@
         var clockSeg = makeSeg('hcc-hud-clock', 'TIME');
         var lanSeg   = makeSeg('hcc-hud-lan', null);   // colored, no label
         var netSeg   = makeSeg('hcc-hud-net', 'NET');
-        var viewSeg  = makeSeg('hcc-hud-view', 'VIEW');
+        var viewSeg  = makeSeg('hcc-hud-view', 'IP');
         var upSeg    = makeSeg('hcc-hud-up', 'UP');
 
         bar.appendChild(pulseSeg);
@@ -519,8 +519,7 @@
             // Uptime (since page load, real)
             upSeg.textContent = fmtUptime(Date.now() - loadedAt);
 
-            // Viewport — recompute every tick (cheap, also catches resize)
-            viewSeg.textContent = window.innerWidth + '×' + window.innerHeight + (window.devicePixelRatio > 1 ? '@' + window.devicePixelRatio + 'x' : '');
+            // IP is set once by fetchIp(), no per-tick update needed
 
             // Network type — navigator.connection if exposed (Chrome only),
             // otherwise fall back to navigator.onLine which IS exposed
@@ -587,6 +586,13 @@
             probeLan();
             setInterval(probeLan, 10000);
         }
+
+        // IP fetch (one-time)
+        viewSeg.textContent = '...';
+        fetch('https://api.bigdatacloud.net/data/client-ip?_=' + Date.now())
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) { if (d && d.ipString) viewSeg.textContent = d.ipString; else viewSeg.textContent = '—'; })
+            .catch(function () { viewSeg.textContent = '—'; });
     }
 
     function init() {
