@@ -79,7 +79,7 @@
         card.id = 'hcc-conditions';
         card.style.cssText = [
             'position:fixed',
-            'top:clamp(180px, 14vw, 216px)',
+            'top:clamp(210px, 17vw, 260px)',
             'right:clamp(12px, 1.5vw, 24px)',
             'width:clamp(220px, 19vw, 440px)',
             'pointer-events:auto',
