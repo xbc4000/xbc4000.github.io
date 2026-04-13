@@ -81,7 +81,7 @@
             'top:clamp(60px, 5.5vw, 78px)',
             'right:clamp(12px, 1.5vw, 24px)',
             'width:clamp(220px, 19vw, 440px)',
-            'height:clamp(155px, 17vh, 200px)',
+            'height:clamp(130px, 14vh, 170px)',
             'overflow:hidden',
             'pointer-events:auto',
             'z-index:' + Z,
