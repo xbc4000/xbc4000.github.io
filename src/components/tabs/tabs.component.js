@@ -238,8 +238,8 @@ class Tabs extends Component {
 
       #panels {
           /* Sized to fit between the side widgets (each ~22vw + margin).
-             55vw keeps the panel centered with breathing room on both sides. */
-          width: clamp(50%, 55vw, 1400px);
+             Leaves breathing room on both sides at all resolutions. */
+          width: clamp(50%, 62vw, 1600px);
           height: 60vh;
           min-height: min(540px, 80vh);
           max-height: 80vh;
