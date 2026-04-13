@@ -129,7 +129,7 @@ class Weather extends Component {
    * Generate the HTML template for the weather component
    * @returns {Promise<string>} HTML template string
    */
-  async template() {
+  template() {
     return `
         <p class="weather-temperature">
             <span class="weather-icon"><i class="material-icons weather-condition-icon sunny">wb_sunny</i></span>
@@ -225,10 +225,8 @@ class Weather extends Component {
   /**
    * Component lifecycle method called when element is connected to DOM
    */
-  async connectedCallback() {
-    // Render component template
-    await this.render();
-    // Fetch and display weather data
-    await this.setWeather();
+  connectedCallback() {
+    this.render();
+    this.setWeather();
   }
 }

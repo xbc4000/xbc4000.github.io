@@ -182,12 +182,9 @@ class Clock extends Component {
    * @returns {void}
    */
   connectedCallback() {
-    this.render().then(() => {
-      setTimeout(() => {
-        this.setTime();
-        this.setIconColor();
-        setInterval(() => this.setTime(), 1000);
-      }, 100);
-    });
+    this.render();
+    this.setTime();
+    this.setIconColor();
+    setInterval(() => this.setTime(), 1000);
   }
 }
