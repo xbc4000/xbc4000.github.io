@@ -90,8 +90,7 @@
             'box-shadow:0 0 22px rgba(0,183,255,0.22), 0 0 50px rgba(0,183,255,0.08), inset 0 0 24px rgba(0,183,255,0.05)',
             'text-shadow:0 0 4px rgba(0,212,255,0.45)',
             'backdrop-filter:blur(3px)',
-            'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)',
-            'min-height:clamp(240px, 26vh, 338px)'
+            'clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)'
         ].join(';');
 
         // Header
@@ -100,10 +99,10 @@
             'display:flex',
             'align-items:center',
             'justify-content:space-between',
-            'padding:11px 18px',
+            'padding:8px 14px',
             'background:rgba(0,183,255,0.08)',
             'border-bottom:1px solid rgba(0,183,255,0.35)',
-            'font-size:11px',
+            'font-size:10px',
             'letter-spacing:2px'
         ].join(';');
         var headerLeft = document.createElement('span');
@@ -118,16 +117,16 @@
 
         // Body
         var body = document.createElement('div');
-        body.style.cssText = 'padding:18px 22px 16px;';
+        body.style.cssText = 'padding:8px 14px 8px;';
 
         // Location row (city, region · country)
         var locEl = document.createElement('div');
         locEl.style.cssText = [
-            'font-size:16px',
+            'font-size:11px',
             'font-weight:700',
             'color:' + HCC_CYAN_BRIGHT,
             'text-shadow:0 0 6px rgba(0,212,255,0.6)',
-            'margin-bottom:2px',
+            'margin-bottom:6px',
             'white-space:nowrap',
             'overflow:hidden',
             'text-overflow:ellipsis'
@@ -135,47 +134,38 @@
         locEl.textContent = '— · —';
 
         var ipEl = document.createElement('div');
-        ipEl.style.cssText = [
-            'font-size:11px',
-            'color:' + HCC_CYAN,
-            'opacity:0.6',
-            'letter-spacing:1px',
-            'margin-bottom:18px',
-            'white-space:nowrap',
-            'overflow:hidden',
-            'text-overflow:ellipsis'
-        ].join(';');
-        ipEl.textContent = 'IP —';
+        ipEl.style.cssText = 'display:none';
+        ipEl.textContent = '';
 
-        // Big temp + condition row
+        // Temp + condition row
         var bigRow = document.createElement('div');
         bigRow.style.cssText = [
             'display:flex',
             'align-items:center',
-            'gap:14px',
-            'margin-bottom:14px'
+            'gap:10px',
+            'margin-bottom:6px'
         ].join(';');
         var tempEl = document.createElement('div');
         tempEl.style.cssText = [
-            'font-size:clamp(28px, 2.8vw, 52px)',
+            'font-size:clamp(18px, 1.8vw, 28px)',
             'font-weight:700',
             'line-height:1',
             'color:' + HCC_CYAN_BRIGHT,
-            'text-shadow:0 0 14px rgba(0,212,255,0.7)'
+            'text-shadow:0 0 10px rgba(0,212,255,0.7)'
         ].join(';');
         tempEl.textContent = '—°';
         var condCol = document.createElement('div');
-        condCol.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:3px';
+        condCol.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:2px';
         var glyphEl = document.createElement('div');
         glyphEl.style.cssText = [
-            'font-size:24px',
+            'font-size:14px',
             'color:' + HCC_AMBER,
-            'text-shadow:0 0 8px rgba(255,179,71,0.5)'
+            'text-shadow:0 0 6px rgba(255,179,71,0.5)'
         ].join(';');
         glyphEl.textContent = '·';
         var condEl = document.createElement('div');
         condEl.style.cssText = [
-            'font-size:13px',
+            'font-size:9px',
             'color:' + HCC_CYAN,
             'letter-spacing:1px',
             'opacity:0.85',
@@ -184,7 +174,7 @@
         condEl.textContent = '—';
         var feelsEl = document.createElement('div');
         feelsEl.style.cssText = [
-            'font-size:11px',
+            'font-size:9px',
             'color:' + HCC_CYAN,
             'opacity:0.6',
             'letter-spacing:1px'
@@ -196,16 +186,15 @@
         bigRow.appendChild(tempEl);
         bigRow.appendChild(condCol);
 
-        // Stat grid: HI / LO / WIND / HUMID
+        // Stat grid: HI / LO / WIND / HUMID / SUNUP / SUNDN
         var grid = document.createElement('div');
         grid.style.cssText = [
             'display:grid',
             'grid-template-columns:1fr 1fr',
-            'gap:8px 18px',
-            'font-size:12px',
+            'gap:4px 14px',
+            'font-size:9px',
             'letter-spacing:1px',
-            'color:' + HCC_CYAN,
-            'margin-bottom:12px'
+            'color:' + HCC_CYAN
         ].join(';');
 
         function statCell(label, valId) {

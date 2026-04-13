@@ -102,12 +102,12 @@
 
         // Body
         var body = document.createElement('div');
-        body.style.cssText = 'padding:14px 16px 12px;';
+        body.style.cssText = 'padding:8px 14px 10px 14px;';
 
         var trackEl = document.createElement('div');
         trackEl.id = 'hcc-np-track';
         trackEl.style.cssText = [
-            'font-size:14px',
+            'font-size:11px',
             'font-weight:700',
             'letter-spacing:0.5px',
             'color:' + HCC_CYAN_BRIGHT,
@@ -115,14 +115,14 @@
             'white-space:nowrap',
             'overflow:hidden',
             'text-overflow:ellipsis',
-            'margin-bottom:4px'
+            'margin-bottom:3px'
         ].join(';');
         trackEl.textContent = '—';
 
         var artistEl = document.createElement('div');
         artistEl.id = 'hcc-np-artist';
         artistEl.style.cssText = [
-            'font-size:11px',
+            'font-size:10px',
             'letter-spacing:1px',
             'color:' + HCC_CYAN,
             'opacity:0.85',
@@ -136,14 +136,14 @@
         var albumEl = document.createElement('div');
         albumEl.id = 'hcc-np-album';
         albumEl.style.cssText = [
-            'font-size:10px',
+            'font-size:9px',
             'letter-spacing:1px',
             'color:' + HCC_CYAN,
             'opacity:0.55',
             'white-space:nowrap',
             'overflow:hidden',
             'text-overflow:ellipsis',
-            'margin-bottom:12px'
+            'margin-bottom:6px'
         ].join(';');
         albumEl.textContent = '—';
 
