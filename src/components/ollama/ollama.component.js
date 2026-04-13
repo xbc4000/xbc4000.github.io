@@ -18,8 +18,7 @@
     var HCC_MUTED       = 'rgba(180,200,220,0.45)';
 
     var EXPORTER_URL = (function () {
-        var h = window.location.hostname || '';
-        if (h === 'startpage.home') return '/ollama';
+        if (window.location.protocol === 'https:') return '/ollama';
         return 'http://10.10.10.2:9401';
     })();
     var POLL_MS      = 10000;
