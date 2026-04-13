@@ -38,7 +38,7 @@
         card.id = 'hcc-ollama';
         card.style.cssText = [
             'position:fixed',
-            'top:calc(clamp(60px, 5.5vw, 78px) + clamp(240px, 26vh, 338px) + 10px)',
+            'top:clamp(180px, 14vw, 216px)',
             'right:clamp(12px, 1.5vw, 24px)',
             'width:clamp(220px, 19vw, 440px)',
             'pointer-events:auto',
