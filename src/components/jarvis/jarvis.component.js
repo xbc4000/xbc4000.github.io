@@ -40,9 +40,9 @@
         card.style.cssText = [
             'position:fixed',
             'left:clamp(12px, 1.5vw, 24px)',
-            'top:calc(clamp(60px, 5.5vw, 78px) + clamp(105px, 11vh, 140px) + 8px)',
+            'top:calc(clamp(60px, 5.5vw, 78px) + clamp(130px, 14vh, 170px) + 8px)',
             'width:clamp(220px, 19vw, 440px)',
-            'height:clamp(180px, 20vh, 240px)',
+            'height:clamp(150px, 16vh, 200px)',
             'overflow:hidden',
             'pointer-events:auto',
             'z-index:' + Z,
