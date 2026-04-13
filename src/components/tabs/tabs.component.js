@@ -245,8 +245,9 @@ class Tabs extends Component {
           max-height: 80vh;
           right: 0;
           left: 0;
-          top: 0;
-          bottom: 0;
+          /* Center vertically between HUD bar (~54px) and feeds (~24px + 20vh from bottom) */
+          top: clamp(44px, 4.5vh, 58px);
+          bottom: calc(clamp(180px, 20vh, 260px) + clamp(12px, 1.5vw, 24px) + 10px);
           margin: auto;
           background: #0a1520;
           border: 1px solid rgba(0,183,255,0.35);
