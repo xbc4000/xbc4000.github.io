@@ -12,7 +12,6 @@
   <!-- CSS files will be loaded by JavaScript based on configuration -->
   <!-- Removed cryptofont.css from jsdelivr — it was render-blocking on cold
        network and we don't use any crypto coin icons in the HCC tabs. -->
-  <link href="src/css/awoo-local.min.css" rel="stylesheet" type="text/css" />
   <link href="src/css/style.css" rel="stylesheet" type="text/css" />
   <link href="src/css/tabler-icons.min.css" rel="stylesheet" />
   <link rel="icon" type="image/png" href="src/img/favicon.png" />
@@ -40,9 +39,6 @@
       const head = document.getElementsByTagName('head')[0];
 
       if (CONFIG.localFonts) {
-        // awoo-local.min.css is loaded statically in <head> to prevent
-        // the flash/double-refresh caused by its late-arriving * reset.
-
         // Load local fonts
         const localFontLinks = [
           'src/fonts/roboto-local.css',

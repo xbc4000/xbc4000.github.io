@@ -642,14 +642,14 @@ class Tabs extends Component {
    */
   template() {
     return `
-      <div id="links" class="-">
+      <div id="links">
 
         <div id="panels">
           <div class="categories">
             ${Category.getAll(this.tabs)}
             <search-bar></search-bar>
           </div>
-          <status-bar class="!-"></status-bar>
+          <status-bar></status-bar>
         </div>
       </div>
     `;
