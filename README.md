@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="src/img/screenshot.png" alt="HCC Startpage" width="880"/>
-
 # HCC STARTPAGE
 
 **Cyberpunk command-center browser homepage for a homelab.**
