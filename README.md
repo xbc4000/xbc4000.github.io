@@ -305,7 +305,18 @@ Colour roots in [**Catppuccin**](https://catppuccin.com/palette) — the palette
 ---
 
 <div align="center">
-<sub>Part of the <b>HCC (Homelab Command Center)</b> stack · <a href="https://github.com/xbc4000/hcc-dashboard">hcc-dashboard</a> · <a href="https://github.com/xbc4000/hcc-spotify-bridge">hcc-spotify-bridge</a> · <a href="https://github.com/xbc4000/homelab-network">homelab-network</a></sub>
+
+<a href="https://www.techxmaestro.com">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/xbc4000/homelab-network/main/assets/branding/techx-maestro.png">
+    <img alt="TechX Maestro" src="https://raw.githubusercontent.com/xbc4000/homelab-network/main/assets/branding/techx-maestro-dark.png" width="220">
+  </picture>
+</a>
+
+<sub><b>HCC</b> (Homelab Command Center) is a product of <a href="https://www.techxmaestro.com"><b>TechX Maestro</b></a>.</sub>
+
+<sub>HCC repos · <a href="https://github.com/xbc4000/hcc-dashboard">hcc-dashboard</a> · <a href="https://github.com/xbc4000/hcc-spotify-bridge">hcc-spotify-bridge</a> · <a href="https://github.com/xbc4000/homelab-network">homelab-network</a></sub>
+
 </div>
 
 ## License
