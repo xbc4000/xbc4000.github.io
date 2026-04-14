@@ -75,7 +75,7 @@
 </tr>
 </table>
 
-<sub>⚠ Drop fresh captures in <a href="docs/screenshots/">docs/screenshots/</a> per that directory's checklist to replace the broken placeholders above.</sub>
+<sub>⚠ Drop fresh captures in <a href="docs/screenshots/">docs/screenshots/</a> for <code>07-widgets.png</code> and <code>09-feeds.png</code> — the rest are live.</sub>
 
 ---
 
