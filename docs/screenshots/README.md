@@ -10,7 +10,8 @@ Drop PNGs here with the filenames below. The main `README.md` references these p
 | 04 | `04-daily.png` | DAILY tab |
 | 05 | `05-news.png` | NEWS tab |
 | 06 | `06-chill.png` | CHILL tab |
-| 07 | `07-widgets.png` | Zoom on the 2×2 widget grid (NOW PLAYING, CONDITIONS, JARVIS, SERINA) |
+| 07a | `07a-widgets-left.png` | Left widget column zoom (NOW PLAYING + JARVIS) |
+| 07b | `07b-widgets-right.png` | Right widget column zoom (CONDITIONS + SERINA) |
 | 08 | `08-search.png` | Search overlay open with multi-engine chooser |
 | 09 | `09-feeds.png` | Bottom FEEDS panel with Reddit + HN posts |
 

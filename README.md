@@ -35,12 +35,18 @@
 </tr>
 <tr>
 <td align="center" width="50%">
-<a href="docs/screenshots/07-widgets.png"><img src="docs/screenshots/07-widgets.png" alt="2x2 widget grid"/></a><br>
-<sub><b>2×2 Widget Grid</b> — every widget pulls live data: Spotify bridge, Open-Meteo, browser telemetry, Ollama/Serina status.</sub>
+<a href="docs/screenshots/07a-widgets-left.png"><img src="docs/screenshots/07a-widgets-left.png" alt="Left widgets: NOW PLAYING + JARVIS"/></a><br>
+<sub><b>Left column</b> — NOW PLAYING (Spotify bridge) over JARVIS (radar + browser telemetry).</sub>
 </td>
 <td align="center" width="50%">
-<a href="docs/screenshots/09-feeds.png"><img src="docs/screenshots/09-feeds.png" alt="Feeds"/></a><br>
-<sub><b>FEEDS</b> — live Reddit (9 subreddits) + Hacker News Algolia, auto-refreshing.</sub>
+<a href="docs/screenshots/07b-widgets-right.png"><img src="docs/screenshots/07b-widgets-right.png" alt="Right widgets: CONDITIONS + SERINA"/></a><br>
+<sub><b>Right column</b> — CONDITIONS (Open-Meteo + geo) over SERINA (Ollama + GPU + watchdog).</sub>
+</td>
+</tr>
+<tr>
+<td align="center" colspan="2">
+<a href="docs/screenshots/09-feeds.png"><img src="docs/screenshots/09-feeds.png" alt="Feeds panel" width="80%"/></a><br>
+<sub><b>FEEDS</b> — live Reddit (9 subreddits) + Hacker News Algolia, auto-refreshing across a multi-column grid.</sub>
 </td>
 </tr>
 <tr>
@@ -75,7 +81,6 @@
 </tr>
 </table>
 
-<sub>⚠ Drop fresh captures in <a href="docs/screenshots/">docs/screenshots/</a> for <code>07-widgets.png</code> and <code>09-feeds.png</code> — the rest are live.</sub>
 
 ---
 
