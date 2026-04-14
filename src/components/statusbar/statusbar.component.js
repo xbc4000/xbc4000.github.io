@@ -235,7 +235,10 @@ class Statusbar extends Component {
     this.refs.tabs.forEach((tab) => (tab.onclick = ({ target }) => this.handleTabChange(target)));
 
     document.onkeydown = (e) => this.handleKeyPress(e);
-    document.onwheel = (e) => this.handleWheelScroll(e);
+    // Wheel-to-cycle-tab is intentionally disabled: it cycled the legacy
+    // statusbar tab refs without updating the new bottom nav's [active]
+    // state, so the buttons drifted out of sync with the visible panel.
+    // Click the bottom buttons to change tabs.
     this.refs.fastlink.onclick = () => {
       console.log(CONFIG.fastlink);
       if (CONFIG.config.fastlink) {
