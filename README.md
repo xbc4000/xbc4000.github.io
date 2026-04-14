@@ -143,6 +143,14 @@ All effects are `pointer-events: none` overlays at low z-index — they never in
 
 ## Architecture
 
+<div align="center">
+<img src="docs/architecture.png" alt="HCC Startpage architecture" width="820"/>
+</div>
+
+<sub>Regenerate with <code>python3 scripts/generate-architecture.py</code>.</sub>
+
+### ASCII breakdown
+
 ```
 Browser  (https://xbc4000.github.io  OR  https://startpage.home/)
 |
