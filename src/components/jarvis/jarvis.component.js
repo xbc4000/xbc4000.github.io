@@ -40,7 +40,7 @@
         card.style.cssText = [
             'position:fixed',
             'left:clamp(12px, 1.5vw, 24px)',
-            'top:calc(clamp(60px, 5.5vw, 78px) + clamp(130px, 14vh, 170px) + 8px)',
+            'top:calc(clamp(60px, 5.5vw, 78px) + clamp(170px, 20vh, 230px) + 16px)',
             'width:clamp(220px, 19vw, 440px)',
             'height:clamp(165px, 18vh, 220px)',
             'overflow:hidden',
@@ -80,7 +80,7 @@
 
         // Body — radar on the left, telemetry grid on the right
         var body = document.createElement('div');
-        body.style.cssText = 'padding:12px 14px;display:flex;align-items:center;gap:14px';
+        body.style.cssText = 'padding:12px 14px;display:flex;align-items:center;justify-content:center;gap:14px';
 
         // Radar canvas (smaller — was 252px, now 140px)
         var canvas = document.createElement('canvas');
