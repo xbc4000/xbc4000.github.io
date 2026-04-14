@@ -65,6 +65,8 @@
             'left:clamp(12px, 1.5vw, 24px)',
             'width:clamp(220px, 19vw, 440px)',
             'height:clamp(180px, 19vh, 215px)',
+            'display:flex',
+            'flex-direction:column',
             'overflow:hidden',
             'pointer-events:auto',
             'z-index:' + Z,
@@ -102,9 +104,11 @@
         header.appendChild(headerLeft);
         header.appendChild(headerRight);
 
-        // Body
+        // Body — flex-grows to fill card, content distributed top→bottom so
+        // the progress bar + time row lock to the bottom edge and no dead
+        // space sits below them.
         var body = document.createElement('div');
-        body.style.cssText = 'padding:14px 16px 12px 16px;';
+        body.style.cssText = 'padding:14px 16px 12px 16px;flex:1;display:flex;flex-direction:column;justify-content:space-between;min-height:0;';
 
         var trackEl = document.createElement('div');
         trackEl.id = 'hcc-np-track';

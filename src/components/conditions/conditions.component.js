@@ -82,6 +82,8 @@
             'right:clamp(12px, 1.5vw, 24px)',
             'width:clamp(220px, 19vw, 440px)',
             'height:clamp(180px, 19vh, 215px)',
+            'display:flex',
+            'flex-direction:column',
             'overflow:hidden',
             'pointer-events:auto',
             'z-index:' + Z,
@@ -117,9 +119,11 @@
         header.appendChild(headerLeft);
         header.appendChild(headerRight);
 
-        // Body
+        // Body — flex-grows to fill card, content distributed so the
+        // HI/LO/WIND/HUMID/SUNUP/SUNDN grid anchors to the bottom and
+        // the temp+condition row sits above it, location row on top.
         var body = document.createElement('div');
-        body.style.cssText = 'padding:8px 14px 8px;';
+        body.style.cssText = 'padding:8px 14px 8px;flex:1;display:flex;flex-direction:column;justify-content:space-between;min-height:0;gap:6px;';
 
         // Location row (city, region · country)
         var locEl = document.createElement('div');
