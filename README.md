@@ -1,5 +1,9 @@
 <div align="center">
 
+[![TechX Maestro](https://img.shields.io/badge/TechX_Maestro-FF00B2?style=for-the-badge&labelColor=000000)](https://techxmaestro.com)
+[![HCC Ecosystem](https://img.shields.io/badge/HCC_Ecosystem-00d4ff?style=for-the-badge&labelColor=000000)](https://github.com/xbc4000?tab=repositories)
+[![Production](https://img.shields.io/badge/Production-00ff88?style=for-the-badge&labelColor=000000)](https://xbc4000.github.io)
+
 <img src="docs/screenshots/01-hero.png" alt="HCC Startpage" width="880"/>
 
 # HCC STARTPAGE
