@@ -1,22 +1,77 @@
-MIT License
+PROPRIETARY SOFTWARE LICENSE
 
-Copyright (c) 2026 TechX Maestro — HCC Startpage modifications and additions
-Copyright (c) 2026 Volodymyr Pivoshenko — original catppuccin-startpage codebase
+Copyright (c) 2026 TechX Maestro. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+DUAL-LICENSE NOTICE
+    This repository is a derivative of the "catppuccin-startpage" project by
+    Volodymyr Pivoshenko, originally licensed under the MIT License. The
+    original upstream code retains its MIT license terms, which are preserved
+    in the file LICENSE-UPSTREAM in this repository.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+    All modifications, additions, theming, branding, assets, and derivative
+    work contributed by TechX Maestro (collectively, the "HCC Startpage
+    Modifications") are licensed under the proprietary terms set out below
+    and are NOT covered by the upstream MIT license.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+--------------------------------------------------------------------------------
+
+HCC STARTPAGE MODIFICATIONS - PROPRIETARY LICENSE
+
+This software and all associated files, configuration, documentation, and
+assets contained in this repository (collectively, the "Software"), insofar
+as they represent modifications or additions made by TechX Maestro, are the
+proprietary and confidential property of TechX Maestro.
+
+1. GRANT OF RIGHTS
+   The source code in this repository is made visible for the purposes of
+   reference, audit, and evaluation only. No other rights, express or implied,
+   are granted under this license with respect to the HCC Startpage
+   Modifications.
+
+2. RESTRICTIONS
+   Without the prior written permission of TechX Maestro, you may NOT:
+   (a) copy, reproduce, or redistribute the HCC Startpage Modifications or
+       any portion thereof;
+   (b) modify, adapt, translate, or create derivative works based on the
+       HCC Startpage Modifications;
+   (c) use the HCC Startpage Modifications, in whole or in part, in any
+       product, service, or deployment, whether commercial or non-commercial;
+   (d) sublicense, sell, rent, lease, lend, or otherwise transfer the
+       HCC Startpage Modifications;
+   (e) reverse engineer, decompile, or disassemble the HCC Startpage
+       Modifications, except to the limited extent such activity is expressly
+       permitted by applicable law notwithstanding this restriction;
+   (f) remove, obscure, or alter any copyright, trademark, or other
+       proprietary notices contained in the Software.
+
+3. TRADEMARKS
+   "TechX Maestro", "HCC", "Home Control Center", "Serina", "Nigel",
+   "TechX OS", and all associated logos, wordmarks, icons, pet sprites,
+   pixel art, colour schemes, and visual designs are trademarks of
+   TechX Maestro. Nothing in this license grants any right or licence to
+   use these trademarks.
+
+4. UPSTREAM COMPONENTS
+   Portions of this repository derived from "catppuccin-startpage" by
+   Volodymyr Pivoshenko are licensed under the MIT License, preserved in
+   LICENSE-UPSTREAM. Use of those upstream portions under MIT terms is
+   permitted, provided the upstream copyright notice is retained. This
+   exception does NOT extend to HCC-specific branding, assets, theming,
+   widgets, or modifications authored by TechX Maestro.
+
+5. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+6. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL TECHX MAESTRO BE LIABLE FOR ANY CLAIM, DAMAGES, OR
+   OTHER LIABILITY, WHETHER IN CONTRACT, TORT, OR OTHERWISE, ARISING FROM,
+   OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+   IN THE SOFTWARE.
+
+7. TERMINATION
+   Any breach of this license immediately and automatically terminates any
+   rights granted hereunder with respect to the HCC Startpage Modifications.
+
+For licensing, partnership, or permission inquiries, contact TechX Maestro.
