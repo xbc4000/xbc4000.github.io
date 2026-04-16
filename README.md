@@ -3,6 +3,7 @@
 [![TechX Maestro](https://img.shields.io/badge/TechX_Maestro-FF00B2?style=for-the-badge&labelColor=000000)](https://techxmaestro.com)
 [![HCC Ecosystem](https://img.shields.io/badge/HCC_Ecosystem-00d4ff?style=for-the-badge&labelColor=000000)](https://github.com/xbc4000?tab=repositories)
 [![Production](https://img.shields.io/badge/Production-00ff88?style=for-the-badge&labelColor=000000)](https://xbc4000.github.io)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-ff3366?style=for-the-badge&labelColor=000000)](LICENSE)
 
 <img src="docs/screenshots/01-hero.png" alt="HCC Startpage" width="880"/>
 
@@ -323,6 +324,29 @@ Colour roots in [**Catppuccin**](https://catppuccin.com/palette) — the palette
 
 </div>
 
-## License
+## License & Legal
 
-[MIT](LICENSE) — original catppuccin-startpage codebase + HCC modifications.
+This repository is **dual-licensed**:
+
+- **Upstream code** (original [catppuccin-startpage](https://github.com/VolodymyrPivoshenko/catppuccin-startpage)
+  by Volodymyr Pivoshenko): **MIT License** &mdash; see [LICENSE-UPSTREAM](LICENSE-UPSTREAM).
+- **HCC Startpage modifications** (widgets, branding, theming, assets, and
+  additions by TechX Maestro): **Proprietary** &mdash; see [LICENSE](LICENSE).
+
+&copy; 2026 TechX Maestro. All rights reserved.
+
+TechX modifications are published for reference, audit, and evaluation only.
+You may not copy, modify, redistribute, or re-use any HCC-specific portion
+in any product, service, or deployment &mdash; commercial or non-commercial
+&mdash; without prior written permission from TechX Maestro. The upstream
+MIT-licensed code remains under its original terms, with attribution
+preserved.
+
+**TechX Maestro**, **HCC**, **Home Control Center**, **Serina**, **Nigel**,
+and **TechX OS** are trademarks of TechX Maestro.
+
+- Full license (proprietary, TechX additions): [LICENSE](LICENSE)
+- Upstream MIT license (catppuccin-startpage): [LICENSE-UPSTREAM](LICENSE-UPSTREAM)
+- Trademark / legal notice: [NOTICE.md](NOTICE.md)
+- Security issues: [SECURITY.md](SECURITY.md)
+- Contribution policy: [CONTRIBUTING.md](CONTRIBUTING.md)
