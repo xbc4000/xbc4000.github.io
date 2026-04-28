@@ -36,4 +36,5 @@ Volodymyr Pivoshenko under MIT terms.
 
 ## Contact
 
-For licensing, partnership, press, or legal inquiries, contact TechX Maestro.
+For licensing, partnership, press, or legal inquiries, contact TechX Maestro
+at `support@techxmaestro.com`.
