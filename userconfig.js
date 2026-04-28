@@ -64,7 +64,7 @@ const default_configuration = {
             { name: "router",    url: "http://router.home",      icon: "router",       icon_color: hcc.cyan },
             { name: "pi-hole",   url: "http://pi.hole/admin",    icon: "shield-check", icon_color: hcc.cyanBright },
             { name: "portainer", url: "https://portainer.home",  icon: "box-multiple", icon_color: hcc.cyan },
-            { name: "caddy",     url: "http://10.40.40.2:9442",  icon: "lock",         icon_color: hcc.cyanDark },
+            { name: "caddy",     url: "http://caddy.home:9442", icon: "lock",         icon_color: hcc.cyanDark },
             { name: "hcc",       url: "https://hcc.home",        icon: "layout-dashboard", icon_color: hcc.cyanBright },
             { name: "grafana",   url: "https://grafana.home",    icon: "chart-area",   icon_color: hcc.amber },
           ],
@@ -85,15 +85,15 @@ const default_configuration = {
         {
           name: "servers",
           links: [
-            { name: "per730xd",  url: "https://idrac1.home",           icon: "server-2",        icon_color: hcc.cyan },
-            { name: "per630",    url: "https://idrac2.home",           icon: "server-2",        icon_color: hcc.cyan },
+            { name: "server 1",  url: "https://idrac1.home",           icon: "server-2",        icon_color: hcc.cyan },
+            { name: "server 2",  url: "https://idrac2.home",           icon: "server-2",        icon_color: hcc.cyan },
             { name: "vconsole 1",url: "https://idrac1.home/restgui/start.html#/console",  icon: "device-tv",       icon_color: hcc.cyanBright },
             { name: "vconsole 2",url: "https://idrac2.home/restgui/start.html#/console",  icon: "device-tv",       icon_color: hcc.cyanBright },
             { name: "amp panel", url: "http://amp.home:8080",          icon: "device-gamepad-2",icon_color: hcc.green },
           ],
         },
         {
-          name: "per730xd ctrl",
+          name: "server 1 ctrl",
           links: [
             { name: "power",   url: "https://idrac1.home/restgui/start.html#/power",   icon: "bolt",           icon_color: hcc.amber },
             { name: "storage", url: "https://idrac1.home/restgui/start.html#/storage", icon: "database",       icon_color: hcc.purple },
@@ -104,7 +104,7 @@ const default_configuration = {
           ],
         },
         {
-          name: "per630 ctrl",
+          name: "server 2 ctrl",
           links: [
             { name: "power",   url: "https://idrac2.home/restgui/start.html#/power",   icon: "bolt",           icon_color: hcc.amber },
             { name: "storage", url: "https://idrac2.home/restgui/start.html#/storage", icon: "database",       icon_color: hcc.purple },
@@ -133,23 +133,8 @@ const default_configuration = {
           ],
         },
         {
-          name: "monitoring",
-          links: [
-            { name: "prometheus",     url: "http://10.40.40.2:9090",          icon: "activity",     icon_color: hcc.magenta },
-            { name: "loki",           url: "http://10.40.40.2:3100",          icon: "file-text",    icon_color: hcc.cyan },
-            { name: "influxdb",       url: "http://10.40.40.2:8086",          icon: "database",     icon_color: hcc.purple },
-            { name: "node exporter",  url: "http://10.40.40.2:9100/metrics",  icon: "chart-line",   icon_color: hcc.cyanDark },
-            { name: "snmp exporter",  url: "http://10.40.40.2:9116/metrics",  icon: "wifi",         icon_color: hcc.cyanDark },
-            { name: "mktxp",          url: "http://10.40.40.2:49090/metrics", icon: "router",       icon_color: hcc.cyanDark },
-            { name: "idrac exporter", url: "http://10.40.40.2:9348/metrics",  icon: "cpu",          icon_color: hcc.cyanDark },
-            { name: "pihole exporter",url: "http://10.40.40.2:9617/metrics",  icon: "shield-check", icon_color: hcc.cyanDark },
-          ],
-        },
-        {
           name: "network / docs",
           links: [
-            { name: "ap1 map2nd",   url: "http://ap1.home",                    icon: "access-point", icon_color: hcc.cyan },
-            { name: "ap2 wap2nd",   url: "http://ap2.home",                    icon: "access-point", icon_color: hcc.cyan },
             { name: "winbox dl",    url: "https://mt.lv/winbox",               icon: "terminal-2",   icon_color: hcc.magenta },
             { name: "mikrotik docs",url: "https://help.mikrotik.com/docs/",    icon: "book",         icon_color: hcc.amber },
             { name: "mikrotik wiki",url: "https://wiki.mikrotik.com/wiki/",    icon: "book-2",       icon_color: hcc.amber },
@@ -158,9 +143,8 @@ const default_configuration = {
         {
           name: "repos",
           links: [
-            { name: "homelab-network",      url: "https://github.com/xbc4000/homelab-network",                icon: "brand-github", icon_color: hcc.cyanBright },
-            { name: "hcc-dashboard",        url: "https://github.com/xbc4000/hcc-dashboard",                  icon: "brand-github", icon_color: hcc.cyanBright },
-            { name: "hcc-spotify-bridge",   url: "https://github.com/xbc4000/hcc-spotify-bridge",             icon: "brand-github", icon_color: hcc.cyanBright },
+            { name: "techx-maestro org",    url: "https://github.com/techx-maestro",                          icon: "brand-github", icon_color: hcc.cyanBright },
+            { name: "hcc-observatory",      url: "https://github.com/techx-maestro/hcc-observatory",          icon: "brand-github", icon_color: hcc.cyanBright },
             { name: "startpage",            url: "https://github.com/xbc4000/xbc4000.github.io",              icon: "brand-github", icon_color: hcc.cyanBright },
             { name: "nvidia secureboot",    url: "https://github.com/xbc4000/install-nvidia-secureboot-fedora", icon: "brand-github", icon_color: hcc.cyanBright },
           ],
