@@ -342,7 +342,7 @@ in any product, service, or deployment &mdash; commercial or non-commercial
 MIT-licensed code remains under its original terms, with attribution
 preserved.
 
-**TechX Maestro**, **HCC**, **Home Control Center**, **Serina**, **Nigel**,
+**TechX Maestro**, **HCC**, **Homelab Command Center**, **Serina**, **Nigel**,
 and **TechX OS** are trademarks of TechX Maestro.
 
 - Full license (proprietary, TechX additions): [LICENSE](LICENSE)
