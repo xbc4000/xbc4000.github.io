@@ -34,7 +34,7 @@ Contact **TechX Maestro** directly &mdash; <https://techxmaestro.com>.
 ## Trademarks
 
 By submitting any issue or comment, you acknowledge that **TechX Maestro**,
-**HCC**, **Home Control Center**, **Serina**, **Nigel**, and **TechX OS**
+**HCC**, **Homelab Command Center**, **Serina**, **Nigel**, and **TechX OS**
 are trademarks of TechX Maestro and will not be used in a confusing or
 disparaging manner.
 
